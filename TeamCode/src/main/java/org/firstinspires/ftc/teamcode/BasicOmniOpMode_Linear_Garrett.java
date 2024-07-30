@@ -111,7 +111,6 @@ public class BasicOmniOpMode_Linear_Garrett extends LinearOpMode {
         configureOtos();
         waitForStart();
 
-        while (opModeIsActive()) {
             SparkFunOTOS.Pose2D pos;
             pos = myOtos.getPosition();
 //            while(pos.y < 24 && opModeIsActive()) {
@@ -128,14 +127,32 @@ public class BasicOmniOpMode_Linear_Garrett extends LinearOpMode {
 //                telemetry.update();
 //            }
 //            stopAllMotors();
-            while(pos.x < 24 && pos.y < 24 && opModeIsActive()) {
-                drivetrainControl(0.2f,0.2f,0);
-                pos = myOtos.getPosition();
-                telemetry.addData("X coord", pos.x);
-                telemetry.addData("Y coordinate", pos.y);
-                telemetry.update();
-            }
-            stopAllMotors();
+//            while(pos.x < 6 && pos.y < 24 && opModeIsActive()) {
+//                drivetrainControl(0.4f,0.1f,0);
+//                pos = myOtos.getPosition();
+//                telemetry.addData("X coord", pos.x);
+//                telemetry.addData("Y coordinate", pos.y);
+//                telemetry.update();
+//            }
+//            stopAllMotors();
+//            myOtos.resetTracking();
+//            while(pos.x < 20 && opModeIsActive()) {
+//                driveStrafe(0.4F,0);
+//                pos = myOtos.getPosition();
+//                telemetry.addData("X coord", pos.x);
+//                telemetry.addData("Y coordinate", pos.y);
+//                telemetry.update();
+//            }
+//            stopAllMotors();
+//            myOtos.resetTracking();
+//            while(pos.y > -12 && pos.x > -3 && opModeIsActive()){
+//                drivetrainControl(-0.4f,-0.1f, 0);
+//                pos = myOtos.getPosition();
+//                telemetry.addData("X coord", pos.x);
+//                telemetry.addData("Y coordinate", pos.y);
+//                telemetry.update();
+//            }
+//            stopAllMotors();
 
             // Log the position to the telemetry
             telemetry.addData("X coordinate", pos.x);
@@ -146,7 +163,6 @@ public class BasicOmniOpMode_Linear_Garrett extends LinearOpMode {
             telemetry.update();
 
         }
-    }
     private void stopAllMotors(){
         drivetrainControl(0,0,0);
     }
