@@ -150,9 +150,17 @@ public class BasicOmniOpMode_Linear_Garrett extends LinearOpMode {
 //                pos = myOtos.getPosition();
 //                telemetry.addData("X coord", pos.x);
 //                telemetry.addData("Y coordinate", pos.y);
-//                telemetry.update();
 //            }
 //            stopAllMotors();
+        while ((pos.h < 130) && opModeIsActive()){
+            drivetrainControl(0.2f, 0, -0.5f);
+            pos = myOtos.getPosition();
+            telemetry.addData("X coord", pos.x);
+            telemetry.addData("Y coordinate", pos.y);
+            telemetry.addData("Heading", pos.h);
+            telemetry.update();
+        }
+        stopAllMotors();
 
             // Log the position to the telemetry
             telemetry.addData("X coordinate", pos.x);

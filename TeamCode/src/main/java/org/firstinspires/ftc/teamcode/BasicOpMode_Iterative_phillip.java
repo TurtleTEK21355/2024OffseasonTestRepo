@@ -120,41 +120,26 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
     public void loop() {
         SparkFunOTOS.Pose2D pos;
         pos = myOtos.getPosition();
+        myOtos.setAngularUnit(AngleUnit.RADIANS);
 
-        leftStickY = gamepad1.left_stick_y;
-        leftStickX = gamepad1.left_stick_x;
-        rightStickY = gamepad1.right_stick_y;
-        rightStickX = gamepad1.right_stick_x;
+        double botHeading = myOtos.getPosition().h;
+        double rotX = strafe * Math.cos(-botHeading) - drive * Math.sin(-botHeading);
+        double rotY = strafe * Math.sin(-botHeading) + drive * Math.cos(-botHeading);
 
         drive = -gamepad1.left_stick_y;
-        //turn = gamepad1.right_stick_x;
+        turn = gamepad1.right_stick_x;
         strafe = gamepad1.left_stick_x;
-
         turn = (float) pos.h/100;
-
-        frontLeftStrafe = Range.clip(drive + strafe + turn, -1,1);
-        frontRightStrafe = Range.clip(drive - strafe - turn, -1,1);
-        rearLeftStrafe = Range.clip(drive - strafe + turn, -1,1);
-        rearRightStrafe = Range.clip(drive + strafe - turn, -1,1);
-
+        double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(turn), 1);
+        double frontLeftStrafe = (float) Range.clip(rotY + rotX + turn, -1,1) / denominator;
+        double frontRightStrafe = (float) Range.clip(rotY - rotX - turn, -1,1) / denominator;
+        double rearLeftStrafe = (float) Range.clip(rotY - rotX + turn, -1,1) / denominator;
+        double rearRightStrafe = (float) Range.clip(rotY + rotX - turn, -1,1) / denominator;
 
         frontLeftDrive.setPower(frontLeftStrafe);
         frontRightDrive.setPower(frontRightStrafe);
         rearLeftDrive.setPower(rearLeftStrafe);
         rearRightDrive.setPower(rearRightStrafe);
-
-        if (pos.y < 24){
-            frontLeftDrive.setPower(frontLeftStrafe);
-            frontRightDrive.setPower(frontRightStrafe);
-            rearLeftDrive.setPower(rearLeftStrafe);
-            rearRightDrive.setPower(rearRightStrafe);
-        }
-        else {
-            frontLeftDrive.setPower(0);
-            frontRightDrive.setPower(0);
-            rearLeftDrive.setPower(0);
-            rearRightDrive.setPower(0);
-        }
 
 
         // Reset the tracking if the user requests it
@@ -167,21 +152,6 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
             myOtos.calibrateImu();
         }
 
-        if (gamepad1.b && !gamepad1.start) {
-            if (pos.x < 24) {
-                frontLeftDrive.setPower(0.2);
-                frontRightDrive.setPower(-0.2);
-                rearLeftDrive.setPower(-0.2);
-                rearRightDrive.setPower(0.2);
-            }
-            else {
-                frontLeftDrive.setPower(0);
-                frontRightDrive.setPower(0);
-                rearLeftDrive.setPower(0);
-                rearRightDrive.setPower(0);
-            }
-
-        }
 
         // Inform user of available controls
         telemetry.addLine("Press Y (triangle) on Gamepad to reset tracking");
