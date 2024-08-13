@@ -79,6 +79,8 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
     private float frontRightStrafe;
     private float rearLeftStrafe;
     private float rearRightStrafe;
+    public boolean ToggleDrive = true;
+
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -121,13 +123,12 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         SparkFunOTOS.Pose2D pos;
         pos = myOtos.getPosition();
         myOtos.setAngularUnit(AngleUnit.RADIANS);
-        boolean ToggleDrive = false;
-        boolean PreviousToggleReading = gamepad1.left_bumper;
         double botHeading = myOtos.getPosition().h;
         double rotX = strafe * Math.cos(-botHeading) - drive * Math.sin(-botHeading);
         double rotY = strafe * Math.sin(-botHeading) + drive * Math.cos(-botHeading);
 
-        if (ToggleDrive = true) {
+
+        if (ToggleDrive) {
             drive = -gamepad1.left_stick_y;
             turn = gamepad1.right_stick_x;
             strafe = gamepad1.left_stick_x;
@@ -143,8 +144,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
             rearLeftDrive.setPower(rearLeftStrafe);
             rearRightDrive.setPower(rearRightStrafe);
         }
-
-        if (ToggleDrive = false) {
+        else if(!ToggleDrive){
             drive = -gamepad1.left_stick_y;
             turn = gamepad1.right_stick_x;
             strafe = gamepad1.left_stick_x;
@@ -170,6 +170,9 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
             myOtos.calibrateImu();
         }
 
+        if (gamepad1.left_bumper){
+            ToggleDrive = !ToggleDrive;
+        }
 
         // Inform user of available controls
         telemetry.addLine("Press Y (triangle) on Gamepad to reset tracking");
@@ -180,6 +183,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         telemetry.addData("X coordinate", pos.x);
         telemetry.addData("Y coordinate", pos.y);
         telemetry.addData("Heading angle", pos.h);
+        telemetry.addData("toggle",ToggleDrive);
 
         // Update the telemetry on the driver station
         telemetry.update();
