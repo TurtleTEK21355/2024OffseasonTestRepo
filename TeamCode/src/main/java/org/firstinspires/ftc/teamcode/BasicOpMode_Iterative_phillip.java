@@ -57,7 +57,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  */
 
 @TeleOp(name="Basic: Iterative OpMode Phillip", group="Iterative OpMode")
-public class BasicOpMode_Iterative_phillip extends OpMode {
+public class  BasicOpMode_Iterative_phillip extends OpMode {
     // Declare OpMode members.
     SparkFunOTOS myOtos;
     private DcMotor frontLeftDrive = null;
