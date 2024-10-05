@@ -36,6 +36,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorImpl;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -80,6 +81,8 @@ public class  BasicOpMode_Iterative_phillip extends OpMode {
     private float rearLeftStrafe;
     private float rearRightStrafe;
     public boolean ToggleDrive = true;
+    NormalizedColorSensor colorSensor;
+
 
 
     /*
@@ -100,6 +103,8 @@ public class  BasicOpMode_Iterative_phillip extends OpMode {
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        colorSensor = hardwareMap.get(NormalizedColorSensor.class, "colorSensor");
+        colorSensor.setGain(2.5f);
         configureOtos();
     }
 
@@ -184,6 +189,29 @@ public class  BasicOpMode_Iterative_phillip extends OpMode {
         telemetry.addData("Y coordinate", pos.y);
         telemetry.addData("Heading angle", pos.h);
         telemetry.addData("toggle",ToggleDrive);
+
+        telemetry.addData("Colors?", String.format("Red %.3f Green %.3f Blue %.3f",
+                colorSensor.getNormalizedColors().red,
+                colorSensor.getNormalizedColors().green,
+                colorSensor.getNormalizedColors().blue)
+        );
+        if (colorSensor.getNormalizedColors().green > colorSensor.getNormalizedColors().red &&
+            colorSensor.getNormalizedColors().red > colorSensor.getNormalizedColors().blue){
+                telemetry.addLine("Yellow");
+        }
+        else if (colorSensor.getNormalizedColors().red > colorSensor.getNormalizedColors().green &&
+                colorSensor.getNormalizedColors().green > colorSensor.getNormalizedColors().blue){
+            telemetry.addLine("Red");
+        }
+        else if (colorSensor.getNormalizedColors().blue > colorSensor.getNormalizedColors().green &&
+                colorSensor.getNormalizedColors().green > colorSensor.getNormalizedColors().red){
+            telemetry.addLine("blue");
+        }
+        else {
+            telemetry.addLine("womp womp");
+        }
+        telemetry.addData("Alpha", "%.3f", colorSensor.getNormalizedColors().alpha);
+
 
         // Update the telemetry on the driver station
         telemetry.update();
