@@ -31,12 +31,9 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -70,8 +67,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name="BasketSideRedAuto", group="Linear OpMode")
-public class BasketSideRedAuto extends LinearOpMode {
+@Autonomous(name="BasketSideBlueAuto", group="Linear OpMode")
+public class BasketSideBlueAuto extends LinearOpMode {
     // Declare OpMode members.
     SparkFunOTOS myOtos;
     private DcMotor frontLeftDrive = null;
@@ -110,10 +107,10 @@ public class BasketSideRedAuto extends LinearOpMode {
         configureOtos();
         waitForStart();
 
-        SparkFunOTOS.Pose2D pos;
-        myOtos.resetTracking();
-        pos = myOtos.getPosition();
-        //Start at the junction of tiles 2 and 3, facing towards the top white spike mark.
+            SparkFunOTOS.Pose2D pos;
+            myOtos.resetTracking();
+            pos = myOtos.getPosition();
+            //Start at the junction of tiles 2 and 3, facing towards the top white spike mark.
         while (pos.y < 22 && opModeIsActive()) {
             drivetrainControl(0.3f, 0, 0);
             pos = myOtos.getPosition();
