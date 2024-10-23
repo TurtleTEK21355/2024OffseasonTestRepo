@@ -90,7 +90,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         rightViperSlide = hardwareMap.get(DcMotor.class, "right_viper_slide");
         grabberServo = hardwareMap.get(Servo.class, "grabber_servo");
         grabberHingeServo = hardwareMap.get(Servo.class, "grabber_hinge_servo");
-        linearActuatorServo = hardwareMap.get(Servo.class, "linear_actuator_servo");
+        linearActuatorServo = hardwareMap.get(CRServo.class, "linear_actuator_servo");
         frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         rearLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -153,7 +153,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
             grabberHingeServo.setPosition(grabberHingeServo.getPosition()-0.1);
         }
         else{
-            grabberHingeServo.setPosition(grabberHingeServo.getPosition())
+            grabberHingeServo.setPosition(grabberHingeServo.getPosition());
         }
 
         if(gamepad1.a){
