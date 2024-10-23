@@ -113,8 +113,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         SparkFunOTOS.Pose2D pos;
         myOtos.resetTracking();
         pos = myOtos.getPosition();
-        //Start at the junction of tiles 2 and 3, facing towards the top white spike mark.
-        while (pos.y < 22 && opModeIsActive()) {
+        while (pos.y < 2 && opModeIsActive()) {
             drivetrainControl(0.3f, 0, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -126,8 +125,28 @@ public class BasketSideRedAuto extends LinearOpMode {
         }
         stopAllMotors();
         myOtos.resetTracking();
+        while (pos.x > -8 && opModeIsActive()) {
+            drivetrainControl(0, -0.3f, 0);
+            pos = myOtos.getPosition();
+            telemetry.addData("X coord", pos.x);
+            telemetry.addData("Y coordinate", pos.y);
+            telemetry.addData("Heading", pos.h);
+            telemetry.update();
+        }
+        stopAllMotors();
+        myOtos.resetTracking();
+        while (pos.y < 16 && opModeIsActive()) {
+            drivetrainControl(0.3f, 0, 0);
+            pos = myOtos.getPosition();
+            telemetry.addData("X coord", pos.x);
+            telemetry.addData("Y coordinate", pos.y);
+            telemetry.addData("Heading", pos.h);
+            telemetry.update();
+        }
+        stopAllMotors();
+        myOtos.resetTracking();
         //TODO: Intake the sample
-        while (pos.y > -7 && opModeIsActive()) {
+        while (pos.y > -9 && opModeIsActive()) {
             drivetrainControl(-0.3f, 0, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -161,7 +180,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         myOtos.calibrateImu();
 
         //TODO: Place in the bucket
-        while (pos.h > -129 && opModeIsActive()) {
+        while (pos.h > -138 && opModeIsActive()) {
             drivetrainControl(0, 0, 0.3f);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -194,7 +213,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         myOtos.resetTracking();
         myOtos.calibrateImu();
         //TODO: Place the sample in a bucket
-        while (pos.h < 127.5 && opModeIsActive()) {
+        while (pos.h < 135 && opModeIsActive()) {
             drivetrainControl(0, 0, -0.3f);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -204,8 +223,10 @@ public class BasketSideRedAuto extends LinearOpMode {
         }
         stopAllMotors();
         myOtos.resetTracking();
-        while (pos.y > -10 && opModeIsActive()) {
-            drivetrainControl(-0.3f, 0, 0);
+        myOtos.calibrateImu();
+
+        while (pos.y > -25 && opModeIsActive()) {
+            drivetrainControl(-0.3f, 0.1f, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
             telemetry.addData("Y coordinate", pos.y);
@@ -213,69 +234,7 @@ public class BasketSideRedAuto extends LinearOpMode {
             telemetry.update();
         }
         stopAllMotors();
-        myOtos.resetTracking();
-        telemetry.update();
-        while (pos.h > -75 && opModeIsActive()) {
-            drivetrainControl(0, 0, 0.3f);
-            pos = myOtos.getPosition();
-            telemetry.addData("X coord", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
-            telemetry.addData("Heading", pos.h);
-            telemetry.update();
-        }
-        stopAllMotors();
-        myOtos.resetTracking();
-//        pos = myOtos.getPosition();
-        telemetry.addData("Y VALUE", pos.y);
-        telemetry.update();
-        sleep(500);
-        while (pos.y < 9 && opModeIsActive()) {
-            drivetrainControl(0.3f, 0, 0);
-            pos = myOtos.getPosition();
-            telemetry.addData("X coord", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
-            telemetry.addData("Heading", pos.h);
-            telemetry.update();
-        }
-        stopAllMotors();
-        myOtos.resetTracking();
-        while (pos.y > -16 && opModeIsActive()) {
-            drivetrainControl(-0.3f, 0, 0);
-            pos = myOtos.getPosition();
-            telemetry.addData("X coord", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
-            telemetry.addData("Heading", pos.h);
-            telemetry.update();
-        }
-        stopAllMotors();
-        myOtos.resetTracking();
-        while (pos.h < 75 && opModeIsActive()) {
-            drivetrainControl(0, 0, -0.3f);
-            pos = myOtos.getPosition();
-            telemetry.addData("X coord", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
-            telemetry.addData("Heading", pos.h);
-            telemetry.update();
-        }
-        stopAllMotors();
-        myOtos.resetTracking();
-        while (pos.y < 9 && opModeIsActive()) {
-            drivetrainControl(0.3f, 0, 0);
-            pos = myOtos.getPosition();
-            telemetry.addData("X coord", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
-            telemetry.addData("Heading", pos.h);
-            telemetry.update();
-        }
-        while (pos.y > -16 && opModeIsActive()) {
-            drivetrainControl(-0.3f, 0, 0);
-            pos = myOtos.getPosition();
-            telemetry.addData("X coord", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
-            telemetry.addData("Heading", pos.h);
-            telemetry.update();
-        }
-        stopAllMotors();
+
     }
     private void stopAllMotors(){
         drivetrainControl(0,0,0);
