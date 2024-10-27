@@ -78,10 +78,10 @@ public class BasketSideRedAuto extends LinearOpMode {
     private DcMotor frontRightDrive = null;
     private DcMotor rearLeftDrive = null;
     private DcMotor rearRightDrive = null;
-    private float leftStickY = 0;
-    private float leftStickX = 0;
-    private float rightStickY = 0;
-    private float rightStickX = 0;
+    private final float leftStickY = 0;
+    private final float leftStickX = 0;
+    private final float rightStickY = 0;
+    private final float rightStickX = 0;
     private float leftDrive;
     private float rightDrive;
     private float leftDriveStrafe;
@@ -226,7 +226,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         myOtos.calibrateImu();
 
         while (pos.y > -25 && opModeIsActive()) {
-            drivetrainControl(-0.3f, 0.1f, 0);
+            drivetrainControl(-0.3f, 0f, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
             telemetry.addData("Y coordinate", pos.y);
