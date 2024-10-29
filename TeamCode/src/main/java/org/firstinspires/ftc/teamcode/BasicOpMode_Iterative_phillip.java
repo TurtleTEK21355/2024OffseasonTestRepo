@@ -136,13 +136,14 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         float drive = -gamepad1.left_stick_y;
         float turn = gamepad1.right_stick_x;
         float strafe = gamepad1.left_stick_x;
-        float viper = gamepad1.right_stick_y;
+        float viper = gamepad2.left_stick_y;
+        float linear = gamepad2.right_stick_y;
 
-        if(gamepad1.right_trigger>0f){
+        if(gamepad1.right_trigger>0.1){
             //open claw
             grabberServo.setPosition(0.5);
         }
-        if(gamepad1.left_trigger>0f){
+        if(gamepad1.left_trigger>0.1){
             //close claw
             grabberServo.setPosition(0.9);
         }
@@ -156,7 +157,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
             grabberHingeServo.setPosition(grabberHingeServo.getPosition());
         }
 
-        if(gamepad1.a){
+        /*if(gamepad1.a){
             linearActuatorServo.setPower(-1);
         }
         else if(gamepad1.b){
@@ -164,7 +165,8 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         }
         else{
             linearActuatorServo.setPower(0);
-        }
+        }*/
+
 
 
 
@@ -180,6 +182,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         rearRightDrive.setPower(rearRightStrafe);
         leftViperSlide.setPower(viper);
         rightViperSlide.setPower(viper);
+        linearActuatorServo.setPower(linear);
 
         // Reset the tracking if the user requests it
         if (gamepad1.y) {
@@ -200,7 +203,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         // Log the position to the telemetry
         telemetry.addData("X coordinate", pos.x);
         telemetry.addData("Y coordinate", pos.y);
-        telemetry.addData("Heading angle", pos.h);
+        telemetry.addData("Heading angle" , pos.h);
 
         // Update the telemetry on the driver station
         telemetry.update();
