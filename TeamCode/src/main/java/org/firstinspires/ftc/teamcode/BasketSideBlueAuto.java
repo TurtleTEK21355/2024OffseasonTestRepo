@@ -32,8 +32,10 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -75,6 +77,11 @@ public class BasketSideBlueAuto extends LinearOpMode {
     private DcMotor frontRightDrive = null;
     private DcMotor rearLeftDrive = null;
     private DcMotor rearRightDrive = null;
+    private DcMotor leftViperSlide = null;
+    private DcMotor rightViperSlide = null;
+    private Servo grabberServo = null;
+    private Servo grabberHingeServo = null;
+    private CRServo linearActuatorServo = null;
     private final float leftStickY = 0;
     private final float leftStickX = 0;
     private final float rightStickY = 0;
@@ -95,6 +102,11 @@ public class BasketSideBlueAuto extends LinearOpMode {
         frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
         rearLeftDrive = hardwareMap.get(DcMotor.class, "rear_left_drive");
         rearRightDrive = hardwareMap.get(DcMotor.class, "rear_right_drive");
+        leftViperSlide = hardwareMap.get(DcMotor.class, "left_viper_slide");
+        rightViperSlide = hardwareMap.get(DcMotor.class, "right_viper_slide");
+        grabberServo = hardwareMap.get(Servo.class, "grabber_servo");
+        grabberHingeServo = hardwareMap.get(Servo.class, "grabber_hinge_servo");
+        linearActuatorServo = hardwareMap.get(CRServo.class, "linear_actuator_servo");
         frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         rearLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
