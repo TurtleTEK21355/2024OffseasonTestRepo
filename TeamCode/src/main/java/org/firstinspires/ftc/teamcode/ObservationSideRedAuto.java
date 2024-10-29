@@ -75,10 +75,10 @@ public class ObservationSideRedAuto extends LinearOpMode {
     private DcMotor frontRightDrive = null;
     private DcMotor rearLeftDrive = null;
     private DcMotor rearRightDrive = null;
-    private float leftStickY = 0;
-    private float leftStickX = 0;
-    private float rightStickY = 0;
-    private float rightStickX = 0;
+    private final float leftStickY = 0;
+    private final float leftStickX = 0;
+    private final float rightStickY = 0;
+    private final float rightStickX = 0;
     private float leftDrive;
     private float rightDrive;
     private float leftDriveStrafe;

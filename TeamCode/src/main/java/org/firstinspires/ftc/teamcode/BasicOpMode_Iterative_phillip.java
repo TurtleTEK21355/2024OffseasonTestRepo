@@ -33,10 +33,11 @@ import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorImpl;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -58,32 +59,22 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  */
 
 @TeleOp(name="Basic: Iterative OpMode Phillip", group="Iterative OpMode")
-public class  BasicOpMode_Iterative_phillip extends OpMode {
+public class BasicOpMode_Iterative_phillip extends OpMode {
     // Declare OpMode members.
     SparkFunOTOS myOtos;
     private DcMotor frontLeftDrive = null;
     private DcMotor frontRightDrive = null;
     private DcMotor rearLeftDrive = null;
     private DcMotor rearRightDrive = null;
-    private float leftStickY = 0;
-    private float leftStickX = 0;
-    private float rightStickY = 0;
-    private float rightStickX = 0;
+    private DcMotor leftViperSlide = null;
+    private DcMotor rightViperSlide = null;
+    private Servo grabberServo = null;
+    private Servo grabberHingeServo = null;
+    private CRServo linearActuatorServo = null;
     private float leftDrive;
     private float rightDrive;
-    private float drive;
-    private float turn;
-    private float strafe;
     private float leftDriveStrafe;
     private float rightDriveStrafe;
-    private float frontLeftStrafe;
-    private float frontRightStrafe;
-    private float rearLeftStrafe;
-    private float rearRightStrafe;
-    public boolean ToggleDrive = true;
-    NormalizedColorSensor colorSensor;
-
-
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -95,16 +86,24 @@ public class  BasicOpMode_Iterative_phillip extends OpMode {
         frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
         rearLeftDrive = hardwareMap.get(DcMotor.class, "rear_left_drive");
         rearRightDrive = hardwareMap.get(DcMotor.class, "rear_right_drive");
+        leftViperSlide = hardwareMap.get(DcMotor.class, "left_viper_slide");
+        rightViperSlide = hardwareMap.get(DcMotor.class, "right_viper_slide");
+        grabberServo = hardwareMap.get(Servo.class, "grabber_servo");
+        grabberHingeServo = hardwareMap.get(Servo.class, "grabber_hinge_servo");
+        linearActuatorServo = hardwareMap.get(CRServo.class, "linear_actuator_servo");
         frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         rearLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         rearRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftViperSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightViperSlide.setDirection(DcMotorSimple.Direction.FORWARD);
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        colorSensor = hardwareMap.get(NormalizedColorSensor.class, "colorSensor");
-        colorSensor.setGain(2.5f);
+        leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        grabberServo.setPosition(0);
         configureOtos();
     }
 
@@ -127,43 +126,63 @@ public class  BasicOpMode_Iterative_phillip extends OpMode {
     public void loop() {
         SparkFunOTOS.Pose2D pos;
         pos = myOtos.getPosition();
-        myOtos.setAngularUnit(AngleUnit.RADIANS);
-        double botHeading = myOtos.getPosition().h;
-        double rotX = strafe * Math.cos(-botHeading) - drive * Math.sin(-botHeading);
-        double rotY = strafe * Math.sin(-botHeading) + drive * Math.cos(-botHeading);
 
+        /*float leftStickY = gamepad1.left_stick_y;
+        float leftStickX = gamepad1.left_stick_x;
+        float rightStickY = gamepad1.right_stick_y;
+        float rightStickX = gamepad1.right_stick_x;
+         */
 
-        if (ToggleDrive) {
-            drive = -gamepad1.left_stick_y;
-            turn = gamepad1.right_stick_x;
-            strafe = gamepad1.left_stick_x;
+        float drive = -gamepad1.left_stick_y;
+        float turn = gamepad1.right_stick_x;
+        float strafe = gamepad1.left_stick_x;
+        float viper = gamepad2.left_stick_y;
+        float linear = gamepad2.right_stick_y;
 
-            double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(turn), 1);
-            double frontLeftStrafe = (float) Range.clip(rotY + rotX + turn, -1, 1) / denominator;
-            double frontRightStrafe = (float) Range.clip(rotY - rotX - turn, -1, 1) / denominator;
-            double rearLeftStrafe = (float) Range.clip(rotY - rotX + turn, -1, 1) / denominator;
-            double rearRightStrafe = (float) Range.clip(rotY + rotX - turn, -1, 1) / denominator;
-
-            frontLeftDrive.setPower(frontLeftStrafe);
-            frontRightDrive.setPower(frontRightStrafe);
-            rearLeftDrive.setPower(rearLeftStrafe);
-            rearRightDrive.setPower(rearRightStrafe);
+        if(gamepad1.right_trigger>0.1){
+            //open claw
+            grabberServo.setPosition(0.5);
         }
-        else if(!ToggleDrive){
-            drive = -gamepad1.left_stick_y;
-            turn = gamepad1.right_stick_x;
-            strafe = gamepad1.left_stick_x;
-
-            double frontLeftStrafe = (float) Range.clip(drive + strafe + turn, -1, 1);
-            double frontRightStrafe = (float) Range.clip(drive - strafe - turn, -1, 1);
-            double rearLeftStrafe = (float) Range.clip(drive - strafe + turn, -1, 1);
-            double rearRightStrafe = (float) Range.clip(drive + strafe - turn, -1, 1);
-
-            frontLeftDrive.setPower(frontLeftStrafe);
-            frontRightDrive.setPower(frontRightStrafe);
-            rearLeftDrive.setPower(rearLeftStrafe);
-            rearRightDrive.setPower(rearRightStrafe);
+        if(gamepad1.left_trigger>0.1){
+            //close claw
+            grabberServo.setPosition(0.9);
         }
+        if(gamepad2.left_bumper){
+            grabberHingeServo.setPosition(grabberHingeServo.getPosition()+0.1);
+        }
+        else if(gamepad2.right_bumper){
+            grabberHingeServo.setPosition(grabberHingeServo.getPosition()-0.1);
+        }
+        else{
+            grabberHingeServo.setPosition(grabberHingeServo.getPosition());
+        }
+
+        /*if(gamepad1.a){
+            linearActuatorServo.setPower(-1);
+        }
+        else if(gamepad1.b){
+            linearActuatorServo.setPower(1);
+        }
+        else{
+            linearActuatorServo.setPower(0);
+        }*/
+
+
+
+
+        float frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
+        float frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
+        float rearLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
+        float rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
+
+
+        frontLeftDrive.setPower(frontLeftStrafe);
+        frontRightDrive.setPower(frontRightStrafe);
+        rearLeftDrive.setPower(rearLeftStrafe);
+        rearRightDrive.setPower(rearRightStrafe);
+        leftViperSlide.setPower(viper);
+        rightViperSlide.setPower(viper);
+        linearActuatorServo.setPower(linear);
 
         // Reset the tracking if the user requests it
         if (gamepad1.y) {
@@ -175,9 +194,6 @@ public class  BasicOpMode_Iterative_phillip extends OpMode {
             myOtos.calibrateImu();
         }
 
-        if (gamepad1.left_bumper){
-            ToggleDrive = !ToggleDrive;
-        }
 
         // Inform user of available controls
         telemetry.addLine("Press Y (triangle) on Gamepad to reset tracking");
@@ -187,31 +203,7 @@ public class  BasicOpMode_Iterative_phillip extends OpMode {
         // Log the position to the telemetry
         telemetry.addData("X coordinate", pos.x);
         telemetry.addData("Y coordinate", pos.y);
-        telemetry.addData("Heading angle", pos.h);
-        telemetry.addData("toggle",ToggleDrive);
-
-        telemetry.addData("Colors?", String.format("Red %.3f Green %.3f Blue %.3f",
-                colorSensor.getNormalizedColors().red,
-                colorSensor.getNormalizedColors().green,
-                colorSensor.getNormalizedColors().blue)
-        );
-        if (colorSensor.getNormalizedColors().green > colorSensor.getNormalizedColors().red &&
-            colorSensor.getNormalizedColors().red > colorSensor.getNormalizedColors().blue){
-                telemetry.addLine("Yellow");
-        }
-        else if (colorSensor.getNormalizedColors().red > colorSensor.getNormalizedColors().green &&
-                colorSensor.getNormalizedColors().green > colorSensor.getNormalizedColors().blue){
-            telemetry.addLine("Red");
-        }
-        else if (colorSensor.getNormalizedColors().blue > colorSensor.getNormalizedColors().green &&
-                colorSensor.getNormalizedColors().green > colorSensor.getNormalizedColors().red){
-            telemetry.addLine("blue");
-        }
-        else {
-            telemetry.addLine("womp womp");
-        }
-        telemetry.addData("Alpha", "%.3f", colorSensor.getNormalizedColors().alpha);
-
+        telemetry.addData("Heading angle" , pos.h);
 
         // Update the telemetry on the driver station
         telemetry.update();

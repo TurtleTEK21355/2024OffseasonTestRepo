@@ -29,14 +29,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class SensorSparkFunOTOS extends LinearOpMode {
     // Create an instance of the sensor
     SparkFunOTOS myOtos;
-    private DcMotor frontLeftDrive = null;
-    private DcMotor frontRightDrive = null;
-    private DcMotor rearLeftDrive = null;
-    private DcMotor rearRightDrive = null;
-    private float leftStickY = 0;
-    private float leftStickX = 0;
-    private float rightStickY = 0;
-    private float rightStickX = 0;
+    private final DcMotor frontLeftDrive = null;
+    private final DcMotor frontRightDrive = null;
+    private final DcMotor rearLeftDrive = null;
+    private final DcMotor rearRightDrive = null;
+    private final float leftStickY = 0;
+    private final float leftStickX = 0;
+    private final float rightStickY = 0;
+    private final float rightStickX = 0;
     private float leftDrive;
     private float rightDrive;
     private float drive;
