@@ -147,10 +147,10 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
             //close claw
             grabberServo.setPosition(0.9);
         }
-        if(gamepad1.left_bumper){
+        if(gamepad2.left_bumper){
             grabberHingeServo.setPosition(grabberHingeServo.getPosition()+0.1);
         }
-        else if(gamepad1.right_bumper){
+        else if(gamepad2.right_bumper){
             grabberHingeServo.setPosition(grabberHingeServo.getPosition()-0.1);
         }
         else{
