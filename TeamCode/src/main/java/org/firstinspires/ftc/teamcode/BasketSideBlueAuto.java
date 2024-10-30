@@ -32,8 +32,10 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -75,6 +77,11 @@ public class BasketSideBlueAuto extends LinearOpMode {
     private DcMotor frontRightDrive = null;
     private DcMotor rearLeftDrive = null;
     private DcMotor rearRightDrive = null;
+    private DcMotor leftViperSlide = null;
+    private DcMotor rightViperSlide = null;
+    private Servo grabberServo = null;
+    private Servo grabberHingeServo = null;
+    private CRServo linearActuatorServo = null;
     private final float leftStickY = 0;
     private final float leftStickX = 0;
     private final float rightStickY = 0;
@@ -95,6 +102,11 @@ public class BasketSideBlueAuto extends LinearOpMode {
         frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
         rearLeftDrive = hardwareMap.get(DcMotor.class, "rear_left_drive");
         rearRightDrive = hardwareMap.get(DcMotor.class, "rear_right_drive");
+        leftViperSlide = hardwareMap.get(DcMotor.class, "left_viper_slide");
+        rightViperSlide = hardwareMap.get(DcMotor.class, "right_viper_slide");
+        grabberServo = hardwareMap.get(Servo.class, "grabber_servo");
+        grabberHingeServo = hardwareMap.get(Servo.class, "grabber_hinge_servo");
+        linearActuatorServo = hardwareMap.get(CRServo.class, "linear_actuator_servo");
         frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         rearLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -110,6 +122,7 @@ public class BasketSideBlueAuto extends LinearOpMode {
         SparkFunOTOS.Pose2D pos;
         myOtos.resetTracking();
         pos = myOtos.getPosition();
+        // Drive away from the wall
         while (pos.y < 2 && opModeIsActive()) {
             drivetrainControl(0.3f, 0, 0);
             pos = myOtos.getPosition();
@@ -117,11 +130,10 @@ public class BasketSideBlueAuto extends LinearOpMode {
             telemetry.addData("Y coordinate", pos.y);
             telemetry.addData("Heading", pos.h);
             telemetry.update();
-            //Why is this here????
-            //myOtos.getPosition();
         }
         stopAllMotors();
         myOtos.resetTracking();
+        // Strafe to be in line with the farthest spike mark from the wall
         while (pos.x > -8 && opModeIsActive()) {
             drivetrainControl(0, -0.3f, 0);
             pos = myOtos.getPosition();
@@ -132,6 +144,7 @@ public class BasketSideBlueAuto extends LinearOpMode {
         }
         stopAllMotors();
         myOtos.resetTracking();
+        // Drive towards the spike mark
         while (pos.y < 16 && opModeIsActive()) {
             drivetrainControl(0.3f, 0, 0);
             pos = myOtos.getPosition();
@@ -143,6 +156,8 @@ public class BasketSideBlueAuto extends LinearOpMode {
         stopAllMotors();
         myOtos.resetTracking();
         //TODO: Intake the sample
+
+        // Drive away from the spike mark
         while (pos.y > -9 && opModeIsActive()) {
             drivetrainControl(-0.3f, 0, 0);
             pos = myOtos.getPosition();
@@ -155,6 +170,7 @@ public class BasketSideBlueAuto extends LinearOpMode {
         }
         stopAllMotors();
         myOtos.resetTracking();
+        //Turn towards the basket
         while (pos.h < 135 && opModeIsActive()) {
             drivetrainControl(0, 0, -0.3f); //unsure as to turning direction
             pos = myOtos.getPosition();
@@ -162,9 +178,10 @@ public class BasketSideBlueAuto extends LinearOpMode {
             telemetry.addData("Y coordinate", pos.y);
             telemetry.addData("Heading", pos.h);
             telemetry.update();
-        }        //Above value will only be 25 if we have a robot that grabs samples and places them on opposite sides. Otherwise, we will have to turn 75 degrees.
+        }
         stopAllMotors();
         myOtos.resetTracking();
+        //Drive towards the basket
         while (pos.y < 9 && opModeIsActive()) {
             drivetrainControl(0.3f, 0, 0);
             pos = myOtos.getPosition();
@@ -175,8 +192,9 @@ public class BasketSideBlueAuto extends LinearOpMode {
         stopAllMotors();
         myOtos.resetTracking();
         myOtos.calibrateImu();
-
         //TODO: Place in the bucket
+
+        // Turn away from the baskets, towards the second spike mark
         while (pos.h > -138 && opModeIsActive()) {
             drivetrainControl(0, 0, 0.3f);
             pos = myOtos.getPosition();
@@ -185,7 +203,7 @@ public class BasketSideBlueAuto extends LinearOpMode {
             telemetry.addData("Heading", pos.h);
             telemetry.update();
         }
-        //Above value will only be -25 if we have a robot that grabs samples and places them on opposite sides. Otherwise, we will have to turn -75 degrees.
+        // Drive away from the baskets
         while (pos.y > -10 && opModeIsActive()) {
             drivetrainControl(0.3f, 0, 0);
             pos = myOtos.getPosition();
@@ -196,8 +214,7 @@ public class BasketSideBlueAuto extends LinearOpMode {
         }
         stopAllMotors();
         myOtos.resetTracking();
-
-        //TODO: Intake the sample
+        // Drive towards the second spike mark
         while (pos.y > -16 && opModeIsActive()) {
             drivetrainControl(-0.3f, 0, 0);
             pos = myOtos.getPosition();
@@ -209,7 +226,8 @@ public class BasketSideBlueAuto extends LinearOpMode {
         stopAllMotors();
         myOtos.resetTracking();
         myOtos.calibrateImu();
-        //TODO: Place the sample in a bucket
+        //TODO: Intake Sample from spike mark
+        //Turn towards basket
         while (pos.h < 135 && opModeIsActive()) {
             drivetrainControl(0, 0, -0.3f);
             pos = myOtos.getPosition();
@@ -221,7 +239,9 @@ public class BasketSideBlueAuto extends LinearOpMode {
         stopAllMotors();
         myOtos.resetTracking();
         myOtos.calibrateImu();
+        //TODO: Place sample in the bucket
 
+        //Drive to the ascent zone
         while (pos.y > -25 && opModeIsActive()) {
             drivetrainControl(-0.3f, 0.1f, 0);
             pos = myOtos.getPosition();
