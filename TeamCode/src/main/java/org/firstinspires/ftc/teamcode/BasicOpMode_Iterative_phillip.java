@@ -103,7 +103,8 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        grabberServo.setPosition(0);
+        grabberServo.setPosition(1);
+        grabberHingeServo.setPosition(1);
         configureOtos();
     }
 
