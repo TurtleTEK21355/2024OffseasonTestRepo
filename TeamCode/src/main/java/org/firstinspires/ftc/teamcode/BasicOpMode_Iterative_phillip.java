@@ -103,7 +103,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        grabberServo.setPosition(0);
+        grabberServo.setPosition(0.93);
         configureOtos();
     }
 
@@ -133,25 +133,39 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         float rightStickX = gamepad1.right_stick_x;
          */
 
-        float drive = -gamepad1.left_stick_y;
-        float turn = gamepad1.right_stick_x;
-        float strafe = gamepad1.left_stick_x;
-        float viper = gamepad2.left_stick_y;
-        float linear = gamepad2.right_stick_y;
+//        double y = -gamepad1.left_stick_y;
+//        double x = gamepad1.left_stick_x;
+//        double r = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
+//        double theta = Math.atan2(y,x);
+//        double correctedTheta = theta - myOtos.getPosition().h;
+//        double rotY = r * Math.sin(correctedTheta);
+//        double rotX = r * Math.cos(correctedTheta);
+//
+//        double drive =  rotY;
+//        double strafe = rotX;
+//        double turn = gamepad1.right_stick_x;
+//
+        double drive = -gamepad1.left_stick_y;
+        double turn = gamepad1.right_stick_x;
+        double strafe = gamepad1.left_stick_x;
 
-        if(gamepad1.right_trigger>0.1){
+        double viper = gamepad2.left_stick_y;
+        double linear = -gamepad2.right_stick_y;
+
+
+        if(gamepad1.right_trigger>0.1 || gamepad2.right_trigger>0.1){
             //open claw
-            grabberServo.setPosition(0.5);
+            grabberServo.setPosition(0.55);
         }
-        if(gamepad1.left_trigger>0.1){
+        if(gamepad1.left_trigger>0.1 || gamepad2.left_trigger>0.1){
             //close claw
-            grabberServo.setPosition(0.9);
+            grabberServo.setPosition(0.93);
         }
         if(gamepad2.left_bumper){
-            grabberHingeServo.setPosition(grabberHingeServo.getPosition()+0.1);
+            grabberHingeServo.setPosition(grabberHingeServo.getPosition()+0.025);
         }
         else if(gamepad2.right_bumper){
-            grabberHingeServo.setPosition(grabberHingeServo.getPosition()-0.1);
+            grabberHingeServo.setPosition(grabberHingeServo.getPosition()-0.025);
         }
         else{
             grabberHingeServo.setPosition(grabberHingeServo.getPosition());
@@ -170,10 +184,10 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
 
 
 
-        float frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
-        float frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
-        float rearLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
-        float rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
+        double frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
+        double frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
+        double rearLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
+        double rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
 
 
         frontLeftDrive.setPower(frontLeftStrafe);
