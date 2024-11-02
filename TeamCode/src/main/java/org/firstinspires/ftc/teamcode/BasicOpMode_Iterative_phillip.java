@@ -104,6 +104,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         grabberServo.setPosition(0.93);
+        grabberHingeServo.setPosition(1);
 
         configureOtos();
     }
@@ -145,7 +146,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
 //        double drive =  rotY;
 //        double strafe = rotX;
 //        double turn = gamepad1.right_stick_x;
-//
+
         double drive = -gamepad1.left_stick_y;
         double turn = gamepad1.right_stick_x;
         double strafe = gamepad1.left_stick_x;
