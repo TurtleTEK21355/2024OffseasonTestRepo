@@ -71,10 +71,6 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
     private Servo grabberServo = null;
     private Servo grabberHingeServo = null;
     private CRServo linearActuatorServo = null;
-    private float leftDrive;
-    private float rightDrive;
-    private float leftDriveStrafe;
-    private float rightDriveStrafe;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -129,27 +125,20 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         SparkFunOTOS.Pose2D pos;
         pos = myOtos.getPosition();
 
-        /*float leftStickY = gamepad1.left_stick_y;
-        float leftStickX = gamepad1.left_stick_x;
-        float rightStickY = gamepad1.right_stick_y;
-        float rightStickX = gamepad1.right_stick_x;
-         */
 
-//        double y = -gamepad1.left_stick_y;
-//        double x = gamepad1.left_stick_x;
-//        double r = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
-//        double theta = Math.atan2(y,x);
-//        double correctedTheta = theta - myOtos.getPosition().h;
-//        double rotY = r * Math.sin(correctedTheta);
-//        double rotX = r * Math.cos(correctedTheta);
-//
-//        double drive =  rotY;
-//        double strafe = rotX;
-//        double turn = gamepad1.right_stick_x;
+        double y = -gamepad1.left_stick_y;
+        double x = gamepad1.left_stick_x;
+        double r = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
+        double theta = Math.atan2(y,x);
+        double correctedTheta = theta - myOtos.getPosition().h;
+        double rotY = r * Math.sin(correctedTheta);
+        double rotX = r * Math.cos(correctedTheta);
 
-        double drive = -gamepad1.left_stick_y;
+
+
+        double drive =  rotY;
+        double strafe = rotX;
         double turn = gamepad1.right_stick_x;
-        double strafe = gamepad1.left_stick_x;
 
         double viper = gamepad2.left_stick_y;
         double linear = -gamepad2.right_stick_y;
@@ -173,7 +162,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
             grabberHingeServo.setPosition(grabberHingeServo.getPosition());
         }
 
-        /*if(gamepad1.a){
+        if(gamepad1.a){
             linearActuatorServo.setPower(-1);
         }
         else if(gamepad1.b){
@@ -181,7 +170,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         }
         else{
             linearActuatorServo.setPower(0);
-        }*/
+        }
 
 
 
@@ -245,7 +234,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         // myOtos.setLinearUnit(DistanceUnit.METER);
         myOtos.setLinearUnit(DistanceUnit.INCH);
         // myOtos.setAngularUnit(AnguleUnit.RADIANS);
-        myOtos.setAngularUnit(AngleUnit.DEGREES);
+        myOtos.setAngularUnit(AngleUnit.RADIANS);
 
         // Assuming you've mounted your sensor to a robot and it's not centered,
         // you can specify the offset for the sensor relative to the center of the
