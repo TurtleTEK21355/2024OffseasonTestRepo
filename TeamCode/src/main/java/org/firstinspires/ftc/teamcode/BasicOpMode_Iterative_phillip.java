@@ -76,9 +76,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
     private float leftDriveStrafe;
     private float rightDriveStrafe;
 
-    /*
-     * Code to run ONCE when the driver hits INIT
-     */
+
     @Override
     public void init() {
         myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
@@ -103,87 +101,68 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        grabberServo.setPosition(1);
-        grabberHingeServo.setPosition(1);
+        grabberServo.setPosition(0);
+        grabberHingeServo.setPosition(0);
         configureOtos();
     }
 
-    /*
-     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
-     */
-    @Override
-    public void init_loop() {
 
+
+    private void move_viper_slide() {
+        leftViperSlide.setPower(gamepad2.left_stick_y);
+        rightViperSlide.setPower(gamepad2.left_stick_y);
     }
 
-    /*
-     * Code to run ONCE when the driver hits PLAY
-     */
+    private void move_grabber_hinge() {
+        if(gamepad2.dpad_down){
+            grabberHingeServo.setPosition(0.5);
+        }
+        else if(gamepad2.dpad_up){
+            grabberHingeServo.setPosition(1);
+        }
 
-    /*
-     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
-     */
-    @Override
-    public void loop() {
-        SparkFunOTOS.Pose2D pos;
-        pos = myOtos.getPosition();
 
-        /*float leftStickY = gamepad1.left_stick_y;
-        float leftStickX = gamepad1.left_stick_x;
-        float rightStickY = gamepad1.right_stick_y;
-        float rightStickX = gamepad1.right_stick_x;
-         */
+    }
+    private void move_grabber(){
+        if(gamepad1.right_trigger>0.1){
+            //open claw
+            grabberServo.setPosition(0.9);
+        }
+        else if(gamepad1.left_trigger>0.1){
+            //close claw
+            grabberServo.setPosition(0.5);
+        }
 
+    }
+    private void move_linear_actuator(){
+        linearActuatorServo.setPower(gamepad2.right_stick_y);
+    }
+
+    private void move_robot(){
         float drive = -gamepad1.left_stick_y;
         float turn = gamepad1.right_stick_x;
         float strafe = gamepad1.left_stick_x;
-        float viper = gamepad2.left_stick_y;
-        float linear = gamepad2.right_stick_y;
-
-        if(gamepad1.right_trigger>0.1){
-            //open claw
-            grabberServo.setPosition(0.5);
-        }
-        if(gamepad1.left_trigger>0.1){
-            //close claw
-            grabberServo.setPosition(0.9);
-        }
-        if(gamepad2.left_bumper){
-            grabberHingeServo.setPosition(grabberHingeServo.getPosition()+0.1);
-        }
-        else if(gamepad2.right_bumper){
-            grabberHingeServo.setPosition(grabberHingeServo.getPosition()-0.1);
-        }
-        else{
-            grabberHingeServo.setPosition(grabberHingeServo.getPosition());
-        }
-
-        /*if(gamepad1.a){
-            linearActuatorServo.setPower(-1);
-        }
-        else if(gamepad1.b){
-            linearActuatorServo.setPower(1);
-        }
-        else{
-            linearActuatorServo.setPower(0);
-        }*/
-
-
-
 
         float frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
         float frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
         float rearLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
         float rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
 
-
         frontLeftDrive.setPower(frontLeftStrafe);
         frontRightDrive.setPower(frontRightStrafe);
         rearLeftDrive.setPower(rearLeftStrafe);
         rearRightDrive.setPower(rearRightStrafe);
-        leftViperSlide.setPower(viper);
-        rightViperSlide.setPower(viper);
-        linearActuatorServo.setPower(linear);
+    }
+    @Override
+    public void loop() {
+        SparkFunOTOS.Pose2D pos;
+        pos = myOtos.getPosition();
+
+        move_robot();
+        move_viper_slide();
+        move_grabber_hinge();
+        move_grabber();
+        move_linear_actuator();
 
         // Reset the tracking if the user requests it
         if (gamepad1.y) {
