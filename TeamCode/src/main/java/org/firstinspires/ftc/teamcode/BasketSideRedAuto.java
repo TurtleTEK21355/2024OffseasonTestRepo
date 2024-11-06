@@ -34,8 +34,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -78,18 +80,11 @@ public class BasketSideRedAuto extends LinearOpMode {
     private DcMotor frontRightDrive = null;
     private DcMotor rearLeftDrive = null;
     private DcMotor rearRightDrive = null;
-    private final float leftStickY = 0;
-    private final float leftStickX = 0;
-    private final float rightStickY = 0;
-    private final float rightStickX = 0;
-    private float leftDrive;
-    private float rightDrive;
-    private float leftDriveStrafe;
-    private float rightDriveStrafe;
-    private float frontLeftStrafe;
-    private float frontRightStrafe;
-    private float rearLeftStrafe;
-    private float rearRightStrafe;
+    private DcMotor leftViperSlide = null;
+    private DcMotor rightViperSlide = null;
+    private Servo grabberServo = null;
+    private Servo grabberHingeServo = null;
+    private CRServo linearActuatorServo = null;
 
     @Override
     public void runOpMode() {
@@ -98,17 +93,35 @@ public class BasketSideRedAuto extends LinearOpMode {
         frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
         rearLeftDrive = hardwareMap.get(DcMotor.class, "rear_left_drive");
         rearRightDrive = hardwareMap.get(DcMotor.class, "rear_right_drive");
+        leftViperSlide = hardwareMap.get(DcMotor.class, "left_viper_slide");
+        rightViperSlide = hardwareMap.get(DcMotor.class, "right_viper_slide");
+        grabberServo = hardwareMap.get(Servo.class, "grabber_servo");
+        grabberHingeServo = hardwareMap.get(Servo.class, "grabber_hinge_servo");
+        linearActuatorServo = hardwareMap.get(CRServo.class, "linear_actuator_servo");
         frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         rearLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         rearRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftViperSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightViperSlide.setDirection(DcMotorSimple.Direction.FORWARD);
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+        leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        grabberServo.setPosition(0.93);
+        grabberHingeServo.setPosition(1);
         configureOtos();
         waitForStart();
+
+        private void grab() {
+            grabberServo.setPosition(0.5);
+        }
+
+        private void drop() {
+            grabberServo.setPosition(0.9);
+        }
 
         SparkFunOTOS.Pose2D pos;
         myOtos.resetTracking();
