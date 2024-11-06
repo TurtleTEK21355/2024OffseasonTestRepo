@@ -71,10 +71,6 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
     private Servo grabberServo = null;
     private Servo grabberHingeServo = null;
     private CRServo linearActuatorServo = null;
-    private float leftDrive;
-    private float rightDrive;
-    private float leftDriveStrafe;
-    private float rightDriveStrafe;
 
 
     @Override
@@ -153,17 +149,8 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         rearLeftDrive.setPower(rearLeftStrafe);
         rearRightDrive.setPower(rearRightStrafe);
 
-//        double y = -gamepad1.left_stick_y;
-//        double x = gamepad1.left_stick_x;
-//        double r = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
-//        double theta = Math.atan2(y,x);
-//        double correctedTheta = theta - myOtos.getPosition().h;
-//        double rotY = r * Math.sin(correctedTheta);
-//        double rotX = r * Math.cos(correctedTheta);
-//
-//        double drive =  rotY;
-//        double strafe = rotX;
-//        double turn = gamepad1.right_stick_x;
+
+
 
     }
     @Override
@@ -176,6 +163,18 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         move_grabber_hinge();
         move_grabber();
         move_linear_actuator();
+
+        double y = -gamepad1.left_stick_y;
+        double x = gamepad1.left_stick_x;
+        double r = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
+        double theta = Math.atan2(y,x);
+        double correctedTheta = theta - myOtos.getPosition().h;
+        double rotY = r * Math.sin(correctedTheta);
+        double rotX = r * Math.cos(correctedTheta);
+        double drive =  rotY;
+        double strafe = rotX;
+        double turn = gamepad1.right_stick_x;
+
 
         // Reset the tracking if the user requests it
         if (gamepad1.y) {
@@ -222,7 +221,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         // myOtos.setLinearUnit(DistanceUnit.METER);
         myOtos.setLinearUnit(DistanceUnit.INCH);
         // myOtos.setAngularUnit(AnguleUnit.RADIANS);
-        myOtos.setAngularUnit(AngleUnit.DEGREES);
+        myOtos.setAngularUnit(AngleUnit.RADIANS);
 
         // Assuming you've mounted your sensor to a robot and it's not centered,
         // you can specify the offset for the sensor relative to the center of the
