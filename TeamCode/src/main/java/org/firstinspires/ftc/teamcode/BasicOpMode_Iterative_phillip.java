@@ -101,8 +101,8 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        grabberServo.setPosition(0);
-        grabberHingeServo.setPosition(0);
+        grabberServo.setPosition(0.93);
+        grabberHingeServo.setPosition(1);
         configureOtos();
     }
 
@@ -143,15 +143,28 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         float turn = gamepad1.right_stick_x;
         float strafe = gamepad1.left_stick_x;
 
-        float frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
-        float frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
-        float rearLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
-        float rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
+        double frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
+        double frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
+        double rearLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
+        double rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
 
         frontLeftDrive.setPower(frontLeftStrafe);
         frontRightDrive.setPower(frontRightStrafe);
         rearLeftDrive.setPower(rearLeftStrafe);
         rearRightDrive.setPower(rearRightStrafe);
+
+//        double y = -gamepad1.left_stick_y;
+//        double x = gamepad1.left_stick_x;
+//        double r = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
+//        double theta = Math.atan2(y,x);
+//        double correctedTheta = theta - myOtos.getPosition().h;
+//        double rotY = r * Math.sin(correctedTheta);
+//        double rotX = r * Math.cos(correctedTheta);
+//
+//        double drive =  rotY;
+//        double strafe = rotX;
+//        double turn = gamepad1.right_stick_x;
+
     }
     @Override
     public void loop() {
