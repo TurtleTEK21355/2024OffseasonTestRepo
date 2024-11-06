@@ -119,6 +119,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
 
 
     }
+
     private void move_grabber(){
         if(gamepad1.right_trigger>0.1){
             //open claw
@@ -130,6 +131,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         }
 
     }
+
     private void move_linear_actuator(){
         linearActuatorServo.setPower(gamepad2.right_stick_y);
     }
@@ -149,10 +151,8 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         rearLeftDrive.setPower(rearLeftStrafe);
         rearRightDrive.setPower(rearRightStrafe);
 
-
-
-
     }
+
     @Override
     public void loop() {
         SparkFunOTOS.Pose2D pos;
