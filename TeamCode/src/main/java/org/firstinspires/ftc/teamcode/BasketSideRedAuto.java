@@ -33,6 +33,7 @@ import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -41,50 +42,25 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.WhiteBalanceControl;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-/*
- * This file contains an example of a Linear "OpMode".
- * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
- * The names of OpModes appear on the menu of the FTC Driver Station.
- * When a selection is made from the menu, the corresponding OpMode is executed.
- *
- * This particular OpMode illustrates driving a 4-motor Omni-Directional (or Holonomic) robot.
- * This code will work with either a Mecanum-Drive or an X-Drive train.
- * Both of these drives are illustrated at https://gm0.org/en/latest/docs/robot-design/drivetrains/holonomic.html
- * Note that a Mecanum drive must display an X roller-pattern when viewed from above.
- *
- * Also note that it is critical to set the correct rotation direction for each motor.  See details below.
- *
- * Holonomic drives provide the ability for the robot to move in three axes (directions) simultaneously.
- * Each motion axis is controlled by one Joystick axis.
- *
- * 1) Axial:    Driving forward and backward               Left-joystick Forward/Backward
- * 2) Lateral:  Strafing right and left                     Left-joystick Right and Left
- * 3) Yaw:      Rotating Clockwise and counter clockwise    Right-joystick Right and Left
- *
- * This code is written assuming that the right-side motors need to be reversed for the robot to drive forward.
- * When you first test your robot, if it moves backward when you push the left stick forward, then you must flip
- * the direction of all 4 motors (see code below).
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
- */
 
 @Autonomous(name="BasketSideRedAuto", group="Linear OpMode")
 public class BasketSideRedAuto extends LinearOpMode {
     // Declare OpMode members.
+    ElapsedTime elapsedTime;
     SparkFunOTOS myOtos;
-    private DcMotor frontLeftDrive = null;
-    private DcMotor frontRightDrive = null;
-    private DcMotor rearLeftDrive = null;
-    private DcMotor rearRightDrive = null;
-    private DcMotor leftViperSlide = null;
-    private DcMotor rightViperSlide = null;
-    private Servo grabberServo = null;
-    private Servo grabberHingeServo = null;
-    private CRServo linearActuatorServo = null;
+    private DcMotor frontLeftDrive;
+    private DcMotor frontRightDrive;
+    private DcMotor rearLeftDrive;
+    private DcMotor rearRightDrive;
+    private DcMotor leftViperSlide;
+    private DcMotor rightViperSlide;
+    private Servo grabberServo;
+    private Servo grabberHingeServo;
+    private CRServo linearActuatorServo;
     private void grab() {
         grabberServo.setPosition(0.5);
     }
@@ -96,6 +72,7 @@ public class BasketSideRedAuto extends LinearOpMode {
     @Override
     public void runOpMode() {
         myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
+        elapsedTime = new ElapsedTime();
         frontLeftDrive = hardwareMap.get(DcMotor.class, "front_left_drive");
         frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
         rearLeftDrive = hardwareMap.get(DcMotor.class, "rear_left_drive");
@@ -160,10 +137,9 @@ public class BasketSideRedAuto extends LinearOpMode {
         }
         stopAllMotors();
         myOtos.resetTracking();
-//Run it during a loop that runs for time, as soon as enough time elapses, the loop exits.
-//Add an external encoder
-//Add a limit switch
-
+        elapsedTime.reset();
+        //Grabby Grabby
+        sampleIntake();
         // Drive away from the spike mark
         while (pos.y > -9 && opModeIsActive()) {
             drivetrainControl(-0.3f, 0, 0);
@@ -172,9 +148,9 @@ public class BasketSideRedAuto extends LinearOpMode {
             telemetry.addData("Y coordinate", pos.y);
             telemetry.addData("Heading", pos.h);
             telemetry.update();
-            //Why is this here????
-            //myOtos.getPosition();
+
         }
+
         stopAllMotors();
         myOtos.resetTracking();
         //Turn towards the basket
@@ -199,8 +175,8 @@ public class BasketSideRedAuto extends LinearOpMode {
         stopAllMotors();
         myOtos.resetTracking();
         myOtos.calibrateImu();
-        //TODO: Place in the bucket
-
+        elapsedTime.reset();
+        basketScore();
         // Turn away from the baskets, towards the second spike mark
         while (pos.h > -138 && opModeIsActive()) {
             drivetrainControl(0, 0, 0.3f);
@@ -233,7 +209,8 @@ public class BasketSideRedAuto extends LinearOpMode {
         stopAllMotors();
         myOtos.resetTracking();
         myOtos.calibrateImu();
-        //TODO: Intake Sample from spike mark
+        elapsedTime.reset();
+        sampleIntake();
         //Turn towards basket
         while (pos.h < 135 && opModeIsActive()) {
             drivetrainControl(0, 0, -0.3f);
@@ -246,8 +223,8 @@ public class BasketSideRedAuto extends LinearOpMode {
         stopAllMotors();
         myOtos.resetTracking();
         myOtos.calibrateImu();
-        //TODO: Place sample in the bucket
-
+        elapsedTime.reset();
+        basketScore();
         //Drive to the ascent zone
         while (pos.y > -25 && opModeIsActive()) {
             drivetrainControl(-0.3f, 0f, 0);
@@ -282,6 +259,31 @@ public class BasketSideRedAuto extends LinearOpMode {
         frontRightDrive.setPower(frontRightStrafe);
         rearLeftDrive.setPower(rearLeftStrafe);
         rearRightDrive.setPower(rearRightStrafe);
+    }
+    private void sampleIntake(){
+        while(elapsedTime.seconds() < 4 && opModeIsActive()){
+            linearActuatorServo.setPower(1);
+        }
+        linearActuatorServo.setPower(0);
+        grabberServo.setPosition(0.5);
+    }
+
+    private void basketScore(){
+        while (elapsedTime.seconds() < 1 && opModeIsActive()) {
+            leftViperSlide.setPower(0.75);
+            rightViperSlide.setPower(0.75);
+            linearActuatorServo.setPower(1);
+        }
+        leftViperSlide.setPower(0);
+        rightViperSlide.setPower(0);
+        linearActuatorServo.setPower(0);
+        grabberServo.setPosition(0.9);
+        elapsedTime.reset();
+        while (elapsedTime.seconds() < 1 && opModeIsActive()) {
+            leftViperSlide.setPower(-0.75);
+            rightViperSlide.setPower(-0.75);
+            linearActuatorServo.setPower(-1);
+        }
     }
 
     private void configureOtos() {
