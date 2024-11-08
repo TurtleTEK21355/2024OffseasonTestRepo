@@ -137,9 +137,18 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
     }
 
     private void move_robot(){
-        float drive = -gamepad1.left_stick_y;
+        /*float drive = -gamepad1.left_stick_y;
         float turn = gamepad1.right_stick_x;
-        float strafe = gamepad1.left_stick_x;
+        float strafe = gamepad1.left_stick_x;*/
+
+        double y = -gamepad1.left_stick_y;
+        double x = gamepad1.left_stick_x;
+        double r = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
+        double theta = Math.atan2(y,x);
+        double correctedTheta = theta - myOtos.getPosition().h;
+        double drive = r * Math.sin(correctedTheta);
+        double strafe = r * Math.cos(correctedTheta);
+        double turn = gamepad1.right_stick_x;
 
         double frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
         double frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
@@ -163,18 +172,6 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         move_grabber_hinge();
         move_grabber();
         move_linear_actuator();
-
-        double y = -gamepad1.left_stick_y;
-        double x = gamepad1.left_stick_x;
-        double r = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
-        double theta = Math.atan2(y,x);
-        double correctedTheta = theta - myOtos.getPosition().h;
-        double rotY = r * Math.sin(correctedTheta);
-        double rotX = r * Math.cos(correctedTheta);
-        double drive =  rotY;
-        double strafe = rotX;
-        double turn = gamepad1.right_stick_x;
-
 
         // Reset the tracking if the user requests it
         if (gamepad1.y) {
