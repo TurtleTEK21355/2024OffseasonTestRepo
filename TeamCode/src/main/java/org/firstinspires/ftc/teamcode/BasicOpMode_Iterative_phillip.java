@@ -71,6 +71,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
     private Servo grabberServo = null;
     private Servo grabberHingeServo = null;
     private CRServo linearActuatorServo = null;
+    boolean field_centric = true;
 
 
     @Override
@@ -91,6 +92,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         rearRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         leftViperSlide.setDirection(DcMotorSimple.Direction.REVERSE);
         rightViperSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+        linearActuatorServo.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -176,18 +178,28 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         rearRightDrive.setPower(rearRightStrafe);
 
     }
-    
+
     @Override
     public void loop() {
 
         SparkFunOTOS.Pose2D pos;
         pos = myOtos.getPosition();
 
-        move_robot();
+        if (gamepad1.a){
+             field_centric = !(field_centric);
+        }
+        if (field_centric){
+            move_robot_field_centric();
+        }
+        else{
+            move_robot();
+        }
+        
         move_viper_slide();
         move_grabber_hinge();
         move_grabber();
         move_linear_actuator();
+
         // Reset the tracking if the user requests it
         if (gamepad1.y) {
             myOtos.resetTracking();
