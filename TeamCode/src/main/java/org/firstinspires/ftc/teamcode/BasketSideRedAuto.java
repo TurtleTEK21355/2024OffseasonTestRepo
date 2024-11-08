@@ -85,6 +85,13 @@ public class BasketSideRedAuto extends LinearOpMode {
     private Servo grabberServo = null;
     private Servo grabberHingeServo = null;
     private CRServo linearActuatorServo = null;
+    private void grab() {
+        grabberServo.setPosition(0.5);
+    }
+
+    private void drop() {
+        grabberServo.setPosition(0.9);
+    }
 
     @Override
     public void runOpMode() {
@@ -115,13 +122,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         configureOtos();
         waitForStart();
 
-        private void grab() {
-            grabberServo.setPosition(0.5);
-        }
 
-        private void drop() {
-            grabberServo.setPosition(0.9);
-        }
 
         SparkFunOTOS.Pose2D pos;
         myOtos.resetTracking();
@@ -159,7 +160,9 @@ public class BasketSideRedAuto extends LinearOpMode {
         }
         stopAllMotors();
         myOtos.resetTracking();
-        //TODO: Intake the sample
+//Run it during a loop that runs for time, as soon as enough time elapses, the loop exits.
+//Add an external encoder
+//Add a limit switch
 
         // Drive away from the spike mark
         while (pos.y > -9 && opModeIsActive()) {
@@ -270,10 +273,10 @@ public class BasketSideRedAuto extends LinearOpMode {
     }
 
     private void drivetrainControl(float drive, float strafe, float turn) {
-        frontLeftStrafe = Range.clip( drive + strafe + turn, -1, 1);
-        frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
-        rearLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
-        rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
+        double frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
+        double frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
+        double rearLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
+        double rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
 
         frontLeftDrive.setPower(frontLeftStrafe);
         frontRightDrive.setPower(frontRightStrafe);
