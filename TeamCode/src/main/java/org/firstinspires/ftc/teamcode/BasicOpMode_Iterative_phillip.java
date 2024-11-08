@@ -60,7 +60,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp(name="Basic: Iterative OpMode Phillip", group="Iterative OpMode")
 public class BasicOpMode_Iterative_phillip extends OpMode {
-    // Declare OpMode members.
+
     SparkFunOTOS myOtos;
     private DcMotor frontLeftDrive = null;
     private DcMotor frontRightDrive = null;
@@ -72,7 +72,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
     private Servo grabberHingeServo = null;
     private CRServo linearActuatorServo = null;
     boolean field_centric = true;
-
+    SparkFunOTOS.Pose2D pos;
 
     @Override
     public void init() {
@@ -104,7 +104,84 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         configureOtos();
     }
 
+    @Override
+    public void loop() {
+        otos_update();
+        move_robot();
+        move_viper_slide();
+        move_grabber();
+        move_grabber_hinge();
+        move_linear_actuator();
 
+    }
+
+    private void otos_update(){
+        pos = myOtos.getPosition();
+        // Reset the tracking if the user requests it
+        if (gamepad1.y) {
+            myOtos.resetTracking();
+        }
+
+        // Re-calibrate the IMU if the user requests it
+        if (gamepad1.x) {
+            myOtos.calibrateImu();
+        }
+
+
+        // Inform user of available controls
+        telemetry.addLine("Press Y (triangle) on Gamepad to reset tracking");
+        telemetry.addLine("Press X (square) on Gamepad to calibrate the IMU");
+        telemetry.addLine();
+
+        // Log the position to the telemetry
+        telemetry.addData("X coordinate", pos.x);
+        telemetry.addData("Y coordinate", pos.y);
+        telemetry.addData("Heading angle" , pos.h);
+
+        // Update the telemetry on the driver station
+        telemetry.update();
+    }
+
+    private void move_robot(){
+        if (gamepad1.a){
+            field_centric = !(field_centric);
+        }
+        if (field_centric){
+            double y = -gamepad1.left_stick_y;
+            double x = gamepad1.left_stick_x;
+            double r = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
+            double theta = Math.atan2(y,x);
+            double correctedTheta = theta - myOtos.getPosition().h;
+            double drive = r * Math.sin(correctedTheta);
+            double strafe = r * Math.cos(correctedTheta);
+            double turn = gamepad1.right_stick_x;
+
+            double frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
+            double frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
+            double rearLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
+            double rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
+
+            frontLeftDrive.setPower(frontLeftStrafe);
+            frontRightDrive.setPower(frontRightStrafe);
+            rearLeftDrive.setPower(rearLeftStrafe);
+            rearRightDrive.setPower(rearRightStrafe);
+        }
+        else{
+            float drive = -gamepad1.left_stick_y;
+            float turn = gamepad1.right_stick_x;
+            float strafe = gamepad1.left_stick_x;
+
+            double frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
+            double frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
+            double rearLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
+            double rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
+
+            frontLeftDrive.setPower(frontLeftStrafe);
+            frontRightDrive.setPower(frontRightStrafe);
+            rearLeftDrive.setPower(rearLeftStrafe);
+            rearRightDrive.setPower(rearRightStrafe);
+        }
+    }
 
     private void move_viper_slide() {
         leftViperSlide.setPower(gamepad2.left_stick_y);
@@ -138,98 +215,6 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         linearActuatorServo.setPower(gamepad2.right_stick_y);
     }
 
-    private void move_robot_field_centric(){
-
-        double y = -gamepad1.left_stick_y;
-        double x = gamepad1.left_stick_x;
-        double r = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
-        double theta = Math.atan2(y,x);
-        double correctedTheta = theta - myOtos.getPosition().h;
-        double drive = r * Math.sin(correctedTheta);
-        double strafe = r * Math.cos(correctedTheta);
-        double turn = gamepad1.right_stick_x;
-
-        double frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
-        double frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
-        double rearLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
-        double rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
-
-        frontLeftDrive.setPower(frontLeftStrafe);
-        frontRightDrive.setPower(frontRightStrafe);
-        rearLeftDrive.setPower(rearLeftStrafe);
-        rearRightDrive.setPower(rearRightStrafe);
-
-    }
-
-    private void move_robot(){
-
-        float drive = -gamepad1.left_stick_y;
-        float turn = gamepad1.right_stick_x;
-        float strafe = gamepad1.left_stick_x;
-
-        double frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
-        double frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
-        double rearLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
-        double rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
-
-        frontLeftDrive.setPower(frontLeftStrafe);
-        frontRightDrive.setPower(frontRightStrafe);
-        rearLeftDrive.setPower(rearLeftStrafe);
-        rearRightDrive.setPower(rearRightStrafe);
-
-    }
-
-    @Override
-    public void loop() {
-
-        SparkFunOTOS.Pose2D pos;
-        pos = myOtos.getPosition();
-
-        if (gamepad1.a){
-             field_centric = !(field_centric);
-        }
-        if (field_centric){
-            move_robot_field_centric();
-        }
-        else{
-            move_robot();
-        }
-        
-        move_viper_slide();
-        move_grabber_hinge();
-        move_grabber();
-        move_linear_actuator();
-
-        // Reset the tracking if the user requests it
-        if (gamepad1.y) {
-            myOtos.resetTracking();
-        }
-
-        // Re-calibrate the IMU if the user requests it
-        if (gamepad1.x) {
-            myOtos.calibrateImu();
-        }
-
-
-        // Inform user of available controls
-        telemetry.addLine("Press Y (triangle) on Gamepad to reset tracking");
-        telemetry.addLine("Press X (square) on Gamepad to calibrate the IMU");
-        telemetry.addLine();
-
-        // Log the position to the telemetry
-        telemetry.addData("X coordinate", pos.x);
-        telemetry.addData("Y coordinate", pos.y);
-        telemetry.addData("Heading angle" , pos.h);
-
-        // Update the telemetry on the driver station
-        telemetry.update();
-
-    }
-
-    @Override
-    public void stop() {
-
-    }
     private void configureOtos() {
         telemetry.addLine("Configuring OTOS...");
         telemetry.update();
