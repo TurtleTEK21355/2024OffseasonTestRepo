@@ -163,9 +163,10 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
             frontRightDrive.setPower(frontRightStrafe);
             rearLeftDrive.setPower(rearLeftStrafe);
             rearRightDrive.setPower(rearRightStrafe);
+            telemetry.update();
         }
         else{
-            telemetry.addLine("Field Centric Driving ON");
+            telemetry.addLine("Field Centric Driving OFF");
             float drive = -gamepad1.left_stick_y;
             float turn = gamepad1.right_stick_x;
             float strafe = gamepad1.left_stick_x;
@@ -179,6 +180,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
             frontRightDrive.setPower(frontRightStrafe);
             rearLeftDrive.setPower(rearLeftStrafe);
             rearRightDrive.setPower(rearRightStrafe);
+            telemetry.update();
         }
     }
 
@@ -200,11 +202,11 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
 
     private void move_grabber(){
         if(gamepad1.right_trigger>0.1){
-            //open claw
+            //close claw
             grabberServo.setPosition(0.9);
         }
         else if(gamepad1.left_trigger>0.1){
-            //close claw
+            //open claw
             grabberServo.setPosition(0.5);
         }
 
