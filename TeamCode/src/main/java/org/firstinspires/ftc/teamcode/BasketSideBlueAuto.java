@@ -36,6 +36,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -73,31 +74,28 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class BasketSideBlueAuto extends LinearOpMode {
     // Declare OpMode members.
     SparkFunOTOS myOtos;
-    private DcMotor frontLeftDrive = null;
-    private DcMotor frontRightDrive = null;
-    private DcMotor rearLeftDrive = null;
-    private DcMotor rearRightDrive = null;
-    private DcMotor leftViperSlide = null;
-    private DcMotor rightViperSlide = null;
-    private Servo grabberServo = null;
-    private Servo grabberHingeServo = null;
-    private CRServo linearActuatorServo = null;
-    private final float leftStickY = 0;
-    private final float leftStickX = 0;
-    private final float rightStickY = 0;
-    private final float rightStickX = 0;
-    private float leftDrive;
-    private float rightDrive;
-    private float leftDriveStrafe;
-    private float rightDriveStrafe;
-    private float frontLeftStrafe;
-    private float frontRightStrafe;
-    private float rearLeftStrafe;
-    private float rearRightStrafe;
+    ElapsedTime elapsedTime;
+    private DcMotor frontLeftDrive;
+    private DcMotor frontRightDrive;
+    private DcMotor rearLeftDrive;
+    private DcMotor rearRightDrive;
+    private DcMotor leftViperSlide;
+    private DcMotor rightViperSlide;
+    private Servo grabberServo;
+    private Servo grabberHingeServo;
+    private CRServo linearActuatorServo;
+    private void grab() {
+        grabberServo.setPosition(0.5);
+    }
+
+    private void drop() {
+        grabberServo.setPosition(0.9);
+    }
 
     @Override
     public void runOpMode() {
         myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
+        elapsedTime = new ElapsedTime();
         frontLeftDrive = hardwareMap.get(DcMotor.class, "front_left_drive");
         frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
         rearLeftDrive = hardwareMap.get(DcMotor.class, "rear_left_drive");
@@ -111,13 +109,18 @@ public class BasketSideBlueAuto extends LinearOpMode {
         frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         rearLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         rearRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftViperSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightViperSlide.setDirection(DcMotorSimple.Direction.FORWARD);
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        grabberServo.setPosition(0.93);
+        grabberHingeServo.setPosition(1);
 
-        configureOtos();
-        waitForStart();
+
 
         SparkFunOTOS.Pose2D pos;
         myOtos.resetTracking();
@@ -155,8 +158,9 @@ public class BasketSideBlueAuto extends LinearOpMode {
         }
         stopAllMotors();
         myOtos.resetTracking();
-        //TODO: Intake the sample
-
+        elapsedTime.reset();
+        //Grabby Grabby
+        sampleIntake();
         // Drive away from the spike mark
         while (pos.y > -9 && opModeIsActive()) {
             drivetrainControl(-0.3f, 0, 0);
@@ -165,9 +169,9 @@ public class BasketSideBlueAuto extends LinearOpMode {
             telemetry.addData("Y coordinate", pos.y);
             telemetry.addData("Heading", pos.h);
             telemetry.update();
-            //Why is this here????
-            //myOtos.getPosition();
+
         }
+
         stopAllMotors();
         myOtos.resetTracking();
         //Turn towards the basket
@@ -192,8 +196,8 @@ public class BasketSideBlueAuto extends LinearOpMode {
         stopAllMotors();
         myOtos.resetTracking();
         myOtos.calibrateImu();
-        //TODO: Place in the bucket
-
+        elapsedTime.reset();
+        basketScore();
         // Turn away from the baskets, towards the second spike mark
         while (pos.h > -138 && opModeIsActive()) {
             drivetrainControl(0, 0, 0.3f);
@@ -226,7 +230,8 @@ public class BasketSideBlueAuto extends LinearOpMode {
         stopAllMotors();
         myOtos.resetTracking();
         myOtos.calibrateImu();
-        //TODO: Intake Sample from spike mark
+        elapsedTime.reset();
+        sampleIntake();
         //Turn towards basket
         while (pos.h < 135 && opModeIsActive()) {
             drivetrainControl(0, 0, -0.3f);
@@ -239,11 +244,11 @@ public class BasketSideBlueAuto extends LinearOpMode {
         stopAllMotors();
         myOtos.resetTracking();
         myOtos.calibrateImu();
-        //TODO: Place sample in the bucket
-
+        elapsedTime.reset();
+        basketScore();
         //Drive to the ascent zone
         while (pos.y > -25 && opModeIsActive()) {
-            drivetrainControl(-0.3f, 0.1f, 0);
+            drivetrainControl(-0.3f, 0f, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
             telemetry.addData("Y coordinate", pos.y);
@@ -253,12 +258,12 @@ public class BasketSideBlueAuto extends LinearOpMode {
         stopAllMotors();
 
     }
-    private void stopAllMotors(){
-        drivetrainControl(0,0,0);
-    }
     private void driveStraight(float power, float position){
         float turn = position/100;
         drivetrainControl(power,0,turn);
+    }
+    private void stopAllMotors(){
+        drivetrainControl(0,0,0);
     }
     private void driveStrafe(float power, float position){
         float turn = position/100;
@@ -266,15 +271,40 @@ public class BasketSideBlueAuto extends LinearOpMode {
     }
 
     private void drivetrainControl(float drive, float strafe, float turn) {
-        frontLeftStrafe = Range.clip( drive + strafe + turn, -1, 1);
-        frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
-        rearLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
-        rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
+        double frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
+        double frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
+        double rearLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
+        double rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
 
         frontLeftDrive.setPower(frontLeftStrafe);
         frontRightDrive.setPower(frontRightStrafe);
         rearLeftDrive.setPower(rearLeftStrafe);
         rearRightDrive.setPower(rearRightStrafe);
+    }
+    private void sampleIntake(){
+        while(elapsedTime.seconds() < 4 && opModeIsActive()){
+            linearActuatorServo.setPower(1);
+        }
+        linearActuatorServo.setPower(0);
+        grabberServo.setPosition(0.5);
+    }
+
+    private void basketScore(){
+        while (elapsedTime.seconds() < 1 && opModeIsActive()) {
+            leftViperSlide.setPower(0.75);
+            rightViperSlide.setPower(0.75);
+            linearActuatorServo.setPower(1);
+        }
+        leftViperSlide.setPower(0);
+        rightViperSlide.setPower(0);
+        linearActuatorServo.setPower(0);
+        grabberServo.setPosition(0.9);
+        elapsedTime.reset();
+        while (elapsedTime.seconds() < 1 && opModeIsActive()) {
+            leftViperSlide.setPower(-0.75);
+            rightViperSlide.setPower(-0.75);
+            linearActuatorServo.setPower(-1);
+        }
     }
 
     private void configureOtos() {
@@ -359,3 +389,4 @@ public class BasketSideBlueAuto extends LinearOpMode {
         telemetry.update();
     }
 }
+
