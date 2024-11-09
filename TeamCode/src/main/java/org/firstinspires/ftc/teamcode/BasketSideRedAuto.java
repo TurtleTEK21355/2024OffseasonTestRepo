@@ -88,7 +88,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        grabberServo.setPosition(0.93);
+        grabberServo.setPosition(0.5);
         grabberHingeServo.setPosition(0.6);
         configureOtos();
         waitForStart();
@@ -260,7 +260,7 @@ public class BasketSideRedAuto extends LinearOpMode {
     }
     private void sampleIntake(){
 
-        grabberServo.setPosition(0.5);
+        grabberServo.setPosition(0.9);
     }
 
     private void basketScore(){
@@ -272,7 +272,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         leftViperSlide.setPower(0);
         rightViperSlide.setPower(0);
         linearActuatorServo.setPower(0);
-        grabberServo.setPosition(0.9);
+        grabberServo.setPosition(0.5);
         elapsedTime.reset();
         while (elapsedTime.seconds() < 1 && opModeIsActive()) {
             leftViperSlide.setPower(-0.75);
