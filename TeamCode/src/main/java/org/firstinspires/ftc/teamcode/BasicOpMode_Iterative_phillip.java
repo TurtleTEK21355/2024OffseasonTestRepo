@@ -189,7 +189,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
 
     private void move_grabber_hinge() {
         if(gamepad2.dpad_down){
-            grabberHingeServo.setPosition(0.5);
+            grabberHingeServo.setPosition(0.3);
         }
         else if(gamepad2.dpad_up){
             grabberHingeServo.setPosition(1);
