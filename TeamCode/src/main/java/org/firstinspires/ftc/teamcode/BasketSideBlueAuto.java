@@ -112,7 +112,7 @@ public class BasketSideBlueAuto extends LinearOpMode {
         leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         grabberServo.setPosition(0.5);
-        grabberHingeServo.setPosition(0.6);
+        grabberHingeServo.setPosition(0.35);
 
 
 

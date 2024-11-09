@@ -89,7 +89,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         grabberServo.setPosition(0.5);
-        grabberHingeServo.setPosition(0.6);
+        grabberHingeServo.setPosition(0.35);
         configureOtos();
         waitForStart();
 
@@ -110,7 +110,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         stopAllMotors();
         myOtos.resetTracking();
         // Strafe to be in line with the farthest spike mark from the wall
-        while (pos.x > -8 && opModeIsActive()) {
+        while (pos.x > -9 && opModeIsActive()) {
             drivetrainControl(0, -0.3f, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -137,6 +137,7 @@ public class BasketSideRedAuto extends LinearOpMode {
             linearActuatorServo.setPower(1);
         }
         linearActuatorServo.setPower(0);
+        sleep(500);
         sampleIntake();
         // Drive away from the spike mark
         while (pos.y > -9 && opModeIsActive()) {
@@ -209,6 +210,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         myOtos.calibrateImu();
         elapsedTime.reset();
         sampleIntake();
+        sleep(500);
         //Turn towards basket
         while (pos.h < 135 && opModeIsActive()) {
             drivetrainControl(0, 0, -0.3f);
