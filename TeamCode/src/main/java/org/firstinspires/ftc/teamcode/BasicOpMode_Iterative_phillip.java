@@ -112,7 +112,6 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         move_grabber();
         move_grabber_hinge();
         move_linear_actuator();
-
     }
 
     private void otos_update(){
@@ -138,8 +137,6 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         telemetry.addData("Y coordinate", pos.y);
         telemetry.addData("Heading angle" , pos.h);
 
-        // Update the telemetry on the driver station
-        telemetry.update();
     }
 
     private void move_robot(){
@@ -147,6 +144,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
             field_centric = !(field_centric);
         }
         if (field_centric){
+            telemetry.addLine("Field Centric Driving ON");
             double y = -gamepad1.left_stick_y;
             double x = gamepad1.left_stick_x;
             double r = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
@@ -167,6 +165,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
             rearRightDrive.setPower(rearRightStrafe);
         }
         else{
+            telemetry.addLine("Field Centric Driving ON");
             float drive = -gamepad1.left_stick_y;
             float turn = gamepad1.right_stick_x;
             float strafe = gamepad1.left_stick_x;
