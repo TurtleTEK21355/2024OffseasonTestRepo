@@ -84,13 +84,7 @@ public class BasketSideBlueAuto extends LinearOpMode {
     private Servo grabberServo;
     private Servo grabberHingeServo;
     private CRServo linearActuatorServo;
-    private void grab() {
-        grabberServo.setPosition(0.5);
-    }
 
-    private void drop() {
-        grabberServo.setPosition(0.9);
-    }
 
     @Override
     public void runOpMode() {
@@ -118,7 +112,7 @@ public class BasketSideBlueAuto extends LinearOpMode {
         leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         grabberServo.setPosition(0.93);
-        grabberHingeServo.setPosition(1);
+        grabberHingeServo.setPosition(0.6);
 
 
 
@@ -160,6 +154,10 @@ public class BasketSideBlueAuto extends LinearOpMode {
         myOtos.resetTracking();
         elapsedTime.reset();
         //Grabby Grabby
+        while(elapsedTime.seconds() < 4 && opModeIsActive()){
+            linearActuatorServo.setPower(1);
+        }
+        linearActuatorServo.setPower(0);
         sampleIntake();
         // Drive away from the spike mark
         while (pos.y > -9 && opModeIsActive()) {
@@ -282,10 +280,6 @@ public class BasketSideBlueAuto extends LinearOpMode {
         rearRightDrive.setPower(rearRightStrafe);
     }
     private void sampleIntake(){
-        while(elapsedTime.seconds() < 4 && opModeIsActive()){
-            linearActuatorServo.setPower(1);
-        }
-        linearActuatorServo.setPower(0);
         grabberServo.setPosition(0.5);
     }
 
