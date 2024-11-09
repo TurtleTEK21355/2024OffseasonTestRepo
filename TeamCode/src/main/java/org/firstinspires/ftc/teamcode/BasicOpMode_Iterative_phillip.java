@@ -99,8 +99,6 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        grabberServo.setPosition(0.93);
-        grabberHingeServo.setPosition(1);
         configureOtos();
     }
 
@@ -205,7 +203,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         }
         else if(gamepad1.left_trigger>0.1){
             //close claw
-            grabberServo.setPosition(0.5);
+            grabberServo.setPosition(0.7);
         }
 
     }
