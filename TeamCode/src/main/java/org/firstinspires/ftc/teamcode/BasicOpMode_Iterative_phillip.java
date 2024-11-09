@@ -199,11 +199,11 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
     }
 
     private void move_grabber(){
-        if(gamepad1.right_trigger>0.1){
+        if(gamepad1.right_trigger>0.1 || gamepad2.right_trigger>0.1){
             //close claw
             grabberServo.setPosition(0.9);
         }
-        else if(gamepad1.left_trigger>0.1){
+        else if(gamepad1.left_trigger>0.1 || gamepad2.left_trigger>0.1){
             //open claw
             grabberServo.setPosition(0.7);
         }
