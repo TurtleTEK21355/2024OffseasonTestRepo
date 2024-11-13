@@ -81,35 +81,62 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
         rearLeftDrive = hardwareMap.get(DcMotor.class, "rear_left_drive");
         rearRightDrive = hardwareMap.get(DcMotor.class, "rear_right_drive");
-        leftViperSlide = hardwareMap.get(DcMotor.class, "left_viper_slide");
+        /*leftViperSlide = hardwareMap.get(DcMotor.class, "left_viper_slide");
         rightViperSlide = hardwareMap.get(DcMotor.class, "right_viper_slide");
         grabberServo = hardwareMap.get(Servo.class, "grabber_servo");
         grabberHingeServo = hardwareMap.get(Servo.class, "grabber_hinge_servo");
         linearActuatorServo = hardwareMap.get(CRServo.class, "linear_actuator_servo");
+         */
         frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         rearLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         rearRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        leftViperSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        /*leftViperSlide.setDirection(DcMotorSimple.Direction.REVERSE);
         rightViperSlide.setDirection(DcMotorSimple.Direction.FORWARD);
-        linearActuatorServo.setDirection(DcMotorSimple.Direction.REVERSE);
+        linearActuatorServo.setDirection(DcMotorSimple.Direction.REVERSE);*/
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rearRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        /*leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);*/
         configureOtos();
+    }
+    private double inches(double inches){
+        double ticks=(537.7/16)*inches;
+        double output=96*Math.PI;
     }
 
     @Override
     public void loop() {
         otos_update();
-        move_robot();
-        move_viper_slide();
+        //move_robot();
+        encoder();
+        /*move_viper_slide();
         move_grabber();
         move_grabber_hinge();
-        move_linear_actuator();
+        move_linear_actuator();*/
+        telemetry.update();
+
+        if (rearRightDrive.getCurrentPosition() >= 0 && rearRightDrive.getCurrentPosition()<=((537.7*2)/32)*12){
+            rearRightDrive.setPower(-gamepad1.left_stick_y);
+            rearLeftDrive.setPower(-gamepad1.left_stick_y);
+            frontRightDrive.setPower(-gamepad1.left_stick_y);
+            frontLeftDrive.setPower(-gamepad1.left_stick_y);
+        }
+        else if(rearRightDrive.getCurrentPosition()>(537.7/16)*12{
+
+            rearRightDrive.setPower(Range.clip(-gamepad1.left_stick_y,-1,0));
+            rearLeftDrive.setPower(Range.clip(-gamepad1.left_stick_y,-1,0));
+            frontRightDrive.setPower(Range.clip(-gamepad1.left_stick_y,-1,0));
+            frontLeftDrive.setPower(Range.clip(-gamepad1.left_stick_y,-1,0));
+        }
+        else{
+            rearRightDrive.setPower(Range.clip(-gamepad1.left_stick_y, 0,1));
+            rearLeftDrive.setPower(Range.clip(-gamepad1.left_stick_y, 0,1));
+            frontRightDrive.setPower(Range.clip(-gamepad1.left_stick_y, 0,1));
+            frontLeftDrive.setPower(Range.clip(-gamepad1.left_stick_y, 0,1));
+        }
     }
 
     private void otos_update(){
@@ -137,6 +164,8 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
 
     }
 
+
+
     private void move_robot(){
         if (gamepad1.a){
             field_centric = !(field_centric);
@@ -161,7 +190,6 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
             frontRightDrive.setPower(frontRightStrafe);
             rearLeftDrive.setPower(rearLeftStrafe);
             rearRightDrive.setPower(rearRightStrafe);
-            telemetry.update();
         }
         else{
             telemetry.addLine("Field Centric Driving OFF");
@@ -178,8 +206,11 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
             frontRightDrive.setPower(frontRightStrafe);
             rearLeftDrive.setPower(rearLeftStrafe);
             rearRightDrive.setPower(rearRightStrafe);
-            telemetry.update();
         }
+    }
+
+    private void encoder() {
+        telemetry.addData("rearrightdriveposition",rearRightDrive.getCurrentPosition());
     }
 
     private void move_viper_slide() {
