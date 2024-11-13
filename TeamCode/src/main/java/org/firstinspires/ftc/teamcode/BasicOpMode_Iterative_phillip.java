@@ -104,7 +104,9 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
     }
     private double inches(double inches){
         double ticks=(537.7/16)*inches;
-        double output=96*Math.PI;
+        double circumference=96*Math.PI;
+        double output=ticks/circumference;
+        return output;
     }
 
     @Override
