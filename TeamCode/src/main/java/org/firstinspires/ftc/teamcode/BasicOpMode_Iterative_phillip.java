@@ -62,6 +62,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class BasicOpMode_Iterative_phillip extends OpMode {
 
     SparkFunOTOS myOtos;
+    private MeccanumWheel wheel = null;
+    private Motor312 motor312 = null;
     private DcMotor frontLeftDrive = null;
     private DcMotor frontRightDrive = null;
     private DcMotor rearLeftDrive = null;
@@ -76,6 +78,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
 
     @Override
     public void init() {
+        wheel = new MeccanumWheel();
         myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
         frontLeftDrive = hardwareMap.get(DcMotor.class, "front_left_drive");
         frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
@@ -120,13 +123,13 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         move_linear_actuator();*/
         telemetry.update();
 
-        if (rearRightDrive.getCurrentPosition() >= 0 && rearRightDrive.getCurrentPosition()<=((537.7*2)/32)*12){
+        if (rearRightDrive.getCurrentPosition() >= 0 && rearRightDrive.getCurrentPosition()<=((537.7/16)*12){
             rearRightDrive.setPower(-gamepad1.left_stick_y);
             rearLeftDrive.setPower(-gamepad1.left_stick_y);
             frontRightDrive.setPower(-gamepad1.left_stick_y);
             frontLeftDrive.setPower(-gamepad1.left_stick_y);
         }
-        else if(rearRightDrive.getCurrentPosition()>(537.7/16)*12{
+        else if(rearRightDrive.getCurrentPosition()>){
 
             rearRightDrive.setPower(Range.clip(-gamepad1.left_stick_y,-1,0));
             rearLeftDrive.setPower(Range.clip(-gamepad1.left_stick_y,-1,0));
@@ -213,7 +216,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
 
     private void encoder() {
         telemetry.addData("rearrightdriveposition",rearRightDrive.getCurrentPosition());
-    }
+}
 
     private void move_viper_slide() {
         leftViperSlide.setPower(gamepad2.left_stick_y);
@@ -327,5 +330,30 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         telemetry.addLine(String.format("OTOS Hardware Version: v%d.%d", hwVersion.major, hwVersion.minor));
         telemetry.addLine(String.format("OTOS Firmware Version: v%d.%d", fwVersion.major, fwVersion.minor));
         telemetry.update();
+    }
+}
+public class Motor{
+    protected double tickPerRotation;
+    protected double tickPeriod;
+    public abstract double getTicks();
+}
+public class Motor312 extends Motor{
+    public Motor312(){
+        this.tickPerRotation = 537.7;
+    }
+    public double getTicks(){
+        return this.tickPerRotation;
+    }
+}
+public class Wheel {
+    protected double circumference;
+    public abstract double getCircumference();
+}
+public class MeccanumWheel extends Motor{
+    public MeccanumWheel(){
+        this.circumference = 11.87373601357
+    }
+    public double getCircumference(){
+        return this.circumference;
     }
 }
