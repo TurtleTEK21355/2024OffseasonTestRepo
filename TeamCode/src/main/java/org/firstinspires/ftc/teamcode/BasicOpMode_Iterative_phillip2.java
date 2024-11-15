@@ -30,15 +30,12 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorImpl;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -59,7 +56,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  */
 
 @TeleOp(name="Basic: Iterative OpMode Phillip", group="Iterative OpMode")
-public class BasicOpMode_Iterative_phillip extends OpMode {
+public class BasicOpMode_Iterative_phillip2 extends OpMode {
 
     SparkFunOTOS myOtos;
     //private MeccanumWheel wheel = null;
@@ -73,7 +70,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
     private Servo grabberServo = null;
     private Servo grabberHingeServo = null;
     private CRServo linearActuatorServo = null;
-    private final double MOTOR223 = 751.8;
+    private final double MOTOR312 = 537.7;
     boolean field_centric = true;
     SparkFunOTOS.Pose2D pos;
 
@@ -105,12 +102,6 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         configureOtos();
     }
-    /*private double inches(double inches){
-        double ticks=(537.7/16)*inches;
-        double circumference=96*Math.PI;
-        double output=ticks/circumference;
-        return output;
-    }*/
 
     @Override
     public void loop() {
@@ -172,50 +163,11 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
 
 
     private void move_robot(){
-        if (gamepad1.a){
-            field_centric = !(field_centric);
-        }
-        if (field_centric){
-            telemetry.addLine("Field Centric Driving ON");
-            double y = -gamepad1.left_stick_y;
-            double x = gamepad1.left_stick_x;
-            double r = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
-            double theta = Math.atan2(y,x);
-            double correctedTheta = theta - myOtos.getPosition().h;
-            double drive = r * Math.sin(correctedTheta);
-            double strafe = r * Math.cos(correctedTheta);
-            double turn = gamepad1.right_stick_x;
 
-            double frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
-            double frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
-            double rearLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
-            double rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
-
-            frontLeftDrive.setPower(frontLeftStrafe);
-            frontRightDrive.setPower(frontRightStrafe);
-            rearLeftDrive.setPower(rearLeftStrafe);
-            rearRightDrive.setPower(rearRightStrafe);
-        }
-        else{
-            telemetry.addLine("Field Centric Driving OFF");
-            float drive = -gamepad1.left_stick_y;
-            float turn = gamepad1.right_stick_x;
-            float strafe = gamepad1.left_stick_x;
-
-            double frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
-            double frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
-            double rearLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
-            double rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
-
-            frontLeftDrive.setPower(frontLeftStrafe);
-            frontRightDrive.setPower(frontRightStrafe);
-            rearLeftDrive.setPower(rearLeftStrafe);
-            rearRightDrive.setPower(rearRightStrafe);
-        }
     }
 
     private void encoder() {
-        telemetry.addData("viperslidelevel",leftViperSlide.getCurrentPosition()/MOTOR223);
+        telemetry.addData("viperslidelevel",leftViperSlide.getCurrentPosition());
 }
 
     private void move_viper_slide() {
@@ -223,7 +175,6 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         rightViperSlide.setPower(gamepad2.left_stick_y);
         if (leftViperSlide.getCurrentPosition()<0);
        */
-        if (leftViperSlide.getCurrentPosition() 
     }
 
     private void move_grabber_hinge() {
@@ -335,6 +286,72 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         telemetry.update();
     }
 }
+
+class StrafePowers() {
+    private double frontLeft;
+    private double frontRight;
+    private double rearLeft;
+    private double rearRight;
+
+    public void StrafePowers(double frontLeft, double frontRight, double rearLeft, double rearRight) {
+        this.frontLeft=frontLeft;
+        this.frontRight=frontRight;
+        this.rearLeft=rearLeft;
+        this.rearRight=rearRight;
+    }
+
+}
+
+public class OpmodeOperations(){
+    public static void moveRobotFieldCentric(double y, double x, double h, double turn){
+        //telemetry.addLine("Field Centric Driving ON");
+        //double y = -gamepad1.left_stick_y;
+        //double x = gamepad1.left_stick_x;
+        double r = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
+        double theta = Math.atan2(y,x);
+        //double correctedTheta = theta - myOtos.getPosition().h;
+        double correctedTheta = theta - h;
+
+        double drive = r * Math.sin(correctedTheta);
+        double strafe = r * Math.cos(correctedTheta);
+        //double turn = gamepad1.right_stick_x;
+
+        double frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
+        double frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
+        double rearLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
+        double rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
+        strafePowers = new StrafePowers(frontLeftStrafe, frontRightStrafe, rearLeftStrafe, rearRightStrafe);
+        return strafePowers;
+
+        //frontLeftDrive.setPower(frontLeftStrafe);
+        //frontRightDrive.setPower(frontRightStrafe);
+        //rearLeftDrive.setPower(rearLeftStrafe);
+        //rearRightDrive.setPower(rearRightStrafe);
+
+    }
+
+
+    public static void moveRobot(float drive, float turn, float strafe){
+            //telemetry.addLine("Field Centric Driving OFF");
+            //float drive = -gamepad1.left_stick_y;
+            //float turn = gamepad1.right_stick_x;
+            //float strafe = gamepad1.left_stick_x;
+
+            double frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
+            double frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
+            double rearLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
+            double rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
+
+            frontLeftDrive.setPower(frontLeftStrafe);
+            frontRightDrive.setPower(frontRightStrafe);
+            rearLeftDrive.setPower(rearLeftStrafe);
+            rearRightDrive.setPower(rearRightStrafe);
+        }
+    }
+
+
+}
+
 /*
 public class Motor{
     protected double tickPerRotation;
