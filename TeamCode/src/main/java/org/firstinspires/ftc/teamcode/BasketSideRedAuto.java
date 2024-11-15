@@ -110,7 +110,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         stopAllMotors();
         myOtos.resetTracking();
         // Strafe to be in line with the farthest spike mark from the wall
-        while (pos.x > -9 && opModeIsActive()) {
+        while (pos.x > -10 && opModeIsActive()) {
             drivetrainControl(0, -0.3f, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -267,12 +267,12 @@ public class BasketSideRedAuto extends LinearOpMode {
     }
 
     private void basketScore(){
-        while (elapsedTime.seconds() < 2 && opModeIsActive()) {
+        while (elapsedTime.seconds() < 2.75 && opModeIsActive()) {
             leftViperSlide.setPower(-0.75);
             rightViperSlide.setPower(-0.75);
         }
         myOtos.resetTracking();
-        while (myOtos.getPosition().y < 2 && elapsedTime.seconds() > 1.5 && opModeIsActive()) {
+        while (myOtos.getPosition().y < 1.5 && elapsedTime.seconds() > 1.25 && opModeIsActive()) {
             drivetrainControl(0.3f, 0f, 0);
         }
         leftViperSlide.setPower(0);
