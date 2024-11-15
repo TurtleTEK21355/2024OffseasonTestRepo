@@ -223,7 +223,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         rightViperSlide.setPower(gamepad2.left_stick_y);
         if (leftViperSlide.getCurrentPosition()<0);
        */
-        if (leftViperSlide.getCurrentPosition() 
+        if (leftViperSlide.getCurrentPosition();
     }
 
     private void move_grabber_hinge() {
