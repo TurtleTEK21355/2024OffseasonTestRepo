@@ -74,9 +74,10 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
     private Servo grabberHingeServo = null;
     private CRServo linearActuatorServo = null;
     private final double MOTOR = 751.8;
-    private final double viperSlideLimitBottom = MOTOR*0.2;
-    private final double viperSlideLimitTop = MOTOR*8.14;
-
+    private final double BottomLimit = 0.2;
+    private final double TopLimit = 8.14;
+    private final double viperSlideLimitBottom = MOTOR*BottomLimit;
+    private final double viperSlideLimitTop = MOTOR*TopLimit;
     boolean field_centric = true;
     SparkFunOTOS.Pose2D pos;
 
