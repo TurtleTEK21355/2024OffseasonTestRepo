@@ -58,8 +58,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Iterative OpMode Phillip", group="Iterative OpMode")
-public class BasicOpMode_Iterative_phillip extends OpMode {
+@TeleOp(name="Basic: Iterative OpMode", group="Iterative OpMode")
+public class BasicOpMode_Iterative extends OpMode {
 
     SparkFunOTOS myOtos;
     //private MeccanumWheel wheel = null;
@@ -228,17 +228,18 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         rightViperSlide.setPower(gamepad2.left_stick_y);
         if (leftViperSlide.getCurrentPosition()<0);
        */
+        double idlePower = 0.1;
         if ((leftViperSlide.getCurrentPosition()+rightViperSlide.getCurrentPosition())/2<viperSlideLimitBottom){
             leftViperSlide.setPower(0.5);
             rightViperSlide.setPower(0.5);
         }
         else if ((leftViperSlide.getCurrentPosition()+rightViperSlide.getCurrentPosition())/2<viperSlideLimitTop){
-            leftViperSlide.setPower(gamepad2.left_stick_y+0.01);
-            rightViperSlide.setPower(gamepad2.left_stick_y+0.01);
+            leftViperSlide.setPower((-gamepad2.left_stick_y)+idlePower);
+            rightViperSlide.setPower((-gamepad2.left_stick_y)+idlePower);
         }
         else {
-            leftViperSlide.setPower(0);
-            rightViperSlide.setPower(0);
+            leftViperSlide.setPower(idlePower);
+            rightViperSlide.setPower(idlePower);
         }
 
     }

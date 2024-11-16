@@ -56,7 +56,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Iterative OpMode Phillip", group="Iterative OpMode")
+@TeleOp(name="Basic: Iterative OpMode Phillip2", group="Iterative OpMode")
 public class BasicOpMode_Iterative_phillip2 extends OpMode {
 
     SparkFunOTOS myOtos;
@@ -136,7 +136,7 @@ public class BasicOpMode_Iterative_phillip2 extends OpMode {
         }*/
     }
 
-    private void otos_update(){
+    private void otos_update() {
         pos = myOtos.getPosition();
         // Reset the tracking if the user requests it
         if (gamepad1.y) {
@@ -157,28 +157,55 @@ public class BasicOpMode_Iterative_phillip2 extends OpMode {
         // Log the position to the telemetry
         telemetry.addData("X coordinate", pos.x);
         telemetry.addData("Y coordinate", pos.y);
-        telemetry.addData("Heading angle" , pos.h);
+        telemetry.addData("Heading angle", pos.h);
 
     }
 
-    private boolean isFieldCentric(){
+    private boolean isFieldCentric() {
         return gamepad1.a;
     }
+
     //telemetry.addLine("Field Centric Driving ON");
     //double y = -gamepad1.left_stick_y;
     //double x = gamepad1.left_stick_x;
-    private double getX(){
+    private double getX() {
         return gamepad1.left_stick_x;
     }
+
     //double correctedTheta = theta - myOtos.getPosition().h;
+    private double getY() {
+        return -gamepad1.left_stick_y;
+    }
+
+    private double getH() {
+        return myOtos.getPosition().h;
+    }
+
+    private float getTurn() {
+        return gamepad1.right_stick_x;
+    }
+
+    private float getDrive() {
+        return -gamepad1.left_stick_y;
+    }
+
+    private float getStrafe() {
+        return gamepad1.left_stick_x;
+    }
 
     private void move_robot() {
         StrafePowers strafePowers;
         if (isFieldCentric()) {
-            //strafePowers = OpmodeOperations.getStrafePowersFieldCentric();
+            strafePowers = OpmodeOperations.getStrafePowersFieldCentric(getY(),
+                    getX(), getH(), getTurn() );
         }else{
-            //strafePowers = OpmodeOperations.getStrafePowers();
+            strafePowers = OpmodeOperations.getStrafePowers(getTurn(),
+                    getDrive(), getStrafe());
         }
+        //frontLeftDrive.setPower(frontLeftStrafe);
+        //frontRightDrive.setPower(frontRightStrafe);
+        //rearLeftDrive.setPower(rearLeftStrafe);
+        //rearRightDrive.setPower(rearRightStrafe);
     }
     private void encoder() {
         telemetry.addData("viperslidelevel",leftViperSlide.getCurrentPosition());
@@ -320,34 +347,25 @@ class StrafePowers {
 class OpmodeOperations {
     public static StrafePowers getStrafePowersFieldCentric(double y, double x, double h, double turn){
         //telemetry.addLine("Field Centric Driving ON");
-        //double y = -gamepad1.left_stick_y;
-        //double x = gamepad1.left_stick_x;
+
         double r = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
         double theta = Math.atan2(y,x);
-        //double correctedTheta = theta - myOtos.getPosition().h;
         double correctedTheta = theta - h;
 
         double drive = r * Math.sin(correctedTheta);
         double strafe = r * Math.cos(correctedTheta);
-        //double turn = gamepad1.right_stick_x;
-
         double frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
         double frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
         double rearLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
         double rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
         return new StrafePowers(frontLeftStrafe, frontRightStrafe, rearLeftStrafe, rearRightStrafe);
 
-        //frontLeftDrive.setPower(frontLeftStrafe);
-        //frontRightDrive.setPower(frontRightStrafe);
-        //rearLeftDrive.setPower(rearLeftStrafe);
-        //rearRightDrive.setPower(rearRightStrafe);
+
 
     }
     public static StrafePowers getStrafePowers(float drive, float turn, float strafe){
             //telemetry.addLine("Field Centric Driving OFF");
-            //float drive = -gamepad1.left_stick_y;
-            //float turn = gamepad1.right_stick_x;
-            //float strafe = gamepad1.left_stick_x;
+
 
             double frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
             double frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
