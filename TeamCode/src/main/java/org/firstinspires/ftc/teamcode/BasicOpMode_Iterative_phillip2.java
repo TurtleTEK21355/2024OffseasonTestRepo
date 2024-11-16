@@ -1,3 +1,4 @@
+
 /* Copyright (c) 2017 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -174,9 +175,9 @@ public class BasicOpMode_Iterative_phillip2 extends OpMode {
     private void move_robot() {
         StrafePowers strafePowers;
         if (isFieldCentric()) {
-            strafePowers = OpmodeOperations.getStrafePowersFieldCentric();
+            //strafePowers = OpmodeOperations.getStrafePowersFieldCentric();
         }else{
-            strafePowers = OpmodeOperations.getStrafePowers();
+            //strafePowers = OpmodeOperations.getStrafePowers();
         }
     }
     private void encoder() {
