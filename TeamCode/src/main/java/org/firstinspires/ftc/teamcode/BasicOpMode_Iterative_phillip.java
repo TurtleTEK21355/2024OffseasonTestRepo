@@ -73,7 +73,10 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
     private Servo grabberServo = null;
     private Servo grabberHingeServo = null;
     private CRServo linearActuatorServo = null;
-    private final double MOTOR223 = 751.8;
+    private final double MOTOR = 751.8;
+    private final double viperSlideLimitBottom = MOTOR*0.2;
+    private final double viperSlideLimitTop = MOTOR*8.14;
+
     boolean field_centric = true;
     SparkFunOTOS.Pose2D pos;
 
@@ -94,8 +97,8 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         rearLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         rearRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        leftViperSlide.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightViperSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftViperSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightViperSlide.setDirection(DcMotorSimple.Direction.REVERSE);
         linearActuatorServo.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -215,7 +218,8 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
     }
 
     private void encoder() {
-        telemetry.addData("viperslidelevel",leftViperSlide.getCurrentPosition()/MOTOR223);
+        telemetry.addData("leftviperslidelevel",leftViperSlide.getCurrentPosition());
+        telemetry.addData("rightviperslidelevel",leftViperSlide.getCurrentPosition());
 }
 
     private void move_viper_slide() {
@@ -223,7 +227,19 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         rightViperSlide.setPower(gamepad2.left_stick_y);
         if (leftViperSlide.getCurrentPosition()<0);
        */
-        //if (leftViperSlide.getCurrentPosition();
+        if ((leftViperSlide.getCurrentPosition()+rightViperSlide.getCurrentPosition())/2<viperSlideLimitBottom){
+            leftViperSlide.setPower(0.5);
+            rightViperSlide.setPower(0.5);
+        }
+        else if ((leftViperSlide.getCurrentPosition()+rightViperSlide.getCurrentPosition())/2<viperSlideLimitTop){
+            leftViperSlide.setPower(gamepad2.left_stick_y+0.01);
+            rightViperSlide.setPower(gamepad2.left_stick_y+0.01);
+        }
+        else {
+            leftViperSlide.setPower(0);
+            rightViperSlide.setPower(0);
+        }
+
     }
 
     private void move_grabber_hinge() {
@@ -240,7 +256,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
     private void move_grabber(){
         if(gamepad1.right_trigger>0.1 || gamepad2.right_trigger>0.1){
             //close claw
-            grabberServo.setPosition(0.9);
+            grabberServo.setPosition(0.88);
         }
         else if(gamepad1.left_trigger>0.1 || gamepad2.left_trigger>0.1){
             //open claw
