@@ -202,14 +202,15 @@ public class BasicOpMode_Iterative_phillip2 extends OpMode {
             strafePowers = OpmodeOperations.getStrafePowers(getTurn(),
                     getDrive(), getStrafe());
         }
-        ///frontLeftDrive.setPower(strafePowers.getLeftStrafe());
-        //frontRightDrive.setPower(strafePowers.getFrontRight());
-        //rearLeftDrive.setPower(rearLeftStrafe);
-        //rearRightDrive.setPower(rearRightStrafe);
+        frontLeftDrive.setPower(strafePowers.getFrontLeft());
+        frontRightDrive.setPower(strafePowers.getFrontRight());
+        rearLeftDrive.setPower(strafePowers.getRearLeft());
+        rearRightDrive.setPower(strafePowers.getRearRight());
     }
+
     private void encoder() {
         telemetry.addData("viperslidelevel",leftViperSlide.getCurrentPosition());
-}
+    }
 
     private void move_viper_slide() {
         /*leftViperSlide.setPower(gamepad2.left_stick_y);
@@ -373,23 +374,15 @@ class OpmodeOperations {
         double rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
         return new StrafePowers(frontLeftStrafe, frontRightStrafe, rearLeftStrafe, rearRightStrafe);
 
-
-
     }
     public static StrafePowers getStrafePowers(float drive, float turn, float strafe){
             //telemetry.addLine("Field Centric Driving OFF");
-
-
             double frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
             double frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
             double rearLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
             double rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
             return new StrafePowers(frontLeftStrafe, frontRightStrafe, rearLeftStrafe, rearRightStrafe);
 
-            //frontLeftDrive.setPower(frontLeftStrafe);
-            //frontRightDrive.setPower(frontRightStrafe);
-            //rearLeftDrive.setPower(rearLeftStrafe);
-            //rearRightDrive.setPower(rearRightStrafe);
         }
     }
 
