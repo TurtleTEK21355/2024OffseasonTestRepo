@@ -177,6 +177,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         myOtos.calibrateImu();
         elapsedTime.reset();
         basketScore();
+        myOtos.resetTracking();
         // Turn away from the baskets, towards the second spike mark
         while (pos.h > -125 && opModeIsActive()) {
             drivetrainControl(0, 0, 0.3f);
@@ -186,8 +187,9 @@ public class BasketSideRedAuto extends LinearOpMode {
             telemetry.addData("Heading", pos.h);
             telemetry.update();
         }
+        myOtos.resetTracking();
         // Drive away from the baskets
-        while (pos.y > -10 && opModeIsActive()) {
+        while (pos.y < 10 && opModeIsActive()) {
             drivetrainControl(0.3f, 0, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -198,6 +200,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         stopAllMotors();
         myOtos.resetTracking();
         // Drive towards the second spike mark
+
         while (pos.y > -16 && opModeIsActive()) {
             drivetrainControl(-0.3f, 0, 0);
             pos = myOtos.getPosition();
@@ -267,7 +270,7 @@ public class BasketSideRedAuto extends LinearOpMode {
     }
 
     private void basketScore(){
-        while (elapsedTime.seconds() < 2.75 && opModeIsActive()) {
+        while (elapsedTime.seconds() < 2.65 && opModeIsActive()) {
             leftViperSlide.setPower(-0.75);
             rightViperSlide.setPower(-0.75);
         }
@@ -282,11 +285,10 @@ public class BasketSideRedAuto extends LinearOpMode {
         while (elapsedTime.seconds() < 0.5 && opModeIsActive()) {
             grabberServo.setPosition(0.5);
         }
-        myOtos.resetTracking();
-        while (myOtos.getPosition().y > -2 && opModeIsActive()) {
-            drivetrainControl(-0.3f, 0f, 0);
-        }
         elapsedTime.reset();
+        while (elapsedTime.seconds() < 0.5 && opModeIsActive()) {
+            drivetrainControl(-0.3f,0,0);
+        }
         while (elapsedTime.seconds() < 2 && opModeIsActive()) {
             leftViperSlide.setPower(0.75);
             rightViperSlide.setPower(0.75);
