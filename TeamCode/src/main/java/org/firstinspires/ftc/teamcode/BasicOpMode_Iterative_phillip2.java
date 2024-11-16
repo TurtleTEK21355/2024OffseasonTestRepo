@@ -202,8 +202,8 @@ public class BasicOpMode_Iterative_phillip2 extends OpMode {
             strafePowers = OpmodeOperations.getStrafePowers(getTurn(),
                     getDrive(), getStrafe());
         }
-        //frontLeftDrive.setPower(frontLeftStrafe);
-        //frontRightDrive.setPower(frontRightStrafe);
+        ///frontLeftDrive.setPower(strafePowers.getLeftStrafe());
+        //frontRightDrive.setPower(strafePowers.getFrontRight());
         //rearLeftDrive.setPower(rearLeftStrafe);
         //rearRightDrive.setPower(rearRightStrafe);
     }
@@ -342,6 +342,19 @@ class StrafePowers {
         this.rearRight=rearRight;
     }
 
+    public double getFrontLeft() {
+        return frontLeft;
+    }
+    public double getFrontRight(){
+        return frontRight;
+    }
+
+    public double getRearLeft() {
+        return rearLeft;
+    }
+    public double getRearRight(){
+        return rearRight;
+    }
 }
 
 class OpmodeOperations {
