@@ -31,7 +31,10 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -70,7 +73,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 @Autonomous(name="Emergency_Auto", group="Linear OpMode")
-public class EmergencyAuto extends LinearOpMode {
+public class BasketSideBlueAuto extends LinearOpMode {
     // Declare OpMode members.
     SparkFunOTOS myOtos;
     ElapsedTime elapsedTime;
@@ -110,15 +113,15 @@ public class EmergencyAuto extends LinearOpMode {
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        grabberServo.setPosition(0.5);
-        grabberHingeServo.setPosition(0.35);
+        grabberServo.setPosition(0.88);
         waitForStart();
 
 
         SparkFunOTOS.Pose2D pos;
         myOtos.resetTracking();
         pos = myOtos.getPosition();
-        while (pos.y < 48 && opModeIsActive()) {
+
+        while (pos.y < 44 && opModeIsActive()) {
             drivetrainControl(0.3f, 0, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -128,8 +131,19 @@ public class EmergencyAuto extends LinearOpMode {
         }
         stopAllMotors();
         myOtos.resetTracking();
+        while (pos.h < 90 && opModeIsActive()) {
+            drivetrainControl(0, 0, 0.2f);
+            pos = myOtos.getPosition();
+            telemetry.addData("X coord", pos.x);
+            telemetry.addData("Y coordinate", pos.y);
+            telemetry.addData("Heading", pos.h);
+            telemetry.update();
+        }
+        stopAllMotors();
+        myOtos.resetTracking();
+
         // Strafe to be in line with the farthest spike mark from the wall
-        while (pos.x < 9 && opModeIsActive()) {
+        while (pos.x < 10 && opModeIsActive()) {
             drivetrainControl(0, 0.3f, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -146,15 +160,7 @@ public class EmergencyAuto extends LinearOpMode {
         }
         leftViperSlide.setPower(0);
         rightViperSlide.setPower(0);
-        while (pos.x < 2 && opModeIsActive()) {
-            drivetrainControl(0, 0.3f, 0);
-            pos = myOtos.getPosition();
-            telemetry.addData("X coord", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
-            telemetry.addData("Heading", pos.h);
-            telemetry.update();
-        }
-        stopAllMotors();
+
 
     }
     private void driveStraight(float power, float position){

@@ -88,7 +88,6 @@ public class BasketSideRedAuto extends LinearOpMode {
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        grabberServo.setPosition(0.5);
         configureOtos();
         waitForStart();
 
@@ -108,6 +107,8 @@ public class BasketSideRedAuto extends LinearOpMode {
             leftViperSlide.setPower(0.2);
             rightViperSlide.setPower(0.2);
         }
+        grabberServo.setPosition(0.5);
+
         while (pos.y < 4 && opModeIsActive()) {
             drivetrainControl(0.3f, 0, 0);
             pos = myOtos.getPosition();
