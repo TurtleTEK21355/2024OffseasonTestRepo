@@ -95,19 +95,19 @@ public class BasicOpMode_Iterative extends OpMode {
         frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         rearLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         rearRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        leftViperSlide.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightViperSlide.setDirection(DcMotorSimple.Direction.REVERSE);
         linearActuatorServo.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightViperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftViperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightViperSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightViperSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftViperSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightViperSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         configureOtos();
     }
     /*private double inches(double inches){
