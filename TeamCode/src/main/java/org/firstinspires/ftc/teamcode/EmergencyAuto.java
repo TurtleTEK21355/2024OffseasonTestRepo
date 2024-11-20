@@ -31,7 +31,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -70,9 +69,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
-@Disabled
-@Autonomous(name="BasketSideBlueAuto", group="Linear OpMode")
-public class BasketSideBlueAuto extends LinearOpMode {
+@Autonomous(name="Emergency_Auto", group="Linear OpMode")
+public class EmergencyAuto extends LinearOpMode {
     // Declare OpMode members.
     SparkFunOTOS myOtos;
     ElapsedTime elapsedTime;
@@ -114,14 +112,13 @@ public class BasketSideBlueAuto extends LinearOpMode {
         rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         grabberServo.setPosition(0.5);
         grabberHingeServo.setPosition(0.35);
-
+        waitForStart();
 
 
         SparkFunOTOS.Pose2D pos;
         myOtos.resetTracking();
         pos = myOtos.getPosition();
-        // Drive away from the wall
-        while (pos.y < 2 && opModeIsActive()) {
+        while (pos.y < 48 && opModeIsActive()) {
             drivetrainControl(0.3f, 0, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -132,19 +129,8 @@ public class BasketSideBlueAuto extends LinearOpMode {
         stopAllMotors();
         myOtos.resetTracking();
         // Strafe to be in line with the farthest spike mark from the wall
-        while (pos.x > -8 && opModeIsActive()) {
-            drivetrainControl(0, -0.3f, 0);
-            pos = myOtos.getPosition();
-            telemetry.addData("X coord", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
-            telemetry.addData("Heading", pos.h);
-            telemetry.update();
-        }
-        stopAllMotors();
-        myOtos.resetTracking();
-        // Drive towards the spike mark
-        while (pos.y < 16 && opModeIsActive()) {
-            drivetrainControl(0.3f, 0, 0);
+        while (pos.x < 9 && opModeIsActive()) {
+            drivetrainControl(0, 0.3f, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
             telemetry.addData("Y coordinate", pos.y);
@@ -154,100 +140,14 @@ public class BasketSideBlueAuto extends LinearOpMode {
         stopAllMotors();
         myOtos.resetTracking();
         elapsedTime.reset();
-        //Grabby Grabby
-        while(elapsedTime.seconds() < 4 && opModeIsActive()){
-            linearActuatorServo.setPower(1);
+        while (elapsedTime.seconds() < 3){
+            leftViperSlide.setPower(-1);
+            rightViperSlide.setPower(-1);
         }
-        linearActuatorServo.setPower(0);
-        sampleIntake();
-        // Drive away from the spike mark
-        while (pos.y > -9 && opModeIsActive()) {
-            drivetrainControl(-0.3f, 0, 0);
-            pos = myOtos.getPosition();
-            telemetry.addData("X coord", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
-            telemetry.addData("Heading", pos.h);
-            telemetry.update();
-
-        }
-
-        stopAllMotors();
-        myOtos.resetTracking();
-        //Turn towards the basket
-        while (pos.h < 135 && opModeIsActive()) {
-            drivetrainControl(0, 0, -0.3f); //unsure as to turning direction
-            pos = myOtos.getPosition();
-            telemetry.addData("X coord", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
-            telemetry.addData("Heading", pos.h);
-            telemetry.update();
-        }
-        stopAllMotors();
-        myOtos.resetTracking();
-        //Drive towards the basket
-        while (pos.y < 9 && opModeIsActive()) {
-            drivetrainControl(0.3f, 0, 0);
-            pos = myOtos.getPosition();
-            telemetry.addData("X coord", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
-            telemetry.addData("Heading", pos.h);
-        }
-        stopAllMotors();
-        myOtos.resetTracking();
-        myOtos.calibrateImu();
-        elapsedTime.reset();
-        basketScore();
-        // Turn away from the baskets, towards the second spike mark
-        while (pos.h > -138 && opModeIsActive()) {
-            drivetrainControl(0, 0, 0.3f);
-            pos = myOtos.getPosition();
-            telemetry.addData("X coord", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
-            telemetry.addData("Heading", pos.h);
-            telemetry.update();
-        }
-        // Drive away from the baskets
-        while (pos.y > -10 && opModeIsActive()) {
-            drivetrainControl(0.3f, 0, 0);
-            pos = myOtos.getPosition();
-            telemetry.addData("X coord", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
-            telemetry.addData("Heading", pos.h);
-            telemetry.update();
-        }
-        stopAllMotors();
-        myOtos.resetTracking();
-        // Drive towards the second spike mark
-        while (pos.y > -16 && opModeIsActive()) {
-            drivetrainControl(-0.3f, 0, 0);
-            pos = myOtos.getPosition();
-            telemetry.addData("X coord", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
-            telemetry.addData("Heading", pos.h);
-            telemetry.update();
-        }
-        stopAllMotors();
-        myOtos.resetTracking();
-        myOtos.calibrateImu();
-        elapsedTime.reset();
-        sampleIntake();
-        //Turn towards basket
-        while (pos.h < 135 && opModeIsActive()) {
-            drivetrainControl(0, 0, -0.3f);
-            pos = myOtos.getPosition();
-            telemetry.addData("X coord", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
-            telemetry.addData("Heading", pos.h);
-            telemetry.update();
-        }
-        stopAllMotors();
-        myOtos.resetTracking();
-        myOtos.calibrateImu();
-        elapsedTime.reset();
-        basketScore();
-        //Drive to the ascent zone
-        while (pos.y > -25 && opModeIsActive()) {
-            drivetrainControl(-0.3f, 0f, 0);
+        leftViperSlide.setPower(0);
+        rightViperSlide.setPower(0);
+        while (pos.x < 2 && opModeIsActive()) {
+            drivetrainControl(0, 0.3f, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
             telemetry.addData("Y coordinate", pos.y);

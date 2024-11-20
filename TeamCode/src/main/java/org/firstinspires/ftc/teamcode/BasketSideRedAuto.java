@@ -121,7 +121,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         stopAllMotors();
         myOtos.resetTracking();
         // Drive towards the spike mark
-        while (pos.y < 16 && opModeIsActive()) {
+        while (pos.y < 15.5 && opModeIsActive()) {
             drivetrainControl(0.3f, 0, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -189,7 +189,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         }
         myOtos.resetTracking();
         // Drive away from the baskets
-        while (pos.y < 7 && opModeIsActive()) {
+        while (pos.y < 8 && opModeIsActive()) {
             drivetrainControl(0.3f, 0, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -200,7 +200,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         stopAllMotors();
         myOtos.resetTracking();
         myOtos.calibrateImu();
-        while (pos.x > -4 && opModeIsActive()) {
+        while (pos.x > -2 && opModeIsActive()) {
             drivetrainControl(0, -0.3f, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -209,10 +209,6 @@ public class BasketSideRedAuto extends LinearOpMode {
         }
         elapsedTime.reset();
         sleep(500);
-        while(elapsedTime.seconds() < 4 && opModeIsActive()){
-            linearActuatorServo.setPower(1);
-        }
-        linearActuatorServo.setPower(0);
         sampleIntake();
         sleep(500);
         while (pos.y < 7 && opModeIsActive()) {
@@ -292,17 +288,16 @@ public class BasketSideRedAuto extends LinearOpMode {
     }
 
     private void basketScore(){
-        while (elapsedTime.seconds() < 2.5 && opModeIsActive()) {
-            leftViperSlide.setPower(-0.75);
-            rightViperSlide.setPower(-0.75);
+        while (elapsedTime.seconds() < 2.35 && opModeIsActive()) {
+            leftViperSlide.setPower(-0.78);
+            rightViperSlide.setPower(-0.78);
         }
         myOtos.resetTracking();
         while (myOtos.getPosition().y < 1.5 && elapsedTime.seconds() > 1.25 && opModeIsActive()) {
-            drivetrainControl(0.3f, 0f, 0);
+            drivetrainControl(0.3f, 0, 0);
         }
         leftViperSlide.setPower(0);
         rightViperSlide.setPower(0);
-        linearActuatorServo.setPower(0);
         elapsedTime.reset();
         while (elapsedTime.seconds() < 0.5 && opModeIsActive()) {
             grabberServo.setPosition(0.5);
@@ -315,7 +310,6 @@ public class BasketSideRedAuto extends LinearOpMode {
         while (elapsedTime.seconds() < 2 && opModeIsActive()) {
             leftViperSlide.setPower(0.75);
             rightViperSlide.setPower(0.75);
-            linearActuatorServo.setPower(-1);
         }
     }
 
