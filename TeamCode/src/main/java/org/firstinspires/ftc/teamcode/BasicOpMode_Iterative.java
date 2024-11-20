@@ -71,8 +71,8 @@ public class BasicOpMode_Iterative extends OpMode {
     private Servo grabberWristServo = null;
     private CRServo linearActuatorServo = null;
     private final double MOTOR = 751.8;
-    private final double BottomLimit = 0.1;
-    private final double TopLimit = 8.14;
+    private final double BottomLimit = 0.25;
+    private final double TopLimit = 8.1;
     private final double viperSlideLimitBottom = MOTOR*BottomLimit;
     private final double viperSlideLimitTop = MOTOR*TopLimit;
     boolean field_centric = true;
@@ -248,7 +248,7 @@ public class BasicOpMode_Iterative extends OpMode {
 
         double idlePower = 0.1;
         double viperSlideEncoderAverage = ((leftViperSlide.getCurrentPosition()+rightViperSlide.getCurrentPosition())/2.0);
-        double viperSlidePower = -gamepad1.left_stick_y;
+        double viperSlidePower = -gamepad2.left_stick_y;
 
         if (viperSlideLimitBottom < viperSlideEncoderAverage && viperSlideEncoderAverage < viperSlideLimitTop){
             leftViperSlide.setPower((viperSlidePower)+idlePower);
