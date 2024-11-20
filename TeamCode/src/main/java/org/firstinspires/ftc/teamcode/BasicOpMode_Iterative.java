@@ -100,10 +100,10 @@ public class BasicOpMode_Iterative extends OpMode {
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightViperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        /*rightViperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftViperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightViperSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightViperSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightViperSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);*/
         leftViperSlide.setDirection(DcMotorSimple.Direction.FORWARD);
         rightViperSlide.setDirection(DcMotorSimple.Direction.REVERSE);
         rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
