@@ -89,7 +89,6 @@ public class BasketSideRedAuto extends LinearOpMode {
         leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         grabberServo.setPosition(0.5);
-        grabberHingeServo.setPosition(0.35);
         configureOtos();
         waitForStart();
 
@@ -99,6 +98,16 @@ public class BasketSideRedAuto extends LinearOpMode {
         myOtos.resetTracking();
         pos = myOtos.getPosition();
         // Drive away from the wall
+        while (elapsedTime.seconds() < 0.5){
+            leftViperSlide.setPower(-0.2);
+            rightViperSlide.setPower(-0.2);
+        }
+        grabberHingeServo.setPosition(0.35);
+        elapsedTime.reset();
+        while (elapsedTime.seconds() < 0.5){
+            leftViperSlide.setPower(0.2);
+            rightViperSlide.setPower(0.2);
+        }
         while (pos.y < 4 && opModeIsActive()) {
             drivetrainControl(0.3f, 0, 0);
             pos = myOtos.getPosition();
