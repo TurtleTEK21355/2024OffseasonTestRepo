@@ -30,15 +30,12 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorImpl;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -58,8 +55,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Iterative OpMode Phillip", group="Iterative OpMode")
-public class BasicOpMode_Iterative_phillip extends OpMode {
+@TeleOp(name="Basic: Iterative OpMode", group="Iterative OpMode")
+public class BasicOpMode_Iterative extends OpMode {
 
     SparkFunOTOS myOtos;
     //private MeccanumWheel wheel = null;
@@ -71,9 +68,13 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
     private DcMotor leftViperSlide = null;
     private DcMotor rightViperSlide = null;
     private Servo grabberServo = null;
-    private Servo grabberHingeServo = null;
+    private Servo grabberWristServo = null;
     private CRServo linearActuatorServo = null;
-    private final double MOTOR223 = 751.8;
+    private final double MOTOR = 751.8;
+    private final double BottomLimit = 0.25;
+    private final double TopLimit = 8.1;
+    private final double viperSlideLimitBottom = MOTOR*BottomLimit;
+    private final double viperSlideLimitTop = MOTOR*TopLimit;
     boolean field_centric = true;
     SparkFunOTOS.Pose2D pos;
 
@@ -88,21 +89,25 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         leftViperSlide = hardwareMap.get(DcMotor.class, "left_viper_slide");
         rightViperSlide = hardwareMap.get(DcMotor.class, "right_viper_slide");
         grabberServo = hardwareMap.get(Servo.class, "grabber_servo");
-        grabberHingeServo = hardwareMap.get(Servo.class, "grabber_hinge_servo");
+        grabberWristServo = hardwareMap.get(Servo.class, "grabber_hinge_servo");
         linearActuatorServo = hardwareMap.get(CRServo.class, "linear_actuator_servo");
         frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         rearLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         rearRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        leftViperSlide.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightViperSlide.setDirection(DcMotorSimple.Direction.FORWARD);
         linearActuatorServo.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        /*rightViperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftViperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightViperSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightViperSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);*/
+        leftViperSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightViperSlide.setDirection(DcMotorSimple.Direction.REVERSE);
         rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         configureOtos();
     }
     /*private double inches(double inches){
@@ -119,7 +124,7 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         encoder();
         move_viper_slide();
         move_grabber();
-        move_grabber_hinge();
+        move_grabber_wrist();
         move_linear_actuator();
         telemetry.update();
 
@@ -215,32 +220,76 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
     }
 
     private void encoder() {
-        telemetry.addData("viperslidelevel",leftViperSlide.getCurrentPosition()/MOTOR223);
+        telemetry.addData("leftviperslidelevel",leftViperSlide.getCurrentPosition());
+        telemetry.addData("rightviperslidelevel",leftViperSlide.getCurrentPosition());
 }
 
     private void move_viper_slide() {
         /*leftViperSlide.setPower(gamepad2.left_stick_y);
         rightViperSlide.setPower(gamepad2.left_stick_y);
+
         if (leftViperSlide.getCurrentPosition()<0);
-       */
-        //if (leftViperSlide.getCurrentPosition();
+        if ((leftViperSlide.getCurrentPosition()+rightViperSlide.getCurrentPosition())/2.0<viperSlideLimitBottom){
+            leftViperSlide.setPower(0.5);
+            rightViperSlide.setPower(0.5);
+        }
+        else if ((leftViperSlide.getCurrentPosition()+rightViperSlide.getCurrentPosition())/2.0<viperSlideLimitTop){
+            leftViperSlide.setPower((-gamepad2.left_stick_y)+idlePower);
+            rightViperSlide.setPower((-gamepad2.left_stick_y)+idlePower);
+        }
+        else if (gamepad2.left_stick_y <= 0.1) {
+            leftViperSlide.setPower(idlePower);
+            rightViperSlide.setPower(idlePower);
+        }
+        else{
+            leftViperSlide.setPower(0);
+            rightViperSlide.setPower(0);
+        }*/
+
+        double idlePower = 0.1;
+        double viperSlideEncoderAverage = ((leftViperSlide.getCurrentPosition()+rightViperSlide.getCurrentPosition())/2.0);
+        double viperSlidePower = -gamepad2.left_stick_y;
+
+        if (viperSlideLimitBottom < viperSlideEncoderAverage && viperSlideEncoderAverage < viperSlideLimitTop){
+            leftViperSlide.setPower((viperSlidePower)+idlePower);
+            rightViperSlide.setPower((viperSlidePower)+idlePower);
+        }
+        else if (viperSlideEncoderAverage > viperSlideLimitTop && viperSlidePower > -0.1){
+            leftViperSlide.setPower(idlePower);
+            rightViperSlide.setPower(idlePower);
+        }
+        else if (viperSlideEncoderAverage < viperSlideLimitBottom && viperSlidePower < 0.1){
+            leftViperSlide.setPower(0.2);
+            rightViperSlide.setPower(0.2);
+        }
+        else{
+            leftViperSlide.setPower((viperSlidePower)+idlePower);
+            rightViperSlide.setPower((viperSlidePower)+idlePower);
+        }
     }
 
-    private void move_grabber_hinge() {
-        if(gamepad2.dpad_down){
-            grabberHingeServo.setPosition(0.3);
+    private void move_grabber_wrist() {
+        if (gamepad2.dpad_down) {
+            grabberWristServo.setPosition(0.3);
         }
-        else if(gamepad2.dpad_up){
-            grabberHingeServo.setPosition(1);
+        else if (gamepad2.dpad_up) {
+            grabberWristServo.setPosition(1);
         }
 
-
+        if (gamepad2.right_bumper || gamepad2.left_bumper) {
+            if (gamepad2.right_bumper) {
+                grabberWristServo.setPosition(grabberWristServo.getPosition() + 0.05);
+            }
+            else if (gamepad2.left_bumper) {
+                grabberWristServo.setPosition(grabberWristServo.getPosition() - 0.05);
+            }
+        }
     }
 
     private void move_grabber(){
         if(gamepad1.right_trigger>0.1 || gamepad2.right_trigger>0.1){
             //close claw
-            grabberServo.setPosition(0.9);
+            grabberServo.setPosition(0.88);
         }
         else if(gamepad1.left_trigger>0.1 || gamepad2.left_trigger>0.1){
             //open claw
