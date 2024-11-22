@@ -177,14 +177,14 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         }
         if (field_centric){
             telemetry.addLine("Field Centric Driving ON");
-            double y = -gamepad1.left_stick_y;
-            double x = gamepad1.left_stick_x;
+            double y = -gamepad1.left_stick_y * 0.7;
+            double x = gamepad1.left_stick_x * 0.7;
             double r = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
             double theta = Math.atan2(y,x);
             double correctedTheta = theta - myOtos.getPosition().h;
             double drive = r * Math.sin(correctedTheta);
             double strafe = r * Math.cos(correctedTheta);
-            double turn = gamepad1.right_stick_x;
+            double turn = gamepad1.right_stick_x * 0.7;
 
             double frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
             double frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
@@ -198,9 +198,9 @@ public class BasicOpMode_Iterative_phillip extends OpMode {
         }
         else{
             telemetry.addLine("Field Centric Driving OFF");
-            float drive = -gamepad1.left_stick_y;
-            float turn = gamepad1.right_stick_x;
-            float strafe = gamepad1.left_stick_x;
+            float drive = gamepad1.left_stick_y * -0.7f;
+            float turn = gamepad1.right_stick_x * 0.7f;
+            float strafe = gamepad1.left_stick_x * 0.7f;
 
             double frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
             double frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
