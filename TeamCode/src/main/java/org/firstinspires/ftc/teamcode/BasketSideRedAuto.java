@@ -319,7 +319,7 @@ public class BasketSideRedAuto extends LinearOpMode {
     }
 
     private void basketScore(){
-        while (elapsedTime.seconds() < 2.35 && opModeIsActive()) {
+        while (leftViperSlide.getCurrentPosition() < 6080 && opModeIsActive()) {
             leftViperSlide.setPower(-0.78);
             rightViperSlide.setPower(-0.78);
         }
@@ -338,7 +338,7 @@ public class BasketSideRedAuto extends LinearOpMode {
             drivetrainControl(-0.3f,0,0);
         }
         stopAllMotors();
-        while (elapsedTime.seconds() < 2 && opModeIsActive()) {
+        while (leftViperSlide.getCurrentPosition() > 190 && opModeIsActive()) {
             leftViperSlide.setPower(0.75);
             rightViperSlide.setPower(0.75);
         }
