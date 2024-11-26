@@ -72,8 +72,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
-@Autonomous(name="Emergency_Auto", group="Linear OpMode")
-public class BasketSideBlueAuto extends LinearOpMode {
+@Autonomous(name="Emergency_Auto_Basket", group="Linear OpMode")
+public class EmergencyBasketAuto extends LinearOpMode {
     // Declare OpMode members.
     SparkFunOTOS myOtos;
     ElapsedTime elapsedTime;
