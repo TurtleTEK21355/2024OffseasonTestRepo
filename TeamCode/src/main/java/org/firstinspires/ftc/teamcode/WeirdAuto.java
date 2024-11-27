@@ -30,10 +30,12 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -43,16 +45,83 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 @Autonomous(name="WeirdAuto", group="Linear OpMode")
 public class WeirdAuto extends LinearOpMode {
+    SparkFunOTOS myOtos;
+    private DcMotor frontLeftDrive = null;
+    private DcMotor frontRightDrive = null;
+    private DcMotor rearLeftDrive = null;
+    private DcMotor rearRightDrive = null;
 
     @Override
     public void runOpMode() {
-
-
+        myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
+        frontLeftDrive = hardwareMap.get(DcMotor.class, "front_left_drive");
+        frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
+        rearLeftDrive = hardwareMap.get(DcMotor.class, "rear_left_drive");
+        rearRightDrive = hardwareMap.get(DcMotor.class, "rear_right_drive");
+        frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        rearLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        rearRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        myOtos.resetTracking();
+        moveRobot(20,20,20,0.5);
     }
 
-    public void moveRobot(double x,double y,double h){
-        
-
+    public void moveRobot(double x,double y,double h,double speed){//x and y will be in inches
+        SparkFunOTOS.Pose2D pos = myOtos.getPosition();
+        double drive = moveRobotX(x,pos,speed);
+        double strafe = moveRobotY(y,pos,speed);
+        double turn = rotateRobot(h,pos,speed;
+        double frontLeftPower = Range.clip(drive + strafe + turn, -1, 1);
+        double frontRightPower = Range.clip(drive - strafe - turn, -1, 1);
+        double rearLeftPower = Range.clip(drive - strafe + turn, -1, 1);
+        double rearRightPower = Range.clip(drive + strafe - turn, -1, 1);
+        frontLeftDrive.setPower(frontLeftPower);
+        frontRightDrive.setPower(frontRightPower);
+        rearLeftDrive.setPower(rearLeftPower);
+        rearRightDrive.setPower(rearRightPower);
+    }
+    public double moveRobotX(double input, SparkFunOTOS.Pose2D pos,double inputSpeed) {
+        double output = 0;
+        if (input > 0) {
+            if (pos.x<input){
+                output = inputSpeed;
+            } else {
+                if (pos.x>input){
+                    output = -inputSpeed;
+                }
+            }
+        }
+        return output;
+    }
+        public double moveRobotY(double input, SparkFunOTOS.Pose2D pos,double inputSpeed){
+            double output = 0;
+            if (input > 0) {
+                if (pos.y<input){
+                    output = inputSpeed;
+                } else {
+                    if (pos.y>input){
+                        output = -inputSpeed;
+                    }
+                }
+            }
+            return output;
+    }
+    public double rotateRobot(double input, SparkFunOTOS.Pose2D pos,double inputSpeed){
+        double output = 0;
+        if (input > 0) {
+            if (pos.h<input){
+                output = inputSpeed;
+            } else {
+                if (pos.h>input){
+                    output = -inputSpeed;
+                }
+            }
+        }
+        return output;
     }
 
 }
