@@ -31,10 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -73,7 +70,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 @Autonomous(name="Emergency_Auto", group="Linear OpMode")
-public class BasketSideBlueAuto extends LinearOpMode {
+public class emergencyBasketAuto extends LinearOpMode {
     // Declare OpMode members.
     SparkFunOTOS myOtos;
     ElapsedTime elapsedTime;
@@ -154,7 +151,7 @@ public class BasketSideBlueAuto extends LinearOpMode {
         stopAllMotors();
         myOtos.resetTracking();
         elapsedTime.reset();
-        while (elapsedTime.seconds() < 3){
+        while (elapsedTime.seconds() < 3) {
             leftViperSlide.setPower(-1);
             rightViperSlide.setPower(-1);
         }
@@ -163,16 +160,19 @@ public class BasketSideBlueAuto extends LinearOpMode {
 
 
     }
-    private void driveStraight(float power, float position){
-        float turn = position/100;
-        drivetrainControl(power,0,turn);
+
+    private void driveStraight(float power, float position) {
+        float turn = position / 100;
+        drivetrainControl(power, 0, turn);
     }
-    private void stopAllMotors(){
-        drivetrainControl(0,0,0);
+
+    private void stopAllMotors() {
+        drivetrainControl(0, 0, 0);
     }
-    private void driveStrafe(float power, float position){
-        float turn = position/100;
-        drivetrainControl(0,power,turn);
+
+    private void driveStrafe(float power, float position) {
+        float turn = position / 100;
+        drivetrainControl(0, power, turn);
     }
 
     private void drivetrainControl(float drive, float strafe, float turn) {
@@ -186,11 +186,12 @@ public class BasketSideBlueAuto extends LinearOpMode {
         rearLeftDrive.setPower(rearLeftStrafe);
         rearRightDrive.setPower(rearRightStrafe);
     }
-    private void sampleIntake(){
+
+    private void sampleIntake() {
         grabberServo.setPosition(0.9);
     }
 
-    private void basketScore(){
+    private void basketScore() {
         while (elapsedTime.seconds() < 1 && opModeIsActive()) {
             leftViperSlide.setPower(0.75);
             rightViperSlide.setPower(0.75);
@@ -290,4 +291,3 @@ public class BasketSideBlueAuto extends LinearOpMode {
         telemetry.update();
     }
 }
-
