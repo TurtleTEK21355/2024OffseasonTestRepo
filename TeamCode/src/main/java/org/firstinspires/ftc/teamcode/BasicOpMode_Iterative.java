@@ -248,7 +248,7 @@ public class BasicOpMode_Iterative extends OpMode {
 
         double idlePower = 0.1;
         double viperSlideEncoderAverage = ((leftViperSlide.getCurrentPosition()+rightViperSlide.getCurrentPosition())/2.0);
-        double viperSlidePower = -gamepad2.left_stick_y;
+        double viperSlidePower = -gamepad2.right_stick_y;
 
         if (viperSlideLimitBottom < viperSlideEncoderAverage && viperSlideEncoderAverage < viperSlideLimitTop){
             leftViperSlide.setPower((viperSlidePower)+idlePower);
@@ -299,7 +299,7 @@ public class BasicOpMode_Iterative extends OpMode {
     }
 
     private void move_linear_actuator(){
-        linearActuatorServo.setPower(gamepad2.right_stick_y);
+        linearActuatorServo.setPower(gamepad2.left_stick_y);
     }
 
     private void configureOtos() {
