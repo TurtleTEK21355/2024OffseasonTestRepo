@@ -97,7 +97,6 @@ public class BasketSideRedAuto extends LinearOpMode {
         myOtos.resetTracking();
         pos = myOtos.getPosition();
         // Drive away from the wall
-
         while (pos.y < 4 && opModeIsActive()) {
             drivetrainControl(0.3f, 0, 0);
             pos = myOtos.getPosition();
