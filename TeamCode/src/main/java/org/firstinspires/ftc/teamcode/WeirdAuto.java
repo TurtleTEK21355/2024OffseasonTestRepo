@@ -70,57 +70,42 @@ public class WeirdAuto extends LinearOpMode {
         moveRobot(20,20,20,0.5);
     }
 
-    public void moveRobot(double x,double y,double h,double speed){//x and y will be in inches
+    public void moveRobot(double x,double y,double h,double speed){
         SparkFunOTOS.Pose2D pos = myOtos.getPosition();
-        double drive = moveRobotX(x,pos,speed);
-        double strafe = moveRobotY(y,pos,speed);
-        double turn = rotateRobot(h,pos,speed;
-        double frontLeftPower = Range.clip(drive + strafe + turn, -1, 1);
-        double frontRightPower = Range.clip(drive - strafe - turn, -1, 1);
-        double rearLeftPower = Range.clip(drive - strafe + turn, -1, 1);
-        double rearRightPower = Range.clip(drive + strafe - turn, -1, 1);
-        frontLeftDrive.setPower(frontLeftPower);
-        frontRightDrive.setPower(frontRightPower);
-        rearLeftDrive.setPower(rearLeftPower);
-        rearRightDrive.setPower(rearRightPower);
-    }
-    public double moveRobotX(double input, SparkFunOTOS.Pose2D pos,double inputSpeed) {
-        double output = 0;
-        if (input > 0) {
-            if (pos.x<input){
-                output = inputSpeed;
-            } else {
-                if (pos.x>input){
-                    output = -inputSpeed;
-                }
-            }
+        while(!valueRoughlyEqual(pos.x, x,0.25) && !valueRoughlyEqual(pos.y, y,0.25) && !valueRoughlyEqual(pos.h, h,0.25)) {
+            pos = myOtos.getPosition();
+            double why = bangBangController(y, pos.y, speed);
+            double ex = bangBangController(x, pos.x, speed);
+            double arr = Math.sqrt(Math.pow(ex, 2) + Math.pow(why, 2));
+            double theta = Math.atan2(why, ex);
+            double correctedTheta = theta - pos.h;
+            double drive = arr * Math.sin(correctedTheta);
+            double strafe = arr * Math.cos(correctedTheta);
+            double turn = bangBangController(h, pos.h, speed);
+            double frontLeftPower = Range.clip(drive + strafe + turn, -1, 1);
+            double frontRightPower = Range.clip(drive - strafe - turn, -1, 1);
+            double rearLeftPower = Range.clip(drive - strafe + turn, -1, 1);
+            double rearRightPower = Range.clip(drive + strafe - turn, -1, 1);
+            frontLeftDrive.setPower(frontLeftPower);
+            frontRightDrive.setPower(frontRightPower);
+            rearLeftDrive.setPower(rearLeftPower);
+            rearRightDrive.setPower(rearRightPower);
         }
-        return output;
     }
-        public double moveRobotY(double input, SparkFunOTOS.Pose2D pos,double inputSpeed){
-            double output = 0;
-            if (input > 0) {
-                if (pos.y<input){
-                    output = inputSpeed;
-                } else {
-                    if (pos.y>input){
-                        output = -inputSpeed;
-                    }
-                }
-            }
-            return output;
+
+    public boolean valueRoughlyEqual(double value, double goal, double tolerance) {
+        return value >= goal - tolerance && value <= goal + tolerance;
     }
-    public double rotateRobot(double input, SparkFunOTOS.Pose2D pos,double inputSpeed){
+
+    public double bangBangController(double goalPos, double currentPos,double speed) {
         double output = 0;
-        if (input > 0) {
-            if (pos.h<input){
-                output = inputSpeed;
-            } else {
-                if (pos.h>input){
-                    output = -inputSpeed;
-                }
-            }
+
+        if (currentPos < goalPos) {
+            output = speed;
+        } else if (currentPos > goalPos) {
+            output = -speed;
         }
+
         return output;
     }
 
