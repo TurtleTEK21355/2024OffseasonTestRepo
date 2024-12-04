@@ -67,7 +67,8 @@ public class WeirdAuto extends LinearOpMode {
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         myOtos.resetTracking();
-        moveRobot(20,20,20,0.5);
+        waitForStart();
+        moveRobot(20,20,20,0.1);
     }
 
     public void moveRobot(double x,double y,double h,double speed){
@@ -81,11 +82,11 @@ public class WeirdAuto extends LinearOpMode {
             double correctedTheta = theta - pos.h;
             double drive = arr * Math.sin(correctedTheta);
             double strafe = arr * Math.cos(correctedTheta);
-            double turn = bangBangController(h, pos.h, speed);
-            double frontLeftPower = Range.clip(drive + strafe + turn, -1, 1);
-            double frontRightPower = Range.clip(drive - strafe - turn, -1, 1);
-            double rearLeftPower = Range.clip(drive - strafe + turn, -1, 1);
-            double rearRightPower = Range.clip(drive + strafe - turn, -1, 1);
+            //double turn = bangBangController(h, pos.h, speed);
+            double frontLeftPower = Range.clip(drive + strafe /*+ turn*/, -1, 1);
+            double frontRightPower = Range.clip(drive - strafe /*- turn*/, -1, 1);
+            double rearLeftPower = Range.clip(drive - strafe /*+ turn*/, -1, 1);
+            double rearRightPower = Range.clip(drive + strafe /*- turn*/, -1, 1);
             frontLeftDrive.setPower(frontLeftPower);
             frontRightDrive.setPower(frontRightPower);
             rearLeftDrive.setPower(rearLeftPower);
