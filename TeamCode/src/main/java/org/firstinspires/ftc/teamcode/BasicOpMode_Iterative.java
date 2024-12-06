@@ -69,7 +69,7 @@ public class BasicOpMode_Iterative extends OpMode {
     private Servo grabberWristServo = null;
     private CRServo linearActuatorServo = null;
     private final double MOTOR = 751.8;
-    private final double BottomLimit = 0.25;
+    private final double BottomLimit = 0.22;
     private final double TopLimit = 8.1;
     private final double viperSlideLimitBottom = MOTOR*BottomLimit;
     private final double viperSlideLimitTop = MOTOR*TopLimit;
