@@ -97,7 +97,17 @@ public class BasketSideRedAuto extends LinearOpMode {
         myOtos.resetTracking();
         pos = myOtos.getPosition();
         // Drive away from the wall
-        while (pos.y < 15 && opModeIsActive()) {
+        while (pos.h < 45 && opModeIsActive()) {
+            drivetrainControl(0, 0.3f, 0.1f);
+            pos = myOtos.getPosition();
+            telemetry.addData("X coord", pos.x);
+            telemetry.addData("Y coordinate", pos.y);
+            telemetry.addData("Heading", pos.h);
+            telemetry.update();
+        }
+        stopAllMotors();
+        myOtos.resetTracking();
+        while (pos.y < 10 && opModeIsActive()) {
             drivetrainControl(0.3f, 0, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -106,6 +116,7 @@ public class BasketSideRedAuto extends LinearOpMode {
             telemetry.update();
         }
         stopAllMotors();
+        myOtos.resetTracking();
         elapsedTime.reset();
         while(elapsedTime.seconds() < 4 && opModeIsActive()){
             linearActuatorServo.setPower(1);
