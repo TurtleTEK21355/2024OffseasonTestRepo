@@ -68,47 +68,58 @@ public class WeirdAuto extends LinearOpMode {
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         myOtos.resetTracking();
         waitForStart();
-        moveRobot(20,20,20,0.1);
+        moveRobot(20,20,20,0.1, 0.5, 1.0);
     }
 
-    public void moveRobot(double x,double y,double h,double speed){
+    public void moveRobot(double x,double y,double h,double speed,double posTolerance,double headingTolerance){
         SparkFunOTOS.Pose2D pos = myOtos.getPosition();
-        while(!valueRoughlyEqual(pos.x, x,0.5) && !valueRoughlyEqual(pos.y, y,0.5) && !valueRoughlyEqual(pos.h, h,0.5)) {
+        while(!valueRoughlyEqual(pos.x, x,posTolerance) && !valueRoughlyEqual(pos.y, y,posTolerance) && !valueRoughlyEqual(pos.h, h,headingTolerance)) {
             pos = myOtos.getPosition();
+
             double ySide = bangBangController(y, pos.y, speed);
             double xSide = bangBangController(x, pos.x, speed);
             double hyp = Math.sqrt(Math.pow(xSide, 2) + Math.pow(ySide, 2));
             double theta = Math.atan2(ySide, xSide);
             double correctedTheta = theta - pos.h;
+
             double drive;
-            if (!valueRoughlyEqual(pos.h, h,0.5)) {
+            if (!valueRoughlyEqual(pos.x, x,posTolerance)) {
                 drive = hyp * Math.sin(correctedTheta);
             }
             else {
                 drive = 0.0;
             }
+
             double strafe;
-            if (!valueRoughlyEqual(pos.h, h,0.5)) {
+            if (!valueRoughlyEqual(pos.y, y,posTolerance)) {
                 strafe = hyp * Math.cos(correctedTheta);
             }
             else {
                 strafe = 0.0;
             }
+
             double turn;
-            if (!valueRoughlyEqual(pos.h, h,1)) {
+            if (!valueRoughlyEqual(pos.h, h,headingTolerance)) {
                 turn = bangBangController(h, pos.h, speed);
             }
             else {
                 turn = 0.0;
             }
+
             double frontLeftPower = Range.clip(drive + strafe + turn, -1, 1);
             double frontRightPower = Range.clip(drive - strafe - turn, -1, 1);
             double rearLeftPower = Range.clip(drive - strafe + turn, -1, 1);
             double rearRightPower = Range.clip(drive + strafe - turn, -1, 1);
+
             frontLeftDrive.setPower(frontLeftPower);
             frontRightDrive.setPower(frontRightPower);
             rearLeftDrive.setPower(rearLeftPower);
             rearRightDrive.setPower(rearRightPower);
+
+            telemetry.addData("x:",pos.x);
+            telemetry.addData("y:",pos.y);
+            telemetry.addData("h:",pos.h);
+            telemetry.update();
         }
     }
 
