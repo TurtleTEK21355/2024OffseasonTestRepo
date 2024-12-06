@@ -59,8 +59,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class BasicOpMode_Iterative extends OpMode {
 
     SparkFunOTOS myOtos;
-    //private MeccanumWheel wheel = null;
-    //private Motor312 motor312 = null;
     private DcMotor frontLeftDrive = null;
     private DcMotor frontRightDrive = null;
     private DcMotor rearLeftDrive = null;
@@ -80,7 +78,6 @@ public class BasicOpMode_Iterative extends OpMode {
 
     @Override
     public void init() {
-        //wheel = new MeccanumWheel();
         myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
         frontLeftDrive = hardwareMap.get(DcMotor.class, "front_left_drive");
         frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
@@ -91,6 +88,7 @@ public class BasicOpMode_Iterative extends OpMode {
         grabberServo = hardwareMap.get(Servo.class, "grabber_servo");
         grabberWristServo = hardwareMap.get(Servo.class, "grabber_hinge_servo");
         linearActuatorServo = hardwareMap.get(CRServo.class, "linear_actuator_servo");
+
         frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         rearLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -108,14 +106,9 @@ public class BasicOpMode_Iterative extends OpMode {
         rightViperSlide.setDirection(DcMotorSimple.Direction.REVERSE);
         rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         configureOtos();
     }
-    /*private double inches(double inches){
-        double ticks=(537.7/16)*inches;
-        double circumference=96*Math.PI;
-        double output=ticks/circumference;
-        return output;
-    }*/
 
     @Override
     public void loop() {
@@ -127,26 +120,6 @@ public class BasicOpMode_Iterative extends OpMode {
         move_grabber_wrist();
         move_linear_actuator();
         telemetry.update();
-
-        /*if (rearRightDrive.getCurrentPosition() >= 0 && rearRightDrive.getCurrentPosition()<=((537.7/16)*12){
-            rearRightDrive.setPower(-gamepad1.left_stick_y);
-            rearLeftDrive.setPower(-gamepad1.left_stick_y);
-            frontRightDrive.setPower(-gamepad1.left_stick_y);
-            frontLeftDrive.setPower(-gamepad1.left_stick_y);
-        }
-        else if(rearRightDrive.getCurrentPosition()>){
-
-            rearRightDrive.setPower(Range.clip(-gamepad1.left_stick_y,-1,0));
-            rearLeftDrive.setPower(Range.clip(-gamepad1.left_stick_y,-1,0));
-            frontRightDrive.setPower(Range.clip(-gamepad1.left_stick_y,-1,0));
-            frontLeftDrive.setPower(Range.clip(-gamepad1.left_stick_y,-1,0));
-        }
-        else{
-            rearRightDrive.setPower(Range.clip(-gamepad1.left_stick_y, 0,1));
-            rearLeftDrive.setPower(Range.clip(-gamepad1.left_stick_y, 0,1));
-            frontRightDrive.setPower(Range.clip(-gamepad1.left_stick_y, 0,1));
-            frontLeftDrive.setPower(Range.clip(-gamepad1.left_stick_y, 0,1));
-        }*/
     }
 
     private void otos_update(){
