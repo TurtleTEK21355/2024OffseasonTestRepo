@@ -97,7 +97,17 @@ public class BasketSideRedAuto extends LinearOpMode {
         myOtos.resetTracking();
         pos = myOtos.getPosition();
         // Drive away from the wall
-        while (pos.y < 4 && opModeIsActive()) {
+        while (pos.h < 45 && opModeIsActive()) {
+            drivetrainControl(0, 0.3f, 0.1f);
+            pos = myOtos.getPosition();
+            telemetry.addData("X coord", pos.x);
+            telemetry.addData("Y coordinate", pos.y);
+            telemetry.addData("Heading", pos.h);
+            telemetry.update();
+        }
+        stopAllMotors();
+        myOtos.resetTracking();
+        while (pos.y < 10 && opModeIsActive()) {
             drivetrainControl(0.3f, 0, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -107,25 +117,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         }
         stopAllMotors();
         myOtos.resetTracking();
-        // Strafe to be in line with the farthest spike mark from the wall
-        while (pos.x > -12 && opModeIsActive()) {
-            drivetrainControl(0, -0.3f, 0);
-            pos = myOtos.getPosition();
-            telemetry.addData("X coord", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
-            telemetry.addData("Heading", pos.h);
-            telemetry.update();
-        }
-        myOtos.resetTracking();
-        stopAllMotors();
-        while (pos.h > 90 && opModeIsActive()) {
-            drivetrainControl(0, 0, -0.3f); //unsure as to turning direction
-            pos = myOtos.getPosition();
-            telemetry.addData("X coord", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
-            telemetry.addData("Heading", pos.h);
-            telemetry.update();
-        }
+        elapsedTime.reset();
         while(elapsedTime.seconds() < 4 && opModeIsActive()){
             linearActuatorServo.setPower(1);
         }
@@ -133,7 +125,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         basketScore();
         stopAllMotors();
         myOtos.resetTracking();
-        while (pos.y > -2 && opModeIsActive()) {
+        while (pos.y > -1 && opModeIsActive()) {
             drivetrainControl(-0.3f, 0, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -143,7 +135,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         }
         stopAllMotors();
         myOtos.resetTracking();
-        while (pos.h < -90 && opModeIsActive()) {
+        while (pos.h > -90 && opModeIsActive()) {
             drivetrainControl(0, 0, 0.3f); //unsure as to turning direction
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -153,6 +145,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         }
         stopAllMotors();
         myOtos.resetTracking();
+        grabberServo.setPosition(0.77);
         // Drive towards the spike mark
         while (pos.y < 15.5 && opModeIsActive()) {
             drivetrainControl(0.3f, 0, 0);
@@ -318,29 +311,19 @@ public class BasketSideRedAuto extends LinearOpMode {
     }
 
     private void basketScore(){
-        while (leftViperSlide.getCurrentPosition() < 6080 && opModeIsActive()) {
+        while (leftViperSlide.getCurrentPosition() < 6090 && opModeIsActive()) {
             leftViperSlide.setPower(-0.78);
             rightViperSlide.setPower(-0.78);
-        }
-        myOtos.resetTracking();
-        while (myOtos.getPosition().y < 1.5 && elapsedTime.seconds() > 1.25 && opModeIsActive()) {
-            drivetrainControl(0.3f, 0, 0);
-        }
-        leftViperSlide.setPower(0);
-        rightViperSlide.setPower(0);
-        elapsedTime.reset();
-        while (elapsedTime.seconds() < 0.5 && opModeIsActive()) {
-            grabberServo.setPosition(0.5);
-        }
-        elapsedTime.reset();
-        while (elapsedTime.seconds() < 0.5 && opModeIsActive()) {
-            drivetrainControl(-0.3f,0,0);
+            leftViperSlide.getCurrentPosition();
         }
         stopAllMotors();
+        grabberServo.setPosition(0.7);
         while (leftViperSlide.getCurrentPosition() > 190 && opModeIsActive()) {
             leftViperSlide.setPower(0.75);
             rightViperSlide.setPower(0.75);
+            leftViperSlide.getCurrentPosition();
         }
+        stopAllMotors();
     }
 
     private void configureOtos() {

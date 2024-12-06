@@ -67,7 +67,8 @@ public class WeirdAuto extends LinearOpMode {
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         myOtos.resetTracking();
-        moveRobot(20,20,20,0.5);
+        waitForStart();
+        moveRobot(20,20,20,0.1);
     }
 
     public void moveRobot(double x,double y,double h,double speed){
