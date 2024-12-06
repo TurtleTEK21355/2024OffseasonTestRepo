@@ -74,14 +74,20 @@ public class WeirdAuto extends LinearOpMode {
         SparkFunOTOS.Pose2D pos = myOtos.getPosition();
         while(!valueRoughlyEqual(pos.x, x,0.25) && !valueRoughlyEqual(pos.y, y,0.25) && !valueRoughlyEqual(pos.h, h,0.25)) {
             pos = myOtos.getPosition();
-            double why = bangBangController(y, pos.y, speed);
-            double ex = bangBangController(x, pos.x, speed);
-            double arr = Math.sqrt(Math.pow(ex, 2) + Math.pow(why, 2));
-            double theta = Math.atan2(why, ex);
+            double ySide = bangBangController(y, pos.y, speed);
+            double xSide = bangBangController(x, pos.x, speed);
+            double hyp = Math.sqrt(Math.pow(xSide, 2) + Math.pow(ySide, 2));
+            double theta = Math.atan2(ySide, xSide);
             double correctedTheta = theta - pos.h;
-            double drive = arr * Math.sin(correctedTheta);
-            double strafe = arr * Math.cos(correctedTheta);
-            double turn = bangBangController(h, pos.h, speed);
+            double drive = hyp * Math.sin(correctedTheta);
+            double strafe = hyp * Math.cos(correctedTheta);
+            double turn;
+            if (!valueRoughlyEqual(pos.h, h,0.25)) {
+                turn = bangBangController(h, pos.h, speed);
+            }
+            else {
+                turn = 0.0;
+            }
             double frontLeftPower = Range.clip(drive + strafe + turn, -1, 1);
             double frontRightPower = Range.clip(drive - strafe - turn, -1, 1);
             double rearLeftPower = Range.clip(drive - strafe + turn, -1, 1);
