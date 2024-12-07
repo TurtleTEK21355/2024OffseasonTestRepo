@@ -97,8 +97,8 @@ public class BasketSideRedAuto extends LinearOpMode {
         myOtos.resetTracking();
         pos = myOtos.getPosition();
         // Drive away from the wall
-        while (pos.h < 45 && opModeIsActive()) {
-            drivetrainControl(0, 0.3f, 0.1f);
+        while (pos.h < 40 && opModeIsActive()) {
+            drivetrainControl(0, 0.35f, -0.1f);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
             telemetry.addData("Y coordinate", pos.y);
@@ -107,7 +107,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         }
         stopAllMotors();
         myOtos.resetTracking();
-        while (pos.y < 10 && opModeIsActive()) {
+        while (pos.y < 12 && opModeIsActive()) {
             drivetrainControl(0.3f, 0, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -135,7 +135,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         }
         stopAllMotors();
         myOtos.resetTracking();
-        while (pos.h > -90 && opModeIsActive()) {
+        while (pos.h > -135 && opModeIsActive()) {
             drivetrainControl(0, 0, 0.3f); //unsure as to turning direction
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -316,16 +316,20 @@ public class BasketSideRedAuto extends LinearOpMode {
         double TopLimit = 8.1;
         double viperSlideLimitBottom = motor223*BottomLimit;
         double viperSlideLimitTop = motor223*TopLimit;
-        while (leftViperSlide.getCurrentPosition() < viperSlideLimitTop && opModeIsActive()) {//6090
+        while (leftViperSlide.getCurrentPosition() > -viperSlideLimitTop && opModeIsActive()) {//6090
             leftViperSlide.setPower(-0.78);
             rightViperSlide.setPower(-0.78);
+            telemetry.addData("Current Arm Ticks", leftViperSlide.getCurrentPosition());
             leftViperSlide.getCurrentPosition();
+            telemetry.update();
         }
         stopAllMotors();
+        grabberHingeServo.setPosition(1);
         grabberServo.setPosition(0.7);
-        while (leftViperSlide.getCurrentPosition() > viperSlideLimitBottom && opModeIsActive()) {//190
+        while (leftViperSlide.getCurrentPosition() < -viperSlideLimitBottom && opModeIsActive()) {//190
             leftViperSlide.setPower(0.75);
             rightViperSlide.setPower(0.75);
+            telemetry.addData("Current Arm Ticks", leftViperSlide.getCurrentPosition());
             leftViperSlide.getCurrentPosition();
         }
         stopAllMotors();
