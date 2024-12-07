@@ -333,10 +333,10 @@ public class BasicOpMode_Iterative_phillip2 extends OpMode {
 }
 
 class StrafePowers {
-    private double frontLeft;
-    private double frontRight;
-    private double rearLeft;
-    private double rearRight;
+    private final double frontLeft;
+    private final double frontRight;
+    private final double rearLeft;
+    private final double rearRight;
 
     public StrafePowers(double frontLeft, double frontRight, double rearLeft, double rearRight) {
         this.frontLeft=frontLeft;

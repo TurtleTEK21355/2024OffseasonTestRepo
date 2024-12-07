@@ -92,7 +92,10 @@ public class BasketSideRedAuto extends LinearOpMode {
         configureOtos();
         waitForStart();
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
         SparkFunOTOS.Pose2D pos;
         myOtos.resetTracking();
         pos = myOtos.getPosition();
