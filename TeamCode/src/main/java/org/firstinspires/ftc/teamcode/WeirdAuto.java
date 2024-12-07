@@ -70,7 +70,7 @@ public class WeirdAuto extends LinearOpMode {
         configureOtos();
         myOtos.resetTracking();
         waitForStart();
-        moveRobot(10,50,90,0.1, 0.5, 1.0);
+        moveRobot(10,0,0,0.1, 0.5, 1.0);
     }
 
     public void moveRobot(double x,double y,double h,double speed,double posTolerance,double headingTolerance){
