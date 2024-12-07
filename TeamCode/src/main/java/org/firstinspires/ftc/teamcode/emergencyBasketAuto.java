@@ -69,13 +69,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
-<<<<<<<< Updated upstream:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/emergencyBasketAuto.java
-@Autonomous(name="Emergency_Auto", group="Linear OpMode")
-public class emergencyBasketAuto extends LinearOpMode {
-========
+
 @Autonomous(name="EmergencyAutoBasket", group="Linear OpMode")
 public class EmergencyAutoBasket extends LinearOpMode {
->>>>>>>> Stashed changes:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/EmergencyAutoBasket.java
     // Declare OpMode members.
     SparkFunOTOS myOtos;
     ElapsedTime elapsedTime;
@@ -159,15 +155,10 @@ public class EmergencyAutoBasket extends LinearOpMode {
         stopAllMotors();
         myOtos.resetTracking();
         elapsedTime.reset();
-<<<<<<<< Updated upstream:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/emergencyBasketAuto.java
-        while (elapsedTime.seconds() < 3) {
-            leftViperSlide.setPower(-1);
-            rightViperSlide.setPower(-1);
-========
+
         while (elapsedTime.seconds() < 2){
             leftViperSlide.setPower(-0.85);
             rightViperSlide.setPower(-0.85);
->>>>>>>> Stashed changes:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/EmergencyAutoBasket.java
         }
         leftViperSlide.setPower(0);
         rightViperSlide.setPower(0);

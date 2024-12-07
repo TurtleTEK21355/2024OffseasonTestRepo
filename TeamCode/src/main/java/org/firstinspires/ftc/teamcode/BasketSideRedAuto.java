@@ -91,11 +91,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         grabberServo.setPosition(0.88);
         configureOtos();
         waitForStart();
-
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
+        
         SparkFunOTOS.Pose2D pos;
         myOtos.resetTracking();
         pos = myOtos.getPosition();
