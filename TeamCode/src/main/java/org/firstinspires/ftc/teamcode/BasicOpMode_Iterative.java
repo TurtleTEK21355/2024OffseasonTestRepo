@@ -207,7 +207,7 @@ public class BasicOpMode_Iterative extends OpMode {
 
         double idlePower = 0.1;
         double viperSlideEncoderAverage = ((leftViperSlide.getCurrentPosition()+rightViperSlide.getCurrentPosition())/2.0);
-        double viperSlidePower = -gamepad2.right_stick_y;
+        double viperSlidePower = -gamepad2.left_stick_y;
 
         if (viperSlideLimitBottom < viperSlideEncoderAverage && viperSlideEncoderAverage < viperSlideLimitTop){
             leftViperSlide.setPower((viperSlidePower)+idlePower);
@@ -217,9 +217,9 @@ public class BasicOpMode_Iterative extends OpMode {
             leftViperSlide.setPower(idlePower);
             rightViperSlide.setPower(idlePower);
         }
-        else if (viperSlideEncoderAverage < viperSlideLimitBottom && viperSlidePower < 0.1){
-            leftViperSlide.setPower(0.2);
-            rightViperSlide.setPower(0.2);
+        else if (viperSlideEncoderAverage < viperSlideLimitBottom && 0.1 > viperSlidePower){
+            leftViperSlide.setPower(idlePower);
+            rightViperSlide.setPower(idlePower);
         }
         else{
             leftViperSlide.setPower((viperSlidePower)+idlePower);
@@ -228,37 +228,39 @@ public class BasicOpMode_Iterative extends OpMode {
     }
 
     private void move_grabber_wrist() {
-        if (gamepad2.dpad_down) {
+        if (gamepad2.right_bumper) {
             grabberWristServo.setPosition(0.3);
         }
-        else if (gamepad2.dpad_up) {
+        else if (gamepad2.left_bumper) {
             grabberWristServo.setPosition(1);
         }
 
-        if (gamepad2.right_bumper || gamepad2.left_bumper) {
-            if (gamepad2.right_bumper) {
+        if (gamepad2.dpad_up || gamepad2.dpad_down) {
+            if (gamepad2.dpad_up) {
                 grabberWristServo.setPosition(grabberWristServo.getPosition() + 0.05);
             }
-            else if (gamepad2.left_bumper) {
+            else if (gamepad2.dpad_down) {
                 grabberWristServo.setPosition(grabberWristServo.getPosition() - 0.05);
             }
         }
     }
 
     private void move_grabber(){
+        double open = 0.7;
+        double close = 0.88;
         if(gamepad2.right_trigger>0.1){
             //close claw
-            grabberServo.setPosition(0.88);
+            grabberServo.setPosition(close);
         }
         else if(gamepad2.left_trigger>0.1){
             //open claw
-            grabberServo.setPosition(0.7);
+            grabberServo.setPosition(open);
         }
 
     }
 
     private void move_linear_actuator(){
-        linearActuatorServo.setPower(gamepad2.left_stick_y);
+        linearActuatorServo.setPower(gamepad2.right_stick_y);
     }
 
     private void configureOtos() {
