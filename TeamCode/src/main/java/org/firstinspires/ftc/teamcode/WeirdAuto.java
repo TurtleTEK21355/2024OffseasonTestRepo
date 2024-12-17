@@ -78,9 +78,6 @@ public class WeirdAuto extends LinearOpMode {
         SparkFunOTOS.Pose2D pos = myOtos.getPosition();
         while(!valueRoughlyEqual(pos.x, x,posTolerance) && !valueRoughlyEqual(pos.y, y,posTolerance) && !valueRoughlyEqual(pos.h, h,headingTolerance) && opModeIsActive()) {
             pos = myOtos.getPosition();
-            telemetry.addData("x:",pos.x);
-            telemetry.addData("y:",pos.y);
-            telemetry.addData("h:",pos.h);
 
             double ySide = bangBangController(y, pos.y, speed);
             double xSide = bangBangController(x, pos.x, speed);
@@ -122,12 +119,22 @@ public class WeirdAuto extends LinearOpMode {
             rearLeftDrive.setPower(rearLeftPower);
             rearRightDrive.setPower(rearRightPower);
 
+            telemetry.addData("x:",pos.x);
+            telemetry.addData("y:",pos.y);
+            telemetry.addData("h:",pos.h);
+            telemetry.addData("drive",drive);
+            telemetry.addData("turn",turn);
+            telemetry.addData("strafe",strafe);
+            telemetry.addData("frontLeftPower",frontLeftPower);
+            telemetry.addData("frontRightPower",frontRightPower);
+            telemetry.addData("rearLeftPower",rearLeftPower);
+            telemetry.addData("rearRightPower",rearRightPower);
             telemetry.update();
         }
     }
 
     public boolean valueRoughlyEqual(double value, double goal, double tolerance) {
-        return value >= goal - tolerance && value <= goal + tolerance;
+        return (value >= (goal - tolerance)) && (value <= (goal + tolerance));
     }
 
     public double bangBangController(double goalPos, double currentPos,double speed) {
