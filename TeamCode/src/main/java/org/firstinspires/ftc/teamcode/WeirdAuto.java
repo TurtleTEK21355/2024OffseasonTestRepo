@@ -134,7 +134,7 @@ public class WeirdAuto extends LinearOpMode {
     }
 
     public boolean valueRoughlyEqual(double value, double goal, double tolerance) {
-        return (value >= (goal - tolerance)) && (value <= (goal + tolerance));
+        return value >= goal - tolerance && value <= goal + tolerance;
     }
 
     public double bangBangController(double goalPos, double currentPos,double speed) {
