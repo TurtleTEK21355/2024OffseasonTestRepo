@@ -72,6 +72,7 @@ public class WeirdAuto extends LinearOpMode {
         myOtos.resetTracking();
         waitForStart();
         moveRobot(10,0,0,0.1, 0.5, 1.0);
+        sleep(100000);
     }
 
     public void moveRobot(double x,double y,double h,double speed,double posTolerance,double headingTolerance){
@@ -81,7 +82,6 @@ public class WeirdAuto extends LinearOpMode {
         telemetry.addData("y:",pos.y);
         telemetry.addData("h:",pos.h);
         telemetry.addData("opModeIsActive",opModeIsActive());
-        
         telemetry.update();
         while(!valueRoughlyEqual(pos.x, x,posTolerance) && !valueRoughlyEqual(pos.y, y,posTolerance) && !valueRoughlyEqual(pos.h, h,headingTolerance) && opModeIsActive()) {
             pos = myOtos.getPosition();
