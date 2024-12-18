@@ -76,6 +76,13 @@ public class WeirdAuto extends LinearOpMode {
 
     public void moveRobot(double x,double y,double h,double speed,double posTolerance,double headingTolerance){
         SparkFunOTOS.Pose2D pos = myOtos.getPosition();
+
+        telemetry.addData("x:",pos.x);
+        telemetry.addData("y:",pos.y);
+        telemetry.addData("h:",pos.h);
+        telemetry.addData("opModeIsActive",opModeIsActive());
+        
+        telemetry.update();
         while(!valueRoughlyEqual(pos.x, x,posTolerance) && !valueRoughlyEqual(pos.y, y,posTolerance) && !valueRoughlyEqual(pos.h, h,headingTolerance) && opModeIsActive()) {
             pos = myOtos.getPosition();
 
