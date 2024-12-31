@@ -101,7 +101,7 @@ public class BasicOpMode_Iterative extends OpMode {
         otos_update();
         encoder();
         move_robot();
-        move_viper_slide();
+        move_viper_slide_and_presets();
         move_grabber();
         move_grabber_wrist();
         move_linear_actuator();
@@ -183,9 +183,10 @@ public class BasicOpMode_Iterative extends OpMode {
         telemetry.addData("rightviperslidelevel",leftViperSlide.getCurrentPosition());
 }
 
-    private void move_viper_slide() {
+    private void move_viper_slide_and_presets() {
         /*leftViperSlide.setPower(gamepad2.left_stick_y);
         rightViperSlide.setPower(gamepad2.left_stick_y);
+
 
         if (leftViperSlide.getCurrentPosition()<0);
         if ((leftViperSlide.getCurrentPosition()+rightViperSlide.getCurrentPosition())/2.0<viperSlideLimitBottom){
@@ -204,7 +205,69 @@ public class BasicOpMode_Iterative extends OpMode {
             leftViperSlide.setPower(0);
             rightViperSlide.setPower(0);
         }*/
+        if (gamepad2.dpad_up){
+            grabberWristServo.setPosition(0.3);
+            move_preset(true);
+        }
+        else if (gamepad2.dpad_down) {
+            grabberWristServo.setPosition(1);
+            move_preset(false);
+        }
+        else if (Math.abs(gamepad2.left_stick_y) > 0.1){
+            move_viper_slide_manual();
+        }
 
+    }
+
+    private void move_preset(boolean viperPreset) {
+        if (viperPreset){
+            double idlePower = 0.1;
+            double viperSlideEncoderAverage = ((leftViperSlide.getCurrentPosition()+rightViperSlide.getCurrentPosition())/2.0);
+            double viperSlidePower = 1;
+
+            if (viperSlideLimitBottom < viperSlideEncoderAverage && viperSlideEncoderAverage < viperSlideLimitTop){
+                leftViperSlide.setPower((viperSlidePower)+idlePower);
+                rightViperSlide.setPower((viperSlidePower)+idlePower);
+            }
+            else if (viperSlideEncoderAverage > viperSlideLimitTop){
+                leftViperSlide.setPower(idlePower);
+                rightViperSlide.setPower(idlePower);
+            }
+            else if (viperSlideEncoderAverage < viperSlideLimitBottom){
+                leftViperSlide.setPower(idlePower);
+                rightViperSlide.setPower(idlePower);
+            }
+            else{
+                leftViperSlide.setPower((viperSlidePower)+idlePower);
+                rightViperSlide.setPower((viperSlidePower)+idlePower);
+            }
+
+        }
+        if (!viperPreset){
+            double idlePower = 0.1;
+            double viperSlideEncoderAverage = ((leftViperSlide.getCurrentPosition()+rightViperSlide.getCurrentPosition())/2.0);
+            double viperSlidePower = -1;
+
+            if (viperSlideLimitBottom < viperSlideEncoderAverage && viperSlideEncoderAverage < viperSlideLimitTop){
+                leftViperSlide.setPower((viperSlidePower)+idlePower);
+                rightViperSlide.setPower((viperSlidePower)+idlePower);
+            }
+            else if (viperSlideEncoderAverage > viperSlideLimitTop){
+                leftViperSlide.setPower(idlePower);
+                rightViperSlide.setPower(idlePower);
+            }
+            else if (viperSlideEncoderAverage < viperSlideLimitBottom){
+                leftViperSlide.setPower(idlePower);
+                rightViperSlide.setPower(idlePower);
+            }
+            else{
+                leftViperSlide.setPower((viperSlidePower)+idlePower);
+                rightViperSlide.setPower((viperSlidePower)+idlePower);
+            }
+        }
+    }
+
+    private void move_viper_slide_manual() {
         double idlePower = 0.1;
         double viperSlideEncoderAverage = ((leftViperSlide.getCurrentPosition()+rightViperSlide.getCurrentPosition())/2.0);
         double viperSlidePower = -gamepad2.left_stick_y;
@@ -235,11 +298,11 @@ public class BasicOpMode_Iterative extends OpMode {
             grabberWristServo.setPosition(1);
         }
 
-        if (gamepad2.dpad_up || gamepad2.dpad_down) {
-            if (gamepad2.dpad_up) {
+        if (gamepad2.dpad_right || gamepad2.dpad_left) {
+            if (gamepad2.dpad_right) {
                 grabberWristServo.setPosition(grabberWristServo.getPosition() + 0.05);
             }
-            else if (gamepad2.dpad_down) {
+            else if (gamepad2.dpad_left) {
                 grabberWristServo.setPosition(grabberWristServo.getPosition() - 0.05);
             }
         }
