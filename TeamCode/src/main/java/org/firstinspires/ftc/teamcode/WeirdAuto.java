@@ -83,7 +83,7 @@ public class WeirdAuto extends LinearOpMode {
         telemetry.addData("h:",pos.h);
         telemetry.addData("opModeIsActive",opModeIsActive());
         telemetry.update();
-        while(!valueRoughlyEqual(pos.x, x,posTolerance) && !valueRoughlyEqual(pos.y, y,posTolerance) && !valueRoughlyEqual(pos.h, h,headingTolerance) && opModeIsActive()) {
+        while(notValueRoughlyEqual(pos.x, x, posTolerance) && notValueRoughlyEqual(pos.y, y, posTolerance) && notValueRoughlyEqual(pos.h, h, headingTolerance) && opModeIsActive()) {
             pos = myOtos.getPosition();
 
             double ySide = bangBangController(y, pos.y, speed);
@@ -93,7 +93,7 @@ public class WeirdAuto extends LinearOpMode {
             double correctedTheta = theta - pos.h;
 
             double drive;
-            if (!valueRoughlyEqual(pos.x, x,posTolerance)) {
+            if (notValueRoughlyEqual(pos.x, x, posTolerance)) {
                 drive = hyp * Math.sin(correctedTheta);
             }
             else {
@@ -101,7 +101,7 @@ public class WeirdAuto extends LinearOpMode {
             }
 
             double strafe;
-            if (!valueRoughlyEqual(pos.y, y,posTolerance)) {
+            if (notValueRoughlyEqual(pos.y, y, posTolerance)) {
                 strafe = hyp * Math.cos(correctedTheta);
             }
             else {
@@ -109,7 +109,7 @@ public class WeirdAuto extends LinearOpMode {
             }
 
             double turn;
-            if (!valueRoughlyEqual(pos.h, h,headingTolerance)) {
+            if (notValueRoughlyEqual(pos.h, h, headingTolerance)) {
                 turn = bangBangController(h, pos.h, speed);
             }
             else {
@@ -140,8 +140,8 @@ public class WeirdAuto extends LinearOpMode {
         }
     }
 
-    public boolean valueRoughlyEqual(double value, double goal, double tolerance) {
-        return value >= goal - tolerance && value <= goal + tolerance;
+    public boolean notValueRoughlyEqual(double value, double goal, double tolerance) {
+        return !(value >= goal - tolerance) || !(value <= goal + tolerance);
     }
 
     public double bangBangController(double goalPos, double currentPos,double speed) {
