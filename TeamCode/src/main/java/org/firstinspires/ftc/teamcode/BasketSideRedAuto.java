@@ -121,6 +121,20 @@ public class BasketSideRedAuto extends LinearOpMode {
         myOtos.resetTracking();
         elapsedTime.reset();
         basketScore();
+        while (leftViperSlide.getCurrentPosition() < 6 && opModeIsActive()) {//190
+            leftViperSlide.setTargetPosition((int) 5);
+            rightViperSlide.setTargetPosition((int) 5);
+
+            leftViperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightViperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            leftViperSlide.setPower(-0.7);
+            rightViperSlide.setPower(-0.7);
+
+            telemetry.addData("Current Arm Ticks", leftViperSlide.getCurrentPosition());
+            leftViperSlide.getCurrentPosition();
+            telemetry.update();
+        }
         stopAllMotors();
         myOtos.resetTracking();
 
@@ -176,95 +190,16 @@ public class BasketSideRedAuto extends LinearOpMode {
         basketScore();
         stopAllMotors();
         //Drive towards the basket
-        while (pos.y > -6 && opModeIsActive()) {
-            drivetrainControl(-0.5f, 0, 0);
+        while (pos.y > -15 && opModeIsActive()) {
+            drivetrainControl(-0.7f, 0.7f, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
             telemetry.addData("Y coordinate", pos.y);
             telemetry.addData("Heading", pos.h);
         }
+        
         stopAllMotors();
         myOtos.resetTracking();
-        // Turn away from the baskets, towards the second spike mark
-        while (pos.h > -125 && opModeIsActive()) {
-            drivetrainControl(0, 0, 0.5f);
-            pos = myOtos.getPosition();
-            telemetry.addData("X coord", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
-            telemetry.addData("Heading", pos.h);
-            telemetry.update();
-        }
-        myOtos.resetTracking();
-        // Drive away from the baskets
-        while (pos.y < 8 && opModeIsActive()) {
-            drivetrainControl(0.5f, 0, 0);
-            pos = myOtos.getPosition();
-            telemetry.addData("X coord", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
-            telemetry.addData("Heading", pos.h);
-            telemetry.update();
-        }
-        stopAllMotors();
-        myOtos.resetTracking();
-        myOtos.calibrateImu();
-        while (pos.x > -2 && opModeIsActive()) {
-            drivetrainControl(0, -0.5f, 0);
-            pos = myOtos.getPosition();
-            telemetry.addData("X coord", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
-            telemetry.addData("Heading", pos.h);
-        }
-        elapsedTime.reset();
-        sleep(500);
-        sampleIntake();
-        sleep(500);
-        while (pos.y < 7 && opModeIsActive()) {
-            drivetrainControl(0.5f, 0, 0);
-            pos = myOtos.getPosition();
-            telemetry.addData("X coord", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
-            telemetry.addData("Heading", pos.h);
-            telemetry.update();
-        }
-        stopAllMotors();
-        myOtos.resetTracking();
-        myOtos.calibrateImu();
-        while (pos.y > -12 && opModeIsActive()) {
-            drivetrainControl(-0.5f, 0, 0);
-            pos = myOtos.getPosition();
-            telemetry.addData("X coord", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
-            telemetry.addData("Heading", pos.h);
-            telemetry.update();
-        }
-        stopAllMotors();
-        myOtos.resetTracking();
-        myOtos.calibrateImu();
-        //Turn towards basket
-        while (pos.h < 135 && opModeIsActive()) {
-            drivetrainControl(0, 0, -0.5f);
-            pos = myOtos.getPosition();
-            telemetry.addData("X coord", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
-            telemetry.addData("Heading", pos.h);
-            telemetry.update();
-        }
-        stopAllMotors();
-        myOtos.resetTracking();
-        myOtos.calibrateImu();
-        elapsedTime.reset();
-        basketScore();
-        //Drive to the ascent zone
-        while (pos.y > -25 && opModeIsActive()) {
-            drivetrainControl(-0.5f, 0f, 0);
-            pos = myOtos.getPosition();
-            telemetry.addData("X coord", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
-            telemetry.addData("Heading", pos.h);
-            telemetry.update();
-        }
-        stopAllMotors();
-
     }
     private void stopAllMotors(){
         drivetrainControl(0,0,0);
@@ -296,7 +231,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         grabberServo.setPosition(0.93);
     }
 
-    private void basketScore(){
+    private void basketScore() {
         leftViperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightViperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -307,8 +242,8 @@ public class BasketSideRedAuto extends LinearOpMode {
         double motor223 = 751.8;
         double BottomLimit = 0.25;
         double TopLimit = 8.1;
-        double viperSlideLimitBottom = motor223*BottomLimit;
-        double viperSlideLimitTop = motor223*TopLimit;
+        double viperSlideLimitBottom = motor223 * BottomLimit;
+        double viperSlideLimitTop = motor223 * TopLimit;
         while (leftViperSlide.getCurrentPosition() > -viperSlideLimitTop && opModeIsActive()) {//6090
 
             leftViperSlide.setTargetPosition((int) -viperSlideLimitTop);
@@ -324,12 +259,12 @@ public class BasketSideRedAuto extends LinearOpMode {
             leftViperSlide.getCurrentPosition();
             telemetry.update();
         }
-            grabberHingeServo.setPosition(1);
-            sleep(700);
-            elapsedTime.reset();
-            while (elapsedTime.seconds() < 1){
-                drivetrainControl(0.2f,0,0);
-            }
+        grabberHingeServo.setPosition(1);
+        sleep(700);
+        elapsedTime.reset();
+        while (elapsedTime.seconds() < 1) {
+            drivetrainControl(0.2f, 0, 0);
+        }
         stopAllMotors();
         sleep(200);
         grabberServo.setPosition(0.7);
@@ -339,21 +274,6 @@ public class BasketSideRedAuto extends LinearOpMode {
         }
         stopAllMotors();
         grabberHingeServo.setPosition(0.3);
-        while (leftViperSlide.getCurrentPosition() < 6 && opModeIsActive()) {//190
-            leftViperSlide.setTargetPosition((int) 5);
-            rightViperSlide.setTargetPosition((int) 5);
-
-            leftViperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightViperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            leftViperSlide.setPower(-0.7);
-            rightViperSlide.setPower(-0.7);
-
-            telemetry.addData("Current Arm Ticks", leftViperSlide.getCurrentPosition());
-            leftViperSlide.getCurrentPosition();
-            telemetry.update();
-        }
-
     }
 
     private void configureOtos() {
