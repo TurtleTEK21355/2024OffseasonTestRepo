@@ -29,20 +29,15 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 @Autonomous(name="WeirdAuto", group="Linear OpMode")
 public class WeirdAuto extends LinearOpMode {
@@ -83,7 +78,8 @@ public class WeirdAuto extends LinearOpMode {
         telemetry.addData("h:",pos.h);
         telemetry.addData("opModeIsActive",opModeIsActive());
         telemetry.update();
-        while(notValueRoughlyEqual(pos.x, x, posTolerance) && notValueRoughlyEqual(pos.y, y, posTolerance) && notValueRoughlyEqual(pos.h, h, headingTolerance) && opModeIsActive()) {
+
+        while(valueNotRoughlyEqual(pos.x, x, posTolerance) && valueNotRoughlyEqual(pos.y, y, posTolerance) && valueNotRoughlyEqual(pos.h, h, headingTolerance)) {
             pos = myOtos.getPosition();
 
             double ySide = bangBangController(y, pos.y, speed);
@@ -93,7 +89,8 @@ public class WeirdAuto extends LinearOpMode {
             double correctedTheta = theta - pos.h;
 
             double drive;
-            if (notValueRoughlyEqual(pos.x, x, posTolerance)) {
+
+            if (valueNotRoughlyEqual(pos.x, x, posTolerance)) {
                 drive = hyp * Math.sin(correctedTheta);
             }
             else {
@@ -101,7 +98,8 @@ public class WeirdAuto extends LinearOpMode {
             }
 
             double strafe;
-            if (notValueRoughlyEqual(pos.y, y, posTolerance)) {
+
+            if (valueNotRoughlyEqual(pos.y, y, posTolerance)) {
                 strafe = hyp * Math.cos(correctedTheta);
             }
             else {
@@ -109,7 +107,8 @@ public class WeirdAuto extends LinearOpMode {
             }
 
             double turn;
-            if (notValueRoughlyEqual(pos.h, h, headingTolerance)) {
+
+            if (valueNotRoughlyEqual(pos.h, h, headingTolerance)) {
                 turn = bangBangController(h, pos.h, speed);
             }
             else {
@@ -140,7 +139,8 @@ public class WeirdAuto extends LinearOpMode {
         }
     }
 
-    public boolean notValueRoughlyEqual(double value, double goal, double tolerance) {
+
+    public boolean valueNotRoughlyEqual(double value, double goal, double tolerance) {
         return !(value >= goal - tolerance) || !(value <= goal + tolerance);
     }
 

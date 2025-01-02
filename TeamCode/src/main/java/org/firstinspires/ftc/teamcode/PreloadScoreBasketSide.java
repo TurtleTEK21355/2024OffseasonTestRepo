@@ -42,39 +42,12 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-/*
- * This file contains an example of a Linear "OpMode".
- * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
- * The names of OpModes appear on the menu of the FTC Driver Station.
- * When a selection is made from the menu, the corresponding OpMode is executed.
- *
- * This particular OpMode illustrates driving a 4-motor Omni-Directional (or Holonomic) robot.
- * This code will work with either a Mecanum-Drive or an X-Drive train.
- * Both of these drives are illustrated at https://gm0.org/en/latest/docs/robot-design/drivetrains/holonomic.html
- * Note that a Mecanum drive must display an X roller-pattern when viewed from above.
- *
- * Also note that it is critical to set the correct rotation direction for each motor.  See details below.
- *
- * Holonomic drives provide the ability for the robot to move in three axes (directions) simultaneously.
- * Each motion axis is controlled by one Joystick axis.
- *
- * 1) Axial:    Driving forward and backward               Left-joystick Forward/Backward
- * 2) Lateral:  Strafing right and left                     Left-joystick Right and Left
- * 3) Yaw:      Rotating Clockwise and counter clockwise    Right-joystick Right and Left
- *
- * This code is written assuming that the right-side motors need to be reversed for the robot to drive forward.
- * When you first test your robot, if it moves backward when you push the left stick forward, then you must flip
- * the direction of all 4 motors (see code below).
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
- */
 
-@Autonomous(name="EmergencyAutoBasket", group="Linear OpMode")
-public class EmergencyAutoBasket extends LinearOpMode {
+@Autonomous(name="PreloadBasketSideAuto", group="Linear OpMode")
+public class PreloadScoreBasketSide extends LinearOpMode {
     // Declare OpMode members.
-    SparkFunOTOS myOtos;
     ElapsedTime elapsedTime;
+    SparkFunOTOS myOtos;
     private DcMotor frontLeftDrive;
     private DcMotor frontRightDrive;
     private DcMotor rearLeftDrive;
@@ -96,7 +69,6 @@ public class EmergencyAutoBasket extends LinearOpMode {
         rearRightDrive = hardwareMap.get(DcMotor.class, "rear_right_drive");
         leftViperSlide = hardwareMap.get(DcMotor.class, "left_viper_slide");
         rightViperSlide = hardwareMap.get(DcMotor.class, "right_viper_slide");
-
         grabberServo = hardwareMap.get(Servo.class, "grabber_servo");
         grabberHingeServo = hardwareMap.get(Servo.class, "grabber_hinge_servo");
         linearActuatorServo = hardwareMap.get(CRServo.class, "linear_actuator_servo");
@@ -114,14 +86,24 @@ public class EmergencyAutoBasket extends LinearOpMode {
         rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         grabberServo.setPosition(0.88);
         grabberHingeServo.setPosition(0);
+        configureOtos();
         waitForStart();
-
-
+        
         SparkFunOTOS.Pose2D pos;
         myOtos.resetTracking();
         pos = myOtos.getPosition();
-
-        while (pos.y < 50 && opModeIsActive()) {
+        // Drive away from the wall
+        while (pos.h < 40 && opModeIsActive()) {
+            drivetrainControl(0, 0.35f, -0.1f);
+            pos = myOtos.getPosition();
+            telemetry.addData("X coord", pos.x);
+            telemetry.addData("Y coordinate", pos.y);
+            telemetry.addData("Heading", pos.h);
+            telemetry.update();
+        }
+        stopAllMotors();
+        myOtos.resetTracking();
+        while (pos.y < 14 && opModeIsActive()) {
             drivetrainControl(0.3f, 0, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -131,8 +113,8 @@ public class EmergencyAutoBasket extends LinearOpMode {
         }
         stopAllMotors();
         myOtos.resetTracking();
-        while (pos.h > -90 && opModeIsActive()) {
-            drivetrainControl(0, 0, 0.2f);
+        while (pos.y > -14 && opModeIsActive()) {
+            drivetrainControl(-0.3f, 0, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
             telemetry.addData("Y coordinate", pos.y);
@@ -141,48 +123,40 @@ public class EmergencyAutoBasket extends LinearOpMode {
         }
         stopAllMotors();
         myOtos.resetTracking();
-
-        // Strafe to be in line with the farthest spike mark from the wall
-        while (pos.y < 8.5 && opModeIsActive()) {
-            drivetrainControl(0.3f, 0, 0);
+        basketScore();
+        while (pos.h > -40 && opModeIsActive()) {
+            drivetrainControl(0, -0.35f, 0.1f);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
-
             telemetry.addData("Y coordinate", pos.y);
             telemetry.addData("Heading", pos.h);
             telemetry.update();
         }
         stopAllMotors();
         myOtos.resetTracking();
-        elapsedTime.reset();
-
-        while (elapsedTime.seconds() < 2){
-            leftViperSlide.setPower(-0.85);
-            rightViperSlide.setPower(-0.85);
+        while (pos.x > -80 && opModeIsActive()) {
+            drivetrainControl(0, -0.7f, 0);
+            pos = myOtos.getPosition();
+            telemetry.addData("X coord", pos.x);
+            telemetry.addData("Y coordinate", pos.y);
+            telemetry.addData("Heading", pos.h);
+            telemetry.update();
         }
+        stopAllMotors();
+
+    }
+    private void stopAllMotors(){
+        drivetrainControl(0,0,0);
         leftViperSlide.setPower(0);
         rightViperSlide.setPower(0);
-        elapsedTime.reset();
-        while (elapsedTime.seconds() < 4) {
-            linearActuatorServo.setPower(1);
-        }
-        linearActuatorServo.setPower(0);
-
-        sleep(20000);
     }
-
-    private void driveStraight(float power, float position) {
-        float turn = position / 100;
-        drivetrainControl(power, 0, turn);
+    private void driveStraight(float power, float position){
+        float turn = position/100;
+        drivetrainControl(power,0,turn);
     }
-
-    private void stopAllMotors() {
-        drivetrainControl(0, 0, 0);
-    }
-
-    private void driveStrafe(float power, float position) {
-        float turn = position / 100;
-        drivetrainControl(0, power, turn);
+    private void driveStrafe(float power, float position){
+        float turn = position/100;
+        drivetrainControl(0,power,turn);
     }
 
     private void drivetrainControl(float drive, float strafe, float turn) {
@@ -196,26 +170,56 @@ public class EmergencyAutoBasket extends LinearOpMode {
         rearLeftDrive.setPower(rearLeftStrafe);
         rearRightDrive.setPower(rearRightStrafe);
     }
+    private void sampleIntake(){
 
-    private void sampleIntake() {
-        grabberServo.setPosition(0.9);
+        grabberServo.setPosition(0.93);
     }
 
-    private void basketScore() {
-        while (elapsedTime.seconds() < 1 && opModeIsActive()) {
-            leftViperSlide.setPower(0.75);
-            rightViperSlide.setPower(0.75);
-            linearActuatorServo.setPower(1);
+    private void basketScore(){
+        leftViperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightViperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftViperSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightViperSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+        double motor223 = 751.8;
+        double BottomLimit = 0.25;
+        double TopLimit = 8.1;
+        double viperSlideLimitBottom = motor223*BottomLimit;
+        double viperSlideLimitTop = motor223*TopLimit;
+        while (leftViperSlide.getCurrentPosition() > -viperSlideLimitTop && opModeIsActive()) {//6090
+
+            leftViperSlide.setTargetPosition((int) -viperSlideLimitTop);
+            rightViperSlide.setTargetPosition((int) -viperSlideLimitTop);
+
+            leftViperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightViperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            leftViperSlide.setPower(0.7);
+            rightViperSlide.setPower(0.7);
+
+            telemetry.addData("Current Arm Ticks", leftViperSlide.getCurrentPosition());
+            leftViperSlide.getCurrentPosition();
+            telemetry.update();
         }
-        leftViperSlide.setPower(0);
-        rightViperSlide.setPower(0);
-        linearActuatorServo.setPower(0);
-        grabberServo.setPosition(0.5);
-        elapsedTime.reset();
-        while (elapsedTime.seconds() < 1 && opModeIsActive()) {
-            leftViperSlide.setPower(-0.75);
-            rightViperSlide.setPower(-0.75);
-            linearActuatorServo.setPower(-1);
+            grabberHingeServo.setPosition(1);
+            sleep(700);
+            grabberServo.setPosition(0.7);
+
+        sleep(2000);
+        while (leftViperSlide.getCurrentPosition() < -viperSlideLimitBottom && opModeIsActive()) {//190
+            leftViperSlide.setTargetPosition((int) -viperSlideLimitBottom);
+            rightViperSlide.setTargetPosition((int) -viperSlideLimitBottom);
+
+            leftViperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightViperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            leftViperSlide.setPower(-0.7);
+            rightViperSlide.setPower(-0.7);
+
+            telemetry.addData("Current Arm Ticks", leftViperSlide.getCurrentPosition());
+            leftViperSlide.getCurrentPosition();
         }
     }
 
