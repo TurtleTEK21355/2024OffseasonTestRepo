@@ -93,10 +93,23 @@ public class BasketSideRedAuto extends LinearOpMode {
         configureOtos();
         waitForStart();
 
+        leftViperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightViperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftViperSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightViperSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         SparkFunOTOS.Pose2D pos;
         myOtos.resetTracking();
         pos = myOtos.getPosition();
 
+        // vvv Remove this vvv
+        leftViperSlide.setTargetPosition((int) -6089);
+        rightViperSlide.setTargetPosition((int) -6089);
+        leftViperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightViperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftViperSlide.setPower(0.7);
+        rightViperSlide.setPower(0.7);
+        // ^^^ Remove this ^^^
         while (pos.h < 40 && opModeIsActive()) {
             linearActuatorServo.setPower(1);
             drivetrainControl(0, 0.35f, -0.1f);
@@ -108,6 +121,14 @@ public class BasketSideRedAuto extends LinearOpMode {
         }
         stopAllMotors();
         myOtos.resetTracking();
+
+        leftViperSlide.setTargetPosition((int) -6089);
+        rightViperSlide.setTargetPosition((int) -6089);
+        leftViperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightViperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftViperSlide.setPower(0.7);
+        rightViperSlide.setPower(0.7);
+        
         while (pos.y < 15.2 && opModeIsActive()) {
             drivetrainControl(0.5f, 0, 0);
             pos = myOtos.getPosition();
@@ -120,7 +141,8 @@ public class BasketSideRedAuto extends LinearOpMode {
         stopAllMotors();
         myOtos.resetTracking();
         elapsedTime.reset();
-        basketScore();
+
+
         while (leftViperSlide.getCurrentPosition() < 6 && opModeIsActive()) {//190
             leftViperSlide.setTargetPosition((int) 5);
             rightViperSlide.setTargetPosition((int) 5);
