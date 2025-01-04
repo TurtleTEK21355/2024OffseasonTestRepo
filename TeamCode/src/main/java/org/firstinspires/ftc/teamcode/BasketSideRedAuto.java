@@ -93,6 +93,11 @@ public class BasketSideRedAuto extends LinearOpMode {
         configureOtos();
         waitForStart();
 
+        leftViperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightViperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftViperSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightViperSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         SparkFunOTOS.Pose2D pos;
         myOtos.resetTracking();
         pos = myOtos.getPosition();
@@ -108,6 +113,14 @@ public class BasketSideRedAuto extends LinearOpMode {
         }
         stopAllMotors();
         myOtos.resetTracking();
+
+        leftViperSlide.setTargetPosition((int) -6089);
+        rightViperSlide.setTargetPosition((int) -6089);
+        leftViperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightViperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftViperSlide.setPower(0.7);
+        rightViperSlide.setPower(0.7);
+
         while (pos.y < 15.2 && opModeIsActive()) {
             drivetrainControl(0.5f, 0, 0);
             pos = myOtos.getPosition();
@@ -121,20 +134,11 @@ public class BasketSideRedAuto extends LinearOpMode {
         myOtos.resetTracking();
         elapsedTime.reset();
         basketScore();
-        while (leftViperSlide.getCurrentPosition() < 6 && opModeIsActive()) {//190
-            leftViperSlide.setTargetPosition((int) 5);
-            rightViperSlide.setTargetPosition((int) 5);
+        leftViperSlide.setTargetPosition((int) 5);
+        rightViperSlide.setTargetPosition((int) 5);
+        leftViperSlide.setPower(-0.7);
+        rightViperSlide.setPower(-0.7);
 
-            leftViperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightViperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            leftViperSlide.setPower(-0.7);
-            rightViperSlide.setPower(-0.7);
-
-            telemetry.addData("Current Arm Ticks", leftViperSlide.getCurrentPosition());
-            leftViperSlide.getCurrentPosition();
-            telemetry.update();
-        }
         stopAllMotors();
         myOtos.resetTracking();
 
@@ -177,6 +181,12 @@ public class BasketSideRedAuto extends LinearOpMode {
         stopAllMotors();
         myOtos.resetTracking();
         //Turn towards the basket
+
+        leftViperSlide.setTargetPosition((int) -6089);
+        rightViperSlide.setTargetPosition((int) -6089);
+        leftViperSlide.setPower(0.7);
+        rightViperSlide.setPower(0.7);
+
         while (pos.h < 135 && opModeIsActive()) {
             drivetrainControl(0, 0, -0.5f); //unsure as to turning direction
             pos = myOtos.getPosition();
@@ -188,6 +198,12 @@ public class BasketSideRedAuto extends LinearOpMode {
         stopAllMotors();
         myOtos.resetTracking();
         basketScore();
+
+        leftViperSlide.setTargetPosition((int) 5);
+        rightViperSlide.setTargetPosition((int) 5);
+        leftViperSlide.setPower(-0.7);
+        rightViperSlide.setPower(-0.7);
+
         stopAllMotors();
         //Drive towards the basket
         while (pos.y > -15 && opModeIsActive()) {
@@ -232,33 +248,6 @@ public class BasketSideRedAuto extends LinearOpMode {
     }
 
     private void basketScore() {
-        leftViperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightViperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        leftViperSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightViperSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
-        double motor223 = 751.8;
-        double BottomLimit = 0.25;
-        double TopLimit = 8.1;
-        double viperSlideLimitBottom = motor223 * BottomLimit;
-        double viperSlideLimitTop = motor223 * TopLimit;
-        while (leftViperSlide.getCurrentPosition() > -viperSlideLimitTop && opModeIsActive()) {//6090
-
-            leftViperSlide.setTargetPosition((int) -viperSlideLimitTop);
-            rightViperSlide.setTargetPosition((int) -viperSlideLimitTop);
-
-            leftViperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightViperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            leftViperSlide.setPower(0.7);
-            rightViperSlide.setPower(0.7);
-
-            telemetry.addData("Current Arm Ticks", leftViperSlide.getCurrentPosition());
-            leftViperSlide.getCurrentPosition();
-            telemetry.update();
-        }
         grabberHingeServo.setPosition(1);
         sleep(700);
         elapsedTime.reset();
