@@ -184,27 +184,6 @@ public class BasicOpMode_Iterative extends OpMode {
 }
 
     private void move_viper_slide_and_presets() {
-        /*leftViperSlide.setPower(gamepad2.left_stick_y);
-        rightViperSlide.setPower(gamepad2.left_stick_y);
-
-
-        if (leftViperSlide.getCurrentPosition()<0);
-        if ((leftViperSlide.getCurrentPosition()+rightViperSlide.getCurrentPosition())/2.0<viperSlideLimitBottom){
-            leftViperSlide.setPower(0.5);
-            rightViperSlide.setPower(0.5);
-        }
-        else if ((leftViperSlide.getCurrentPosition()+rightViperSlide.getCurrentPosition())/2.0<viperSlideLimitTop){
-            leftViperSlide.setPower((-gamepad2.left_stick_y)+idlePower);
-            rightViperSlide.setPower((-gamepad2.left_stick_y)+idlePower);
-        }
-        else if (gamepad2.left_stick_y <= 0.1) {
-            leftViperSlide.setPower(idlePower);
-            rightViperSlide.setPower(idlePower);
-        }
-        else{
-            leftViperSlide.setPower(0);
-            rightViperSlide.setPower(0);
-        }*/
         if (gamepad2.dpad_up){
             grabberWristServo.setPosition(1);
             move_preset(1);
@@ -213,7 +192,7 @@ public class BasicOpMode_Iterative extends OpMode {
             grabberWristServo.setPosition(0.3);
             move_preset(2);
         }
-        else{
+        else if (Math.abs(gamepad2.left_stick_y)>0.05){
             move_preset(0);
         }
 
@@ -250,26 +229,7 @@ public class BasicOpMode_Iterative extends OpMode {
             }
         }
         else if (viperPreset == 0){
-            double idlePower = 0.1;
-            double viperSlideEncoderAverage = ((leftViperSlide.getCurrentPosition()+rightViperSlide.getCurrentPosition())/2.0);
-            double viperSlidePower = -gamepad2.left_stick_y;
-
-            if (viperSlideLimitBottom < viperSlideEncoderAverage && viperSlideEncoderAverage < viperSlideLimitTop){
-                leftViperSlide.setPower((viperSlidePower)+idlePower);
-                rightViperSlide.setPower((viperSlidePower)+idlePower);
-            }
-            else if (viperSlideEncoderAverage > viperSlideLimitTop && viperSlidePower > -0.1){
-                leftViperSlide.setPower(idlePower);
-                rightViperSlide.setPower(idlePower);
-            }
-            else if (viperSlideEncoderAverage < viperSlideLimitBottom && 0.1 > viperSlidePower){
-                leftViperSlide.setPower(idlePower);
-                rightViperSlide.setPower(idlePower);
-            }
-            else{
-                leftViperSlide.setPower((viperSlidePower)+idlePower);
-                rightViperSlide.setPower((viperSlidePower)+idlePower);
-            }
+            move_viper_slide_manual();
         }
     }
 
