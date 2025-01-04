@@ -59,7 +59,9 @@ public class BasicOpMode_Iterative extends OpMode {
     private final double TopLimit = 8.1;
     private final double viperSlideLimitBottom = MOTOR*BottomLimit;
     private final double viperSlideLimitTop = MOTOR*TopLimit;
-    boolean field_centric = true;
+    private boolean field_centric = true;
+    private int lastViperPreset = 0;
+
     SparkFunOTOS.Pose2D pos;
 
     @Override
@@ -186,19 +188,16 @@ public class BasicOpMode_Iterative extends OpMode {
     private void move_viper_slide_and_presets() {
         if (gamepad2.dpad_up){
             grabberWristServo.setPosition(1);
-            move_preset(1);
+            lastViperPreset = 1;
         }
         else if (gamepad2.dpad_down) {
             grabberWristServo.setPosition(0.3);
-            move_preset(2);
+            lastViperPreset = 2;
         }
         else if (Math.abs(gamepad2.left_stick_y)>0.05){
-            move_preset(0);
+            lastViperPreset = 0;
         }
-        else{
-            leftViperSlide.setPower(0.1);
-            rightViperSlide.setPower(0.1);
-        }
+        move_preset(lastViperPreset);
 
     }
 
