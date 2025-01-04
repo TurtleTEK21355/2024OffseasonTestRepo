@@ -195,6 +195,10 @@ public class BasicOpMode_Iterative extends OpMode {
         else if (Math.abs(gamepad2.left_stick_y)>0.05){
             move_preset(0);
         }
+        else{
+            leftViperSlide.setPower(0.1);
+            rightViperSlide.setPower(0.1);
+        }
 
     }
 
