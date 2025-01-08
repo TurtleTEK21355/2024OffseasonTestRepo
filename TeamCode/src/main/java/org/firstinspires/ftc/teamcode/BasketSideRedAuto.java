@@ -217,16 +217,85 @@ public class BasketSideRedAuto extends LinearOpMode {
         }
         stopAllMotors();
         //Drive towards the basket
-        while (pos.y > -15 && opModeIsActive()) {
-            drivetrainControl(-0.7f, 0.7f, 0);
+        while (pos.y > -10 && opModeIsActive()) {
+            drivetrainControl(-0.7f, 0, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
             telemetry.addData("Y coordinate", pos.y);
             telemetry.addData("Heading", pos.h);
         }
-        
+        // From this point on, it is all EXPERIMENTAL
         stopAllMotors();
         myOtos.resetTracking();
+        while (pos.h > -137 && opModeIsActive()) {
+            drivetrainControl(0, 0, 0.5f); //unsure as to turning direction
+            pos = myOtos.getPosition();
+            telemetry.addData("X coord", pos.x);
+            telemetry.addData("Y coordinate", pos.y);
+            telemetry.addData("Heading", pos.h);
+            telemetry.update();
+        }
+        stopAllMotors();
+        myOtos.resetTracking();
+        while (pos.y < 4 && opModeIsActive()) {
+            drivetrainControl(0.3f, 0, 0);
+            pos = myOtos.getPosition();
+            telemetry.addData("X coord", pos.x);
+            telemetry.addData("Y coordinate", pos.y);
+            telemetry.addData("Heading", pos.h);
+        }
+        stopAllMotors();
+        sampleIntake();
+        myOtos.resetTracking();
+        while (pos.y > -4 && opModeIsActive()) {
+            drivetrainControl(-0.3f, 0, 0);
+            pos = myOtos.getPosition();
+            telemetry.addData("X coord", pos.x);
+            telemetry.addData("Y coordinate", pos.y);
+            telemetry.addData("Heading", pos.h);
+        }
+        stopAllMotors();
+        sampleIntake();
+        while (pos.h < 135 && opModeIsActive()) {
+            drivetrainControl(0, 0, -0.5f); //unsure as to turning direction
+            pos = myOtos.getPosition();
+            telemetry.addData("X coord", pos.x);
+            telemetry.addData("Y coordinate", pos.y);
+            telemetry.addData("Heading", pos.h);
+            telemetry.update();
+        }
+        stopAllMotors();
+        myOtos.resetTracking();
+        while (leftViperSlide.getCurrentPosition() > -6089) {
+            leftViperSlide.getCurrentPosition();
+        }
+        basketScore();
+        leftViperSlide.setTargetPosition((int) 5);
+        rightViperSlide.setTargetPosition((int) 5);
+        leftViperSlide.setPower(-0.7);
+        rightViperSlide.setPower(-0.7);
+
+        while (pos.y < 10 && opModeIsActive()) {
+            drivetrainControl(0.3f, 0, 0);
+            pos = myOtos.getPosition();
+            telemetry.addData("X coord", pos.x);
+            telemetry.addData("Y coordinate", pos.y);
+            telemetry.addData("Heading", pos.h);
+        }
+        stopAllMotors();
+        myOtos.resetTracking();
+        while (leftViperSlide.getCurrentPosition() > -6089) {
+            leftViperSlide.getCurrentPosition();
+        }
+        basketScore();
+
+        leftViperSlide.setTargetPosition((int) 5);
+        rightViperSlide.setTargetPosition((int) 5);
+        leftViperSlide.setPower(-0.7);
+        rightViperSlide.setPower(-0.7);
+        while (leftViperSlide.getCurrentPosition() < 5){
+            leftViperSlide.getCurrentPosition();
+        }
     }
     private void stopAllMotors(){
         drivetrainControl(0,0,0);
