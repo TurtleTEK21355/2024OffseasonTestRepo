@@ -102,6 +102,20 @@ public class BasketSideRedAuto extends LinearOpMode {
         myOtos.resetTracking();
         pos = myOtos.getPosition();
 
+        // ACCELERATION TESTING
+
+        while (pos.y < 15 && opModeIsActive()) {
+            accelerationControl(0.5f, 0, 0);
+            pos = myOtos.getPosition();
+            telemetry.addData("X coord", pos.x);
+            telemetry.addData("Y coordinate", pos.y);
+            telemetry.addData("Heading", pos.h);
+            telemetry.update();
+        }
+        stopAllMotors();
+
+        // END ACCELERATION TESTING
+        
         while (pos.h < 40 && opModeIsActive()) {
             linearActuatorServo.setPower(1);
             drivetrainControl(0, 0.35f, -0.1f);
@@ -336,6 +350,17 @@ public class BasketSideRedAuto extends LinearOpMode {
         rearLeftDrive.setPower(rearLeftStrafe);
         rearRightDrive.setPower(rearRightStrafe);
     }
+
+    private void accelerationControl(float maxSpeedDrive, float maxSpeedStrafe, float maxSpeedTurn){
+        float accelerationConstant = 0;
+        while (accelerationConstant < maxSpeedDrive && accelerationConstant < maxSpeedStrafe && accelerationConstant < maxSpeedTurn) {
+            drivetrainControl(0 + accelerationConstant, 0 + accelerationConstant, 0 + accelerationConstant);
+            accelerationConstant = (float) (accelerationConstant + 0.1);
+            sleep(100);
+        }
+        drivetrainControl(maxSpeedDrive, maxSpeedStrafe, maxSpeedTurn);
+    }
+    
     private void sampleIntake(){
 
         grabberServo.setPosition(0.93);
