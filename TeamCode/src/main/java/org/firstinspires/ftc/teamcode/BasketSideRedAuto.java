@@ -138,14 +138,14 @@ public class BasketSideRedAuto extends LinearOpMode {
             leftViperSlide.getCurrentPosition();
         }
         basketScore();
-        leftViperSlide.setTargetPosition((int) -125);
-        rightViperSlide.setTargetPosition((int) -125);
+        leftViperSlide.setTargetPosition((int) -45);
+        rightViperSlide.setTargetPosition((int) -45);
         leftViperSlide.setPower(-0.7);
         rightViperSlide.setPower(-0.7);
         myOtos.resetTracking();
 
 
-        while (pos.h > -140 && opModeIsActive()) {
+        while (pos.h > -137 && opModeIsActive()) {
             drivetrainControl(0, 0, 0.5f); //unsure as to turning direction
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -155,12 +155,13 @@ public class BasketSideRedAuto extends LinearOpMode {
         }
         stopAllMotors();
 
-        while (leftViperSlide.getCurrentPosition() < -125){
+        while (leftViperSlide.getCurrentPosition() < -150){
             leftViperSlide.getCurrentPosition();
             telemetry.addData("viper slide", leftViperSlide.getCurrentPosition());
+            telemetry.update();
         }
         myOtos.resetTracking();
-        while (pos.y < 4 && opModeIsActive()) {
+        while (pos.y < 6 && opModeIsActive()) {
             drivetrainControl(0.5f, 0, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -210,8 +211,8 @@ public class BasketSideRedAuto extends LinearOpMode {
         }
         basketScore();
 
-        leftViperSlide.setTargetPosition((int) -100);
-        rightViperSlide.setTargetPosition((int) -100);
+        leftViperSlide.setTargetPosition((int) -45);
+        rightViperSlide.setTargetPosition((int) -45);
         leftViperSlide.setPower(-0.7);
         rightViperSlide.setPower(-0.7);
 
@@ -250,11 +251,15 @@ public class BasketSideRedAuto extends LinearOpMode {
             telemetry.addData("Heading", pos.h);
         }
         stopAllMotors();
-        while (leftViperSlide.getCurrentPosition() > -100){
+        myOtos.resetTracking();
+        while (leftViperSlide.getCurrentPosition() < -500){
             leftViperSlide.getCurrentPosition();
+            telemetry.addData("viper slide", leftViperSlide.getCurrentPosition());
+            telemetry.update();
         }
+
+        sleep(650);
         sampleIntake();
-        sleep(700);
         myOtos.resetTracking();
         while (pos.y > -4 && opModeIsActive()) {
             drivetrainControl(-0.3f, 0, 0);
