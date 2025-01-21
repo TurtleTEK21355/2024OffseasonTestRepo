@@ -140,12 +140,12 @@ public class BasketSideRedAuto extends LinearOpMode {
         basketScore();
         leftViperSlide.setTargetPosition((int) -45);
         rightViperSlide.setTargetPosition((int) -45);
-        leftViperSlide.setPower(-0.7);
-        rightViperSlide.setPower(-0.7);
+        leftViperSlide.setPower(-1);
+        rightViperSlide.setPower(-1);
         myOtos.resetTracking();
 
 
-        while (pos.h > -137 && opModeIsActive()) {
+        while (pos.h > -137.5 && opModeIsActive()) {
             drivetrainControl(0, 0, 0.5f); //unsure as to turning direction
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -155,13 +155,13 @@ public class BasketSideRedAuto extends LinearOpMode {
         }
         stopAllMotors();
 
-        while (leftViperSlide.getCurrentPosition() < -150){
+        while (leftViperSlide.getCurrentPosition() < -150) {
             leftViperSlide.getCurrentPosition();
             telemetry.addData("viper slide", leftViperSlide.getCurrentPosition());
             telemetry.update();
         }
         myOtos.resetTracking();
-        while (pos.y < 6 && opModeIsActive()) {
+        while (pos.y < 5.5 && opModeIsActive()) {
             drivetrainControl(0.5f, 0, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -175,7 +175,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         sampleIntake();
         sleep(1000);
         // Drive towards the spike mark
-        while (pos.y > -8 && opModeIsActive()) {
+        while (pos.y > -7 && opModeIsActive()) {
             drivetrainControl(-0.5f, 0, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -193,11 +193,21 @@ public class BasketSideRedAuto extends LinearOpMode {
 
         leftViperSlide.setTargetPosition((int) -6089);
         rightViperSlide.setTargetPosition((int) -6089);
-        leftViperSlide.setPower(0.7);
-        rightViperSlide.setPower(0.7);
+        leftViperSlide.setPower(1);
+        rightViperSlide.setPower(1);
 
-        while (pos.h < 140 && opModeIsActive()) {
+        while (pos.h < 135 && opModeIsActive()) {
             drivetrainControl(0, 0, -0.5f); //unsure as to turning direction
+            pos = myOtos.getPosition();
+            telemetry.addData("X coord", pos.x);
+            telemetry.addData("Y coordinate", pos.y);
+            telemetry.addData("Heading", pos.h);
+            telemetry.update();
+        }
+        stopAllMotors();
+        myOtos.resetTracking();
+        while (pos.y < 1.5 && opModeIsActive()) {
+            drivetrainControl(0.4f, 0, 0); //unsure as to turning direction
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
             telemetry.addData("Y coordinate", pos.y);
@@ -213,12 +223,12 @@ public class BasketSideRedAuto extends LinearOpMode {
 
         leftViperSlide.setTargetPosition((int) -45);
         rightViperSlide.setTargetPosition((int) -45);
-        leftViperSlide.setPower(-0.7);
-        rightViperSlide.setPower(-0.7);
+        leftViperSlide.setPower(-1);
+        rightViperSlide.setPower(-1);
 
         stopAllMotors();
         //Drive towards the basket
-
+        sleep(100);
         while (pos.y > -1 && opModeIsActive()) {
             drivetrainControl(-0.7f, 0, 0);
             pos = myOtos.getPosition();
@@ -231,7 +241,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         // From this point on, it is all EXPERIMENTAL
         stopAllMotors();
         myOtos.resetTracking();
-        while (pos.h > -115 && opModeIsActive()) {
+        while (pos.h > -110 && opModeIsActive()) {
             drivetrainControl(0, 0, 0.5f); //unsure as to turning direction
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -243,7 +253,7 @@ public class BasketSideRedAuto extends LinearOpMode {
 
 
         myOtos.resetTracking();
-        while (pos.y < 10 && opModeIsActive()) {
+        while (pos.y < 9 && opModeIsActive()) {
             drivetrainControl(0.3f, 0, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -252,16 +262,17 @@ public class BasketSideRedAuto extends LinearOpMode {
         }
         stopAllMotors();
         myOtos.resetTracking();
-        while (leftViperSlide.getCurrentPosition() < -500){
+        while (leftViperSlide.getCurrentPosition() < -500) {
             leftViperSlide.getCurrentPosition();
             telemetry.addData("viper slide", leftViperSlide.getCurrentPosition());
             telemetry.update();
         }
 
-        sleep(650);
+        sleep(350);
         sampleIntake();
+        sleep(100);
         myOtos.resetTracking();
-        while (pos.y > -4 && opModeIsActive()) {
+        while (pos.y > -9 && opModeIsActive()) {
             drivetrainControl(-0.3f, 0, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -271,10 +282,10 @@ public class BasketSideRedAuto extends LinearOpMode {
         stopAllMotors();
         leftViperSlide.setTargetPosition((int) -6089);
         rightViperSlide.setTargetPosition((int) -6089);
-        leftViperSlide.setPower(0.7);
-        rightViperSlide.setPower(0.7);
+        leftViperSlide.setPower(1);
+        rightViperSlide.setPower(1);
 
-        while (pos.h < 135 && opModeIsActive()) {
+        while (pos.h < 105 && opModeIsActive()) {
             drivetrainControl(0, 0, -0.5f); //unsure as to turning direction
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -282,22 +293,10 @@ public class BasketSideRedAuto extends LinearOpMode {
             telemetry.addData("Heading", pos.h);
             telemetry.update();
         }
+
         stopAllMotors();
         myOtos.resetTracking();
-        while (leftViperSlide.getCurrentPosition() > -6089) {
-            leftViperSlide.getCurrentPosition();
-        }
-        basketScore();
-        leftViperSlide.setTargetPosition((int) 5);
-        rightViperSlide.setTargetPosition((int) 5);
-        leftViperSlide.setPower(-0.7);
-        rightViperSlide.setPower(-0.7);
-        while (leftViperSlide.getCurrentPosition() < 5) {
-            leftViperSlide.getCurrentPosition();
-        }
-
-
-        while (pos.y < 10 && opModeIsActive()) {
+        while (pos.y < 1 && opModeIsActive()) {
             drivetrainControl(0.3f, 0, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -305,19 +304,13 @@ public class BasketSideRedAuto extends LinearOpMode {
             telemetry.addData("Heading", pos.h);
         }
         stopAllMotors();
-        myOtos.resetTracking();
         while (leftViperSlide.getCurrentPosition() > -6089) {
             leftViperSlide.getCurrentPosition();
         }
+
         basketScore();
 
-        leftViperSlide.setTargetPosition((int) 5);
-        rightViperSlide.setTargetPosition((int) 5);
-        leftViperSlide.setPower(-0.7);
-        rightViperSlide.setPower(-0.7);
-        while (leftViperSlide.getCurrentPosition() < 5){
-            leftViperSlide.getCurrentPosition();
-        }
+
     }
     private void stopAllMotors(){
         drivetrainControl(0,0,0);
