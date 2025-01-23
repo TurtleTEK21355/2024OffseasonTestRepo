@@ -31,10 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -42,13 +39,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.WhiteBalanceControl;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
-@Autonomous(name="BasketSideAuto", group="Linear OpMode")
-public class BasketSideRedAuto extends LinearOpMode {
+@Autonomous(name="ANewBasketAuto", group="Linear OpMode")
+public class BasketSideRedAutoFastStart extends LinearOpMode {
     // Declare OpMode members.
     ElapsedTime elapsedTime;
     SparkFunOTOS myOtos;
@@ -103,9 +99,9 @@ public class BasketSideRedAuto extends LinearOpMode {
         pos = myOtos.getPosition();
 
 
-        while (pos.h < 40 && opModeIsActive()) {
+        while (pos.x < 6 && opModeIsActive()) {
             linearActuatorServo.setPower(1);
-            drivetrainControl(0, 0.35f, -0.1f);
+            drivetrainControl(0, 0.5f, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
             telemetry.addData("Y coordinate", pos.y);
@@ -117,31 +113,21 @@ public class BasketSideRedAuto extends LinearOpMode {
 
         leftViperSlide.setTargetPosition((int) -6089);
         rightViperSlide.setTargetPosition((int) -6089);
-        leftViperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightViperSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftViperSlide.setPower(1);
-        rightViperSlide.setPower(1);
+        leftViperSlide.setPower(-1);
+        rightViperSlide.setPower(-1);
 
-        while (pos.y < 15 && opModeIsActive()) {
-            drivetrainControl(0.5f, 0, 0);
-            pos = myOtos.getPosition();
-            telemetry.addData("X coord", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
-            telemetry.addData("Heading", pos.h);
-            telemetry.update();
-        }
-        linearActuatorServo.setPower(0);
-        stopAllMotors();
-        myOtos.resetTracking();
-        elapsedTime.reset();
         while (leftViperSlide.getCurrentPosition() > -6089) {
             leftViperSlide.getCurrentPosition();
         }
+
+        linearActuatorServo.setPower(0);
+
         basketScore();
+
         leftViperSlide.setTargetPosition((int) -45);
         rightViperSlide.setTargetPosition((int) -45);
-        leftViperSlide.setPower(-1);
-        rightViperSlide.setPower(-1);
+        leftViperSlide.setPower(1);
+        rightViperSlide.setPower(1);
         myOtos.resetTracking();
 
 
@@ -193,8 +179,8 @@ public class BasketSideRedAuto extends LinearOpMode {
 
         leftViperSlide.setTargetPosition((int) -6089);
         rightViperSlide.setTargetPosition((int) -6089);
-        leftViperSlide.setPower(1);
-        rightViperSlide.setPower(1);
+        leftViperSlide.setPower(-1);
+        rightViperSlide.setPower(-1);
 
         while (pos.h < 135 && opModeIsActive()) {
             drivetrainControl(0, 0, -0.5f); //unsure as to turning direction
@@ -223,8 +209,8 @@ public class BasketSideRedAuto extends LinearOpMode {
 
         leftViperSlide.setTargetPosition((int) -45);
         rightViperSlide.setTargetPosition((int) -45);
-        leftViperSlide.setPower(-1);
-        rightViperSlide.setPower(-1);
+        leftViperSlide.setPower(1);
+        rightViperSlide.setPower(1);
 
         stopAllMotors();
         //Drive towards the basket
@@ -282,8 +268,8 @@ public class BasketSideRedAuto extends LinearOpMode {
         stopAllMotors();
         leftViperSlide.setTargetPosition((int) -6089);
         rightViperSlide.setTargetPosition((int) -6089);
-        leftViperSlide.setPower(1);
-        rightViperSlide.setPower(1);
+        leftViperSlide.setPower(-1);
+        rightViperSlide.setPower(-1);
 
         while (pos.h < 105 && opModeIsActive()) {
             drivetrainControl(0, 0, -0.5f); //unsure as to turning direction

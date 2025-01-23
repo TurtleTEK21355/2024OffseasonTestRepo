@@ -59,7 +59,9 @@ public class BasicOpMode_Iterative extends OpMode {
     private final double TopLimit = 8.1;
     private final double viperSlideLimitBottom = MOTOR*BottomLimit;
     private final double viperSlideLimitTop = MOTOR*TopLimit;
-    boolean field_centric = true;
+    private boolean field_centric = true;
+    private int lastViperPreset = 0;
+
     SparkFunOTOS.Pose2D pos;
 
     @Override
@@ -184,86 +186,53 @@ public class BasicOpMode_Iterative extends OpMode {
 }
 
     private void move_viper_slide_and_presets() {
-        /*leftViperSlide.setPower(gamepad2.left_stick_y);
-        rightViperSlide.setPower(gamepad2.left_stick_y);
-
-
-        if (leftViperSlide.getCurrentPosition()<0);
-        if ((leftViperSlide.getCurrentPosition()+rightViperSlide.getCurrentPosition())/2.0<viperSlideLimitBottom){
-            leftViperSlide.setPower(0.5);
-            rightViperSlide.setPower(0.5);
-        }
-        else if ((leftViperSlide.getCurrentPosition()+rightViperSlide.getCurrentPosition())/2.0<viperSlideLimitTop){
-            leftViperSlide.setPower((-gamepad2.left_stick_y)+idlePower);
-            rightViperSlide.setPower((-gamepad2.left_stick_y)+idlePower);
-        }
-        else if (gamepad2.left_stick_y <= 0.1) {
-            leftViperSlide.setPower(idlePower);
-            rightViperSlide.setPower(idlePower);
-        }
-        else{
-            leftViperSlide.setPower(0);
-            rightViperSlide.setPower(0);
-        }*/
         if (gamepad2.dpad_up){
-            grabberWristServo.setPosition(0.3);
-            move_preset(true);
+            grabberWristServo.setPosition(1);
+            lastViperPreset = 1;
         }
         else if (gamepad2.dpad_down) {
-            grabberWristServo.setPosition(1);
-            move_preset(false);
+            grabberWristServo.setPosition(0.3);
+            lastViperPreset = 2;
         }
-        else if (Math.abs(gamepad2.left_stick_y) > 0.1){
-            move_viper_slide_manual();
+        else if (Math.abs(gamepad2.left_stick_y)>0.05){
+            lastViperPreset = 0;
         }
+        move_preset(lastViperPreset);
 
     }
 
-    private void move_preset(boolean viperPreset) {
-        if (viperPreset){
+    private void move_preset(int viperPreset) {
+        if (viperPreset == 1){
             double idlePower = 0.1;
             double viperSlideEncoderAverage = ((leftViperSlide.getCurrentPosition()+rightViperSlide.getCurrentPosition())/2.0);
             double viperSlidePower = 1;
 
-            if (viperSlideLimitBottom < viperSlideEncoderAverage && viperSlideEncoderAverage < viperSlideLimitTop){
-                leftViperSlide.setPower((viperSlidePower)+idlePower);
-                rightViperSlide.setPower((viperSlidePower)+idlePower);
-            }
-            else if (viperSlideEncoderAverage > viperSlideLimitTop){
-                leftViperSlide.setPower(idlePower);
-                rightViperSlide.setPower(idlePower);
-            }
-            else if (viperSlideEncoderAverage < viperSlideLimitBottom){
-                leftViperSlide.setPower(idlePower);
-                rightViperSlide.setPower(idlePower);
+            if (viperSlideEncoderAverage < viperSlideLimitTop){
+                leftViperSlide.setPower(viperSlidePower);
+                rightViperSlide.setPower(viperSlidePower);
             }
             else{
-                leftViperSlide.setPower((viperSlidePower)+idlePower);
-                rightViperSlide.setPower((viperSlidePower)+idlePower);
+                leftViperSlide.setPower(idlePower);
+                rightViperSlide.setPower(idlePower);
             }
 
         }
-        if (!viperPreset){
+        else if (viperPreset == 2){
             double idlePower = 0.1;
             double viperSlideEncoderAverage = ((leftViperSlide.getCurrentPosition()+rightViperSlide.getCurrentPosition())/2.0);
             double viperSlidePower = -1;
 
-            if (viperSlideLimitBottom < viperSlideEncoderAverage && viperSlideEncoderAverage < viperSlideLimitTop){
+            if (viperSlideLimitBottom < viperSlideEncoderAverage){
                 leftViperSlide.setPower((viperSlidePower)+idlePower);
                 rightViperSlide.setPower((viperSlidePower)+idlePower);
-            }
-            else if (viperSlideEncoderAverage > viperSlideLimitTop){
-                leftViperSlide.setPower(idlePower);
-                rightViperSlide.setPower(idlePower);
-            }
-            else if (viperSlideEncoderAverage < viperSlideLimitBottom){
-                leftViperSlide.setPower(idlePower);
-                rightViperSlide.setPower(idlePower);
             }
             else{
-                leftViperSlide.setPower((viperSlidePower)+idlePower);
-                rightViperSlide.setPower((viperSlidePower)+idlePower);
+                leftViperSlide.setPower(idlePower);
+                rightViperSlide.setPower(idlePower);
             }
+        }
+        else if (viperPreset == 0){
+            move_viper_slide_manual();
         }
     }
 
