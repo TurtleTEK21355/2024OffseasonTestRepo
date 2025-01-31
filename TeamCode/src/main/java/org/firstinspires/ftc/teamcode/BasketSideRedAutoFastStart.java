@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -44,6 +45,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 @Autonomous(name="ANewBasketAuto", group="Linear OpMode")
+@Disabled
 public class BasketSideRedAutoFastStart extends LinearOpMode {
     // Declare OpMode members.
     ElapsedTime elapsedTime;
@@ -131,7 +133,7 @@ public class BasketSideRedAutoFastStart extends LinearOpMode {
         myOtos.resetTracking();
 
 
-        while (pos.h > -137.5 && opModeIsActive()) {
+        while (pos.h > -145 && opModeIsActive()) {
             drivetrainControl(0, 0, 0.5f); //unsure as to turning direction
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -182,7 +184,7 @@ public class BasketSideRedAutoFastStart extends LinearOpMode {
         leftViperSlide.setPower(-1);
         rightViperSlide.setPower(-1);
 
-        while (pos.h < 135 && opModeIsActive()) {
+        while (pos.h < 137 && opModeIsActive()) {
             drivetrainControl(0, 0, -0.5f); //unsure as to turning direction
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -227,7 +229,7 @@ public class BasketSideRedAutoFastStart extends LinearOpMode {
         // From this point on, it is all EXPERIMENTAL
         stopAllMotors();
         myOtos.resetTracking();
-        while (pos.h > -110 && opModeIsActive()) {
+        while (pos.h > -140 && opModeIsActive()) {
             drivetrainControl(0, 0, 0.5f); //unsure as to turning direction
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -271,7 +273,7 @@ public class BasketSideRedAutoFastStart extends LinearOpMode {
         leftViperSlide.setPower(-1);
         rightViperSlide.setPower(-1);
 
-        while (pos.h < 105 && opModeIsActive()) {
+        while (pos.h < 115 && opModeIsActive()) {
             drivetrainControl(0, 0, -0.5f); //unsure as to turning direction
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);

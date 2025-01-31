@@ -145,7 +145,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         myOtos.resetTracking();
 
 
-        while (pos.h > -137.5 && opModeIsActive()) {
+        while (pos.h > -140 && opModeIsActive()) {
             drivetrainControl(0, 0, 0.5f); //unsure as to turning direction
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
