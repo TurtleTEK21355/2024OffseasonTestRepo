@@ -42,6 +42,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name="WeirdAuto", group="Linear OpMode")
 @Disabled
+
 public class WeirdAuto extends LinearOpMode {
     SparkFunOTOS myOtos;
     private DcMotor frontLeftDrive = null;
