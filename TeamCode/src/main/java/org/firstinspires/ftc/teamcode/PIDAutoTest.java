@@ -42,35 +42,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-/*
- * This file contains an example of a Linear "OpMode".
- * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
- * The names of OpModes appear on the menu of the FTC Driver Station.
- * When a selection is made from the menu, the corresponding OpMode is executed.
- *
- * This particular OpMode illustrates driving a 4-motor Omni-Directional (or Holonomic) robot.
- * This code will work with either a Mecanum-Drive or an X-Drive train.
- * Both of these drives are illustrated at https://gm0.org/en/latest/docs/robot-design/drivetrains/holonomic.html
- * Note that a Mecanum drive must display an X roller-pattern when viewed from above.
- *
- * Also note that it is critical to set the correct rotation direction for each motor.  See details below.
- *
- * Holonomic drives provide the ability for the robot to move in three axes (directions) simultaneously.
- * Each motion axis is controlled by one Joystick axis.
- *
- * 1) Axial:    Driving forward and backward               Left-joystick Forward/Backward
- * 2) Lateral:  Strafing right and left                     Left-joystick Right and Left
- * 3) Yaw:      Rotating Clockwise and counter clockwise    Right-joystick Right and Left
- *
- * This code is written assuming that the right-side motors need to be reversed for the robot to drive forward.
- * When you first test your robot, if it moves backward when you push the left stick forward, then you must flip
- * the direction of all 4 motors (see code below).
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
- */
-@Disabled
-@Autonomous(name="ObservationSideRedAuto", group="Linear OpMode")
+@Autonomous(name="PIDTestAuto", group="Test OpMode")
 public class PIDAutoTest extends LinearOpMode {
     // Declare OpMode members.
     SparkFunOTOS myOtos;
@@ -83,14 +55,6 @@ public class PIDAutoTest extends LinearOpMode {
     private Servo grabberServo = null;
     private Servo grabberHingeServo = null;
     private CRServo linearActuatorServo = null;
-    private final float leftStickY = 0;
-    private final float leftStickX = 0;
-    private final float rightStickY = 0;
-    private final float rightStickX = 0;
-    private float leftDrive;
-    private float rightDrive;
-    private float leftDriveStrafe;
-    private float rightDriveStrafe;
     private float frontLeftStrafe;
     private float frontRightStrafe;
     private float rearLeftStrafe;
@@ -99,6 +63,9 @@ public class PIDAutoTest extends LinearOpMode {
     private double Kp = 0.05;
     private double Ki = 0.01;
     private double Kd = 0.02;
+    private double KpTheta = 0.03;
+    private double KiTheta = 0.005;
+    private double KdTheta = 0.01;
 
 
 
@@ -131,38 +98,43 @@ public class PIDAutoTest extends LinearOpMode {
         myOtos.resetTracking();
         pos = myOtos.getPosition();
 
-        positionControl(12,6);
     }
-    private void positionControl(float targetYPos, float targetXPos, float MaxYSpeed, float MaxXSpeed) {
-        double previousErrorY = 0, previousErrorX = 0;
-        double integralY = 0, integralX = 0;
-        double speedY = MaxYSpeed, speedX = MaxXSpeed;
+    private void positionControl(float targetYPos, float targetXPos, float targetThetaPos, float MaxYSpeed, float MaxXSpeed, float MaxThetaSpeed) {
+        double previousErrorY = 0, previousErrorX = 0, previousErrorTheta = 0;
+        double integralY = 0, integralX = 0, integralTheta = 0;
+        double speedY = MaxYSpeed, speedX = MaxXSpeed, speedTheta = MaxThetaSpeed;
 
         while (true) {
             double currentY = myOtos.getPosition().y;
             double currentX = myOtos.getPosition().x;
+            double currentTheta = myOtos.getPosition().h;
 
             double errorY = targetYPos - currentY;
             double errorX = targetXPos - currentX;
+            double errorTheta = ((targetThetaPos - currentTheta + 180) % 360) - 180;
 
-            if (Math.abs(errorY) < 0.05 && Math.abs(errorX) < 0.05) {
+            if (Math.abs(errorY) < 0.05 && Math.abs(errorX) < 0.05 && Math.abs(errorTheta) < 2) {
                 break;
             }
 
             integralY = integralY + errorY;
             integralX = integralX + errorX;
+            integralTheta = integralTheta + errorTheta;
 
             double derivativeY = errorY - previousErrorY;
             double derivativeX = errorX - previousErrorX;
+            double derivativeTheta = errorTheta - previousErrorTheta;
 
             double yPower = Math.min((Kp * errorY) + (Ki * integralY) + (Kd * derivativeY), speedY);
             double xPower = Math.min((Kp * errorX) + (Ki * integralX) + (Kd * derivativeX), speedX);
+            double thetaPower = Math.min((KpTheta * errorTheta) + (KiTheta * integralTheta) + (KdTheta * derivativeTheta), speedTheta);
 
             previousErrorY = errorY;
             previousErrorX = errorX;
+            previousErrorTheta = errorTheta;
 
             // Send calculated power to drivetrain
-            drivetrainControl((float) yPower, (float) xPower, 0);
+            drivetrainControl((float) yPower, (float) xPower, (float) thetaPower);
         }
 
         stopAllMotors(); // Stop the robot once the target is reached
