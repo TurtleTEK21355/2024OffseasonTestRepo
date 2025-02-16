@@ -131,9 +131,9 @@ public class PIDAutoTest extends LinearOpMode {
         myOtos.resetTracking();
         pos = myOtos.getPosition();
 
-        positionControl(12,6,0.5f,0.5f);
+        positionControl(12,6);
     }
-    private void positionControl(float targetYPos, float targetXPos) {
+    private void positionControl(float targetYPos, float targetXPos, float MaxYSpeed, float MaxXSpeed) {
         double previousErrorY = 0, previousErrorX = 0;
         double integralY = 0, integralX = 0;
 
@@ -154,8 +154,8 @@ public class PIDAutoTest extends LinearOpMode {
             double derivativeY = errorY - previousErrorY;
             double derivativeX = errorX - previousErrorX;
 
-            double xPower = (Kp * errorX) + (Ki * integralX) + (Kd * derivativeX);
-            double yPower = (Kp * errorY) + (Ki * integralY) + (Kd * derivativeY);
+            double xPower = Math.min((Kp * errorX) + (Ki * integralX) + (Kd * derivativeX), );
+            double yPower = Math.min((Kp * errorY) + (Ki * integralY) + (Kd * derivativeY),1);
 
             previousErrorY = errorY;
             previousErrorX = errorX;
