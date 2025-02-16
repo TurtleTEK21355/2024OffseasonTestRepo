@@ -96,13 +96,10 @@ public class PIDAutoTest extends LinearOpMode {
     private float rearLeftStrafe;
     private float rearRightStrafe;
 
-    private float kP;
-    private float kI;
-    private float kD;
+    private double Kp = 0.05;
+    private double Ki = 0.01;
+    private double Kd = 0.02;
 
-    private float targetX;
-    private float targetY;
-    private float targetTheta;
 
 
 
@@ -130,12 +127,44 @@ public class PIDAutoTest extends LinearOpMode {
         configureOtos();
         waitForStart();
 
-
-
-
         SparkFunOTOS.Pose2D pos;
         myOtos.resetTracking();
         pos = myOtos.getPosition();
+
+        positionControl(12,6,0.5f,0.5f);
+    }
+    private void positionControl(float targetYPos, float targetXPos) {
+        double previousErrorY = 0, previousErrorX = 0;
+        double integralY = 0, integralX = 0;
+
+        while (true) {
+            double currentY = myOtos.getPosition().y;
+            double currentX = myOtos.getPosition().x;
+
+            double errorY = targetYPos - currentY;
+            double errorX = targetXPos - currentX;
+
+            if (Math.abs(errorY) < 0.05 && Math.abs(errorX) < 0.05) {
+                break;
+            }
+
+            integralY = integralY + errorY;
+            integralX = integralX + errorX;
+
+            double derivativeY = errorY - previousErrorY;
+            double derivativeX = errorX - previousErrorX;
+
+            double xPower = (Kp * errorX) + (Ki * integralX) + (Kd * derivativeX);
+            double yPower = (Kp * errorY) + (Ki * integralY) + (Kd * derivativeY);
+
+            previousErrorY = errorY;
+            previousErrorX = errorX;
+
+            // Send calculated power to drivetrain
+            drivetrainControl((float) yPower, (float) xPower, 0);
+        }
+
+        stopAllMotors(); // Stop the robot once the target is reached
     }
     private void stopAllMotors(){
         drivetrainControl(0,0,0);
