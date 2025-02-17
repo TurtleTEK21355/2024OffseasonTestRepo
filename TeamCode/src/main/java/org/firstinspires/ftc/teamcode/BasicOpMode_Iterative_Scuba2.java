@@ -76,7 +76,7 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
         grabberServo = hardwareMap.get(Servo.class, "grabber_servo");
         grabberRotateServo = hardwareMap.get(Servo.class, "grabber_rotate_servo");
         grabberTiltServo = hardwareMap.get(Servo.class, "grabber_tilt_servo");
-        LinearActuatorMotor = hardwareMap.get(DcMotor.class, "linear_actuator_servo");
+        LinearActuatorMotor = hardwareMap.get(DcMotor.class, "linear_actuator_motor");
 
         frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -87,10 +87,6 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        /*rightViperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftViperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightViperSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightViperSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);*/
         leftViperSlide.setDirection(DcMotorSimple.Direction.FORWARD);
         rightViperSlide.setDirection(DcMotorSimple.Direction.REVERSE);
         rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -106,7 +102,8 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
         move_robot();
         move_viper_slide_and_presets();
         move_grabber();
-    //    move_grabber_wrist();
+        move_grabber_rotate();
+        move_grabber_tilt();
         move_linear_actuator();
         telemetry.update();
     }
@@ -262,19 +259,23 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
 
     private void move_grabber_tilt() {
         if (gamepad2.right_bumper) {
-            grabberTiltServo.setPosition(0.3);
+            grabberTiltServo.setPosition(0.75);
         }
         else if (gamepad2.left_bumper) {
-            grabberTiltServo.setPosition(1);
+            grabberTiltServo.setPosition(0);
         }
+    }
 
-        if (gamepad2.dpad_right || gamepad2.dpad_left) {
-            if (gamepad2.dpad_right) {
-                grabberRotateServo.setPosition(grabberRotateServo.getPosition() + 0.05);
-            }
-            else if (gamepad2.dpad_left) {
-                grabberRotateServo.setPosition(grabberRotateServo.getPosition() - 0.05);
-            }
+    private void move_grabber_rotate() {
+        if (gamepad2.dpad_right) {
+            grabberRotateServo.setPosition(0.5);
+
+        }
+        else if (gamepad2.dpad_left) {
+            grabberRotateServo.setPosition((-0.5));
+        }
+        else {
+            grabberRotateServo.setPosition(0);
         }
     }
 
