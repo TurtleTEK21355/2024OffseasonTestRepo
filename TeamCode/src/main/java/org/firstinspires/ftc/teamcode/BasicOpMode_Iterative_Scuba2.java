@@ -166,9 +166,9 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
             float turn = gamepad1.right_stick_x * 0.7f;
             float strafe = gamepad1.left_stick_x * 0.7f;
 
-            double frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
+            double frontLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
             double frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
-            double rearLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
+            double rearLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
             double rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
 
             frontLeftDrive.setPower(frontLeftStrafe);
@@ -283,7 +283,7 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
         double open = 0.9;
         double close = 0.2;
         if(gamepad2.right_trigger>0.1){
-            //close claw
+            //close clawl
             grabberServo.setPosition(close);
         }
         else if(gamepad2.left_trigger>0.1){
