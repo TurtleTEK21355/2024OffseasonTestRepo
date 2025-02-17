@@ -42,7 +42,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp(name="Basic: Iterative OpMode 2.0", group="Iterative OpMode")
-public class BasicOpMode_Iterative_Scoot2 extends OpMode {
+public class BasicOpMode_Iterative_Scuba2 extends OpMode {
 
     SparkFunOTOS myOtos;
     private DcMotor frontLeftDrive = null;
@@ -80,10 +80,10 @@ public class BasicOpMode_Iterative_Scoot2 extends OpMode {
         LinearActuatorMotor = hardwareMap.get(DcMotor.class, "linear_actuator_servo");
 
         frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        rearLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        rearRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        LinearActuatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        rearLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        rearRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        LinearActuatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
