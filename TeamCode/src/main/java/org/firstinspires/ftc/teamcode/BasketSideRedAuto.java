@@ -253,7 +253,7 @@ public class BasketSideRedAuto extends LinearOpMode {
 
 
         myOtos.resetTracking();
-        while (pos.y < 8 && opModeIsActive()) {
+        while (pos.y < 9 && opModeIsActive()) {
             drivetrainControl(0.3f, 0, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
@@ -272,7 +272,7 @@ public class BasketSideRedAuto extends LinearOpMode {
         sampleIntake();
         sleep(100);
         myOtos.resetTracking();
-        while (pos.y > -8 && opModeIsActive()) {
+        while (pos.y > -9 && opModeIsActive()) {
             drivetrainControl(-0.3f, 0, 0);
             pos = myOtos.getPosition();
             telemetry.addData("X coord", pos.x);
