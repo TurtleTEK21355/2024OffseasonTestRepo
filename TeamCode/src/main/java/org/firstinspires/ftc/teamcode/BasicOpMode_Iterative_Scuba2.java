@@ -55,7 +55,7 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
     private Servo grabberTiltServo = null;
     private DcMotor LinearActuatorMotor = null;
     private final double MOTOR = 751.8;
-    private final double BottomLimit = 0.22;
+    private final double BottomLimit = 0;
     private final double TopLimit = 8.1;
     private final double viperSlideLimitBottom = MOTOR*BottomLimit;
     private final double viperSlideLimitTop = MOTOR*TopLimit;
