@@ -78,11 +78,11 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
         grabberTiltServo = hardwareMap.get(Servo.class, "grabber_tilt_servo");
         LinearActuatorMotor = hardwareMap.get(DcMotor.class, "linear_actuator_motor");
 
-        frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         rearLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         rearRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        LinearActuatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        LinearActuatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -150,9 +150,9 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
             double strafe = r * Math.cos(correctedTheta);
             double turn = gamepad1.right_stick_x * 0.7;
 
-            double frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
+            double frontLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
             double frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
-            double rearLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
+            double rearLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
             double rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
 
             frontLeftDrive.setPower(frontLeftStrafe);
