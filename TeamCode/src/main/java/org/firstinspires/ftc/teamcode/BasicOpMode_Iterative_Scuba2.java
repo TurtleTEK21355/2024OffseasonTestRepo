@@ -189,7 +189,7 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
             lastViperPreset = 1;
         }
         else if (gamepad2.dpad_down) {
-            grabberTiltServo.setPosition(0.2);
+            grabberTiltServo.setPosition(0.3);
             lastViperPreset = 2;
         }
         else if (Math.abs(gamepad2.left_stick_y)>0.05){
@@ -262,7 +262,7 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
             grabberTiltServo.setPosition(0.75);
         }
         else if (gamepad2.left_bumper) {
-            grabberTiltServo.setPosition(0.2);
+            grabberTiltServo.setPosition(0.3);
         }
     }
 
