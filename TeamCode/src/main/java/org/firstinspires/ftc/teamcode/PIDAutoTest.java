@@ -59,11 +59,11 @@ public class PIDAutoTest extends LinearOpMode {
     private float rearRightStrafe;
 
     private double Kp = 0.05;
-    private double Ki = 0;
-    private double Kd = 0;
-    private double KpTheta = 0;
-    private double KiTheta = 0;
-    private double KdTheta = 0;
+    private double Ki = 0.0002;
+    private double Kd = 0.005;
+    private double KpTheta = 0.005;
+    private double KiTheta = 0.0002;
+    private double KdTheta = 0.05;
 
 
 
@@ -94,8 +94,8 @@ public class PIDAutoTest extends LinearOpMode {
         SparkFunOTOS.Pose2D pos;
         myOtos.resetTracking();
         pos = myOtos.getPosition();
-        positionControl(0,10,0,0.001f,1f,0.001f);
-        stop();
+        positionControl(0,0,90,0.05f,0.05f,0.4f);
+
     }
     private void positionControl(float targetYPos, float targetXPos, float targetThetaPos, float MaxYSpeed, float MaxXSpeed, float MaxThetaSpeed) {
         double previousErrorY = 0, previousErrorX = 0, previousErrorTheta = 0;
@@ -111,7 +111,7 @@ public class PIDAutoTest extends LinearOpMode {
             double errorX = targetXPos - currentX;
             double errorTheta = ((targetThetaPos - currentTheta + 180) % 360) - 180;
 
-            if (Math.abs(errorY) < 0.05 && Math.abs(errorX) < 0.05 && Math.abs(errorTheta) < 2) {
+            if (Math.abs(errorY) <= 0.1 && Math.abs(errorX) <= 0.1 && Math.abs(errorTheta) <= 2) {
                 break;
             }
 
