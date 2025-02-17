@@ -41,8 +41,8 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@TeleOp(name="Basic: Iterative OpMode", group="Iterative OpMode")
-public class BasicOpMode_Iterative extends OpMode {
+@TeleOp(name="Basic: Iterative OpMode 2.0", group="Iterative OpMode")
+public class BasicOpMode_Iterative_Scoot2 extends OpMode {
 
     SparkFunOTOS myOtos;
     private DcMotor frontLeftDrive = null;
@@ -54,7 +54,7 @@ public class BasicOpMode_Iterative extends OpMode {
     private Servo grabberServo = null;
     private Servo grabberRotateServo = null;
     private Servo grabberTiltServo = null;
-    private CRServo linearActuatorServo = null;
+    private DcMotor LinearActuatorMotor = null;
     private final double MOTOR = 751.8;
     private final double BottomLimit = 0.22;
     private final double TopLimit = 8.1;
@@ -77,13 +77,13 @@ public class BasicOpMode_Iterative extends OpMode {
         grabberServo = hardwareMap.get(Servo.class, "grabber_servo");
         grabberRotateServo = hardwareMap.get(Servo.class, "grabber_rotate_servo");
         grabberTiltServo = hardwareMap.get(Servo.class, "grabber_tilt_servo");
-        linearActuatorServo = hardwareMap.get(CRServo.class, "linear_actuator_servo");
+        LinearActuatorMotor = hardwareMap.get(DcMotor.class, "linear_actuator_servo");
 
         frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         rearLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         rearRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        linearActuatorServo.setDirection(DcMotorSimple.Direction.REVERSE);
+        LinearActuatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -107,7 +107,7 @@ public class BasicOpMode_Iterative extends OpMode {
         move_robot();
         move_viper_slide_and_presets();
         move_grabber();
-        move_grabber_wrist();
+    //    move_grabber_wrist();
         move_linear_actuator();
         telemetry.update();
     }
@@ -294,7 +294,7 @@ public class BasicOpMode_Iterative extends OpMode {
     }
 
     private void move_linear_actuator(){
-        linearActuatorServo.setPower(gamepad2.right_stick_y);
+        LinearActuatorMotor.setPower(gamepad2.right_stick_y);
     }
 
     private void configureOtos() {

@@ -31,9 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -54,18 +52,18 @@ public class PIDAutoTest extends LinearOpMode {
     private DcMotor rightViperSlide = null;
     private Servo grabberServo = null;
     private Servo grabberHingeServo = null;
-    private CRServo linearActuatorServo = null;
+    private DcMotor linearActuatorMotor = null;
     private float frontLeftStrafe;
     private float frontRightStrafe;
     private float rearLeftStrafe;
     private float rearRightStrafe;
 
     private double Kp = 0.05;
-    private double Ki = 0.01;
-    private double Kd = 0.02;
-    private double KpTheta = 0.03;
-    private double KiTheta = 0.005;
-    private double KdTheta = 0.01;
+    private double Ki = 0;
+    private double Kd = 0;
+    private double KpTheta = 0;
+    private double KiTheta = 0;
+    private double KdTheta = 0;
 
 
 
@@ -81,11 +79,11 @@ public class PIDAutoTest extends LinearOpMode {
         rightViperSlide = hardwareMap.get(DcMotor.class, "right_viper_slide");
         grabberServo = hardwareMap.get(Servo.class, "grabber_servo");
         grabberHingeServo = hardwareMap.get(Servo.class, "grabber_hinge_servo");
-        linearActuatorServo = hardwareMap.get(CRServo.class, "linear_actuator_servo");
-        frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        rearLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        rearRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        linearActuatorMotor = hardwareMap.get(DcMotor.class, "linear_actuator_motor");
+        frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        rearLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        rearRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -93,11 +91,11 @@ public class PIDAutoTest extends LinearOpMode {
 
         configureOtos();
         waitForStart();
-
         SparkFunOTOS.Pose2D pos;
         myOtos.resetTracking();
         pos = myOtos.getPosition();
-
+        positionControl(0,10,0,0.001f,1f,0.001f);
+        stop();
     }
     private void positionControl(float targetYPos, float targetXPos, float targetThetaPos, float MaxYSpeed, float MaxXSpeed, float MaxThetaSpeed) {
         double previousErrorY = 0, previousErrorX = 0, previousErrorTheta = 0;
@@ -125,14 +123,17 @@ public class PIDAutoTest extends LinearOpMode {
             double derivativeX = errorX - previousErrorX;
             double derivativeTheta = errorTheta - previousErrorTheta;
 
-            double yPower = Math.min((Kp * errorY) + (Ki * integralY) + (Kd * derivativeY), speedY);
-            double xPower = Math.min((Kp * errorX) + (Ki * integralX) + (Kd * derivativeX), speedX);
-            double thetaPower = Math.min((KpTheta * errorTheta) + (KiTheta * integralTheta) + (KdTheta * derivativeTheta), speedTheta);
+            double yPower = Math.min((Kp * errorY) + (Ki * integralY) + (Kd * derivativeY), Math.abs(speedY));
+            double xPower = Math.min((Kp * errorX) + (Ki * integralX) + (Kd * derivativeX), Math.abs(speedX));
+            double thetaPower = Math.min((KpTheta * errorTheta) + (KiTheta * integralTheta) + (KdTheta * derivativeTheta), Math.abs(speedTheta));
 
             previousErrorY = errorY;
             previousErrorX = errorX;
             previousErrorTheta = errorTheta;
-
+            telemetry.addData("YPos", myOtos.getPosition().y);
+            telemetry.addData("XPos", myOtos.getPosition().x);
+            telemetry.addData("ThetaPos", myOtos.getPosition().h);
+            telemetry.update();
             // Send calculated power to drivetrain
             drivetrainControl((float) yPower, (float) xPower, (float) thetaPower);
         }
@@ -152,10 +153,11 @@ public class PIDAutoTest extends LinearOpMode {
     }
 
     private void drivetrainControl(float drive, float strafe, float turn) {
-        frontLeftStrafe = Range.clip( drive + strafe + turn, -1, 1);
         frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
-        rearLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
+        frontLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
         rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
+        rearLeftStrafe = Range.clip( drive + strafe + turn, -1, 1);
+
 
         frontLeftDrive.setPower(frontLeftStrafe);
         frontRightDrive.setPower(frontRightStrafe);
@@ -188,7 +190,7 @@ public class PIDAutoTest extends LinearOpMode {
         // clockwise (negative rotation) from the robot's orientation, the offset
         // would be {-5, 10, -90}. These can be any value, even the angle can be
         // tweaked slightly to compensate for imperfect mounting (eg. 1.3 degrees).
-        SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(0, 0, 0);
+        SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(0, 1.89, 0);
         myOtos.setOffset(offset);
 
         // Here we can set the linear and angular scalars, which can compensate for
