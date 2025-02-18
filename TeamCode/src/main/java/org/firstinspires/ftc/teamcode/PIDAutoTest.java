@@ -61,9 +61,9 @@ public class PIDAutoTest extends LinearOpMode {
     private double Kp = 0.05;
     private double Ki = 0.0002;
     private double Kd = 0.005;
-    private double KpTheta = 0.005;
-    private double KiTheta = 0.0002;
-    private double KdTheta = 0.05;
+    private double KpTheta = 0.3;
+    private double KiTheta = 0.00002;
+    private double KdTheta = 0.01;
 
 
 
@@ -78,7 +78,7 @@ public class PIDAutoTest extends LinearOpMode {
         leftViperSlide = hardwareMap.get(DcMotor.class, "left_viper_slide");
         rightViperSlide = hardwareMap.get(DcMotor.class, "right_viper_slide");
         grabberServo = hardwareMap.get(Servo.class, "grabber_servo");
-        grabberHingeServo = hardwareMap.get(Servo.class, "grabber_hinge_servo");
+        grabberHingeServo = hardwareMap.get(Servo.class, "grabber_tilt_servo");
         linearActuatorMotor = hardwareMap.get(DcMotor.class, "linear_actuator_motor");
         frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -94,51 +94,67 @@ public class PIDAutoTest extends LinearOpMode {
         SparkFunOTOS.Pose2D pos;
         myOtos.resetTracking();
         pos = myOtos.getPosition();
-        positionControl(0,0,90,0.05f,0.05f,0.4f);
+
 
     }
-    private void positionControl(float targetYPos, float targetXPos, float targetThetaPos, float MaxYSpeed, float MaxXSpeed, float MaxThetaSpeed) {
-        double previousErrorY = 0, previousErrorX = 0, previousErrorTheta = 0;
-        double integralY = 0, integralX = 0, integralTheta = 0;
-        double speedY = MaxYSpeed, speedX = MaxXSpeed, speedTheta = MaxThetaSpeed;
+    private void driveControlPID(float targetYPos, float targetXPos, float maxYSpeed, float maxXSpeed) {
+        double previousErrorY = 0, previousErrorX = 0;
+        double integralY = 0, integralX = 0;
+        double speedY = maxYSpeed, speedX = maxXSpeed;
 
         while (true) {
             double currentY = myOtos.getPosition().y;
             double currentX = myOtos.getPosition().x;
-            double currentTheta = myOtos.getPosition().h;
 
             double errorY = targetYPos - currentY;
             double errorX = targetXPos - currentX;
-            double errorTheta = ((targetThetaPos - currentTheta + 180) % 360) - 180;
 
-            if (Math.abs(errorY) <= 0.1 && Math.abs(errorX) <= 0.1 && Math.abs(errorTheta) <= 2) {
+            if (Math.abs(errorY) <= 0.1 && Math.abs(errorX) <= 0.1) {
                 break;
             }
 
             integralY = integralY + errorY;
             integralX = integralX + errorX;
-            integralTheta = integralTheta + errorTheta;
+
 
             double derivativeY = errorY - previousErrorY;
             double derivativeX = errorX - previousErrorX;
-            double derivativeTheta = errorTheta - previousErrorTheta;
 
             double yPower = Math.min((Kp * errorY) + (Ki * integralY) + (Kd * derivativeY), Math.abs(speedY));
             double xPower = Math.min((Kp * errorX) + (Ki * integralX) + (Kd * derivativeX), Math.abs(speedX));
-            double thetaPower = Math.min((KpTheta * errorTheta) + (KiTheta * integralTheta) + (KdTheta * derivativeTheta), Math.abs(speedTheta));
 
             previousErrorY = errorY;
             previousErrorX = errorX;
-            previousErrorTheta = errorTheta;
             telemetry.addData("YPos", myOtos.getPosition().y);
             telemetry.addData("XPos", myOtos.getPosition().x);
-            telemetry.addData("ThetaPos", myOtos.getPosition().h);
             telemetry.update();
             // Send calculated power to drivetrain
-            drivetrainControl((float) yPower, (float) xPower, (float) thetaPower);
+            drivetrainControl((float) yPower, (float) xPower, (float) 0);
         }
 
         stopAllMotors(); // Stop the robot once the target is reached
+    }
+    private void turnControlPID(float targetThetaPos, float maxThetaSpeed){
+        double previousErrorTheta = 0;
+        double integralTheta = 0;
+        double speedTheta = maxThetaSpeed;
+        while (true){
+            double currentTheta = myOtos.getPosition().h;
+            double errorTheta = ((targetThetaPos - currentTheta + 180) % 360) - 180;
+
+            integralTheta = integralTheta + errorTheta;
+            double derivativeTheta = errorTheta - previousErrorTheta;
+
+            previousErrorTheta = errorTheta;
+
+            double thetaPower = Math.min((KpTheta * errorTheta) + (KiTheta * integralTheta) + (KdTheta * derivativeTheta), Math.abs(speedTheta));
+
+            telemetry.addData("ThetaPos", myOtos.getPosition().h);
+            telemetry.update();
+
+            drivetrainControl( 0,0, (float) thetaPower);
+        }
+
     }
     private void stopAllMotors(){
         drivetrainControl(0,0,0);

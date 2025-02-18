@@ -283,7 +283,7 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
         double open = 0.9;
         double close = 0.2;
         if(gamepad2.right_trigger>0.1){
-            //close clawl
+            //close claw
             grabberServo.setPosition(close);
         }
         else if(gamepad2.left_trigger>0.1){
