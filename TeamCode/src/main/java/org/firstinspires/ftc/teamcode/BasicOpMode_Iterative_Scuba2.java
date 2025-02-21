@@ -136,7 +136,20 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
 
 
     private void move_robot(){
-        if (gamepad1.a){
+        float drive = gamepad1.left_stick_y * -0.7f;
+        float turn = gamepad1.right_stick_x * 0.7f;
+        float strafe = gamepad1.left_stick_x * 0.7f;
+
+        double frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
+        double frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
+        double rearLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
+        double rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
+
+        frontLeftDrive.setPower(frontLeftStrafe);
+        frontRightDrive.setPower(frontRightStrafe);
+        rearLeftDrive.setPower(rearLeftStrafe);
+        rearRightDrive.setPower(rearRightStrafe);
+        /*if (gamepad1.a){
             field_centric = !(field_centric);
         }
         if (field_centric){
@@ -149,10 +162,9 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
             double drive = r * Math.sin(correctedTheta);
             double strafe = r * Math.cos(correctedTheta);
             double turn = gamepad1.right_stick_x * 0.7;
-
-            double frontLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
+            double frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
             double frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
-            double rearLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
+            double rearLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
             double rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
 
             frontLeftDrive.setPower(frontLeftStrafe);
@@ -175,7 +187,7 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
             frontRightDrive.setPower(frontRightStrafe);
             rearLeftDrive.setPower(rearLeftStrafe);
             rearRightDrive.setPower(rearRightStrafe);
-        }
+        }*/
     }
 
     private void encoder() {
