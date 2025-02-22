@@ -310,23 +310,19 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
 
     private void move_linear_actuator(){
         double linearActuatorEncoder = linearActuatorMotor.getCurrentPosition();
-        double linearActuatorPower = -gamepad2.right_stick_y;
+        double linearActuatorPower = gamepad2.right_stick_y;
 
         if (viperSlideLimitBottom < linearActuatorEncoder && linearActuatorEncoder < viperSlideLimitTop){
-            leftViperSlide.setPower((linearActuatorPower)+idlePower);
-            rightViperSlide.setPower((linearActuatorPower)+idlePower);
+            linearActuatorMotor.setPower((linearActuatorPower)+idlePower);
         }
         else if (linearActuatorEncoder > linearActuatorLimitTop && linearActuatorPower > -0.1){
-            leftViperSlide.setPower(idlePower);
-            rightViperSlide.setPower(idlePower);
+            linearActuatorMotor.setPower(idlePower);
         }
         else if (linearActuatorEncoder < linearActuatorLimitBottom && 0.1 > linearActuatorPower){
-            leftViperSlide.setPower(idlePower);
-            rightViperSlide.setPower(idlePower);
+            linearActuatorMotor.setPower(idlePower);
         }
         else{
-            leftViperSlide.setPower((linearActuatorPower)+idlePower);
-            rightViperSlide.setPower((linearActuatorPower)+idlePower);
+            linearActuatorMotor.setPower((linearActuatorPower)+idlePower);
         }
     }
 
