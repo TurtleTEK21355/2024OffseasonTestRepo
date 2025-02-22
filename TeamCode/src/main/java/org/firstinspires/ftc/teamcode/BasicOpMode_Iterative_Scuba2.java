@@ -53,20 +53,21 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
     private Servo grabberServo = null;
     private Servo grabberRotateServo = null;
     private Servo grabberTiltServo = null;
-    private DcMotor LinearActuatorMotor = null;
+    private DcMotor linearActuatorMotor = null;
     private final double MOTOR = 751.8;
     private final double BottomLimit = 0;
     private final double TopLimit = 8.1;
     private final double viperSlideLimitBottom = MOTOR*BottomLimit;
     private final double viperSlideLimitTop = MOTOR*TopLimit;
     private final double idlePower = 0.1;
-    private final double hangPower = 0.3;
+    private final double hangPower = -0.2;
     private final double viperSlideDownPower = -1;
     private final double viperSlideUpPower = 1;
     private boolean field_centric = true;
     private int lastViperPreset = 0;
     private boolean hangOverride = false;
-
+    private final double linearActuatorLimitTop = -1940;
+    private final double linearActuatorLimitBottom = 0;
 
 
 
@@ -84,13 +85,13 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
         grabberServo = hardwareMap.get(Servo.class, "grabber_servo");
         grabberRotateServo = hardwareMap.get(Servo.class, "grabber_rotate_servo");
         grabberTiltServo = hardwareMap.get(Servo.class, "grabber_tilt_servo");
-        LinearActuatorMotor = hardwareMap.get(DcMotor.class, "linear_actuator_motor");
+        linearActuatorMotor = hardwareMap.get(DcMotor.class, "linear_actuator_motor");
 
         frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         rearLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         rearRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        LinearActuatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        linearActuatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -101,6 +102,7 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
         leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         configureOtos();
+        grabberTiltServo.setPosition(0.4);
     }
 
     @Override
@@ -157,9 +159,9 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
             double drive = r * Math.sin(correctedTheta);
             double strafe = r * Math.cos(correctedTheta);
             double turn = gamepad1.right_stick_x * 0.7;
-            double frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
+            double frontLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
             double frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
-            double rearLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
+            double rearLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
             double rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
 
             frontLeftDrive.setPower(frontLeftStrafe);
@@ -188,7 +190,8 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
     private void encoder() {
         telemetry.addData("leftviperslidelevel",leftViperSlide.getCurrentPosition());
         telemetry.addData("rightviperslidelevel",leftViperSlide.getCurrentPosition());
-}
+        telemetry.addData("linearactuatorslidelevel", linearActuatorMotor.getCurrentPosition());
+    }
 
     private void move_viper_slide_and_presets() {
         if (gamepad2.x && gamepad2.back) {
@@ -271,7 +274,7 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
 
     private void move_grabber_tilt() {
         if (gamepad2.right_bumper) {
-            grabberTiltServo.setPosition(0.75);
+            grabberTiltServo.setPosition(0.8);
         }
         else if (gamepad2.left_bumper) {
             grabberTiltServo.setPosition(0.4);
@@ -280,11 +283,11 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
 
     private void move_grabber_rotate() {
         if (gamepad2.right_stick_x >= 0.1) {
-            grabberRotateServo.setPosition(0.75);
+            grabberRotateServo.setPosition(0.25);
 
         }
         else if (gamepad2.right_stick_x <= -0.1) {
-            grabberRotateServo.setPosition(0.25);
+            grabberRotateServo.setPosition(0.75);
         }
         else {
             grabberRotateServo.setPosition(0.5);
@@ -306,7 +309,25 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
     }
 
     private void move_linear_actuator(){
-        LinearActuatorMotor.setPower(gamepad2.right_stick_y);
+        double linearActuatorEncoder = linearActuatorMotor.getCurrentPosition();
+        double linearActuatorPower = -gamepad2.right_stick_y;
+
+        if (viperSlideLimitBottom < linearActuatorEncoder && linearActuatorEncoder < viperSlideLimitTop){
+            leftViperSlide.setPower((linearActuatorPower)+idlePower);
+            rightViperSlide.setPower((linearActuatorPower)+idlePower);
+        }
+        else if (linearActuatorEncoder > linearActuatorLimitTop && linearActuatorPower > -0.1){
+            leftViperSlide.setPower(idlePower);
+            rightViperSlide.setPower(idlePower);
+        }
+        else if (linearActuatorEncoder < linearActuatorLimitBottom && 0.1 > linearActuatorPower){
+            leftViperSlide.setPower(idlePower);
+            rightViperSlide.setPower(idlePower);
+        }
+        else{
+            leftViperSlide.setPower((linearActuatorPower)+idlePower);
+            rightViperSlide.setPower((linearActuatorPower)+idlePower);
+        }
     }
 
     private void configureOtos() {
