@@ -59,8 +59,16 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
     private final double TopLimit = 8.1;
     private final double viperSlideLimitBottom = MOTOR*BottomLimit;
     private final double viperSlideLimitTop = MOTOR*TopLimit;
+    private final double idlePower = 0.1;
+    private final double hangPower = 0.3;
+    private final double viperSlideDownPower = -1;
+    private final double viperSlideUpPower = 1;
     private boolean field_centric = true;
     private int lastViperPreset = 0;
+    private boolean hangOverride = false;
+
+
+
 
     SparkFunOTOS.Pose2D pos;
 
@@ -136,20 +144,7 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
 
 
     private void move_robot(){
-        float drive = gamepad1.left_stick_y * -0.7f;
-        float turn = gamepad1.right_stick_x * 0.7f;
-        float strafe = gamepad1.left_stick_x * 0.7f;
-
-        double frontLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
-        double frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
-        double rearLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
-        double rearRightStrafe = Range.clip(drive + strafe - turn, -1, 1);
-
-        frontLeftDrive.setPower(frontLeftStrafe);
-        frontRightDrive.setPower(frontRightStrafe);
-        rearLeftDrive.setPower(rearLeftStrafe);
-        rearRightDrive.setPower(rearRightStrafe);
-        /*if (gamepad1.a){
+        if (gamepad1.a){
             field_centric = !(field_centric);
         }
         if (field_centric){
@@ -187,7 +182,7 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
             frontRightDrive.setPower(frontRightStrafe);
             rearLeftDrive.setPower(rearLeftStrafe);
             rearRightDrive.setPower(rearRightStrafe);
-        }*/
+        }
     }
 
     private void encoder() {
@@ -196,58 +191,61 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
 }
 
     private void move_viper_slide_and_presets() {
-        if (gamepad2.dpad_up){
+        if (gamepad2.x && gamepad2.back) {
+            hangOverride = false;
+        }
+        if (gamepad2.x && gamepad2.start) {
+            hangOverride = true;
+        }
+        if (hangOverride){
+            lastViperPreset = 3;
+        } else if (gamepad2.dpad_up) {
             grabberTiltServo.setPosition(0.75);
             lastViperPreset = 1;
-        }
-        else if (gamepad2.dpad_down) {
+        } else if (gamepad2.dpad_down) {
             grabberTiltServo.setPosition(0.3);
             lastViperPreset = 2;
-        }
-        else if (Math.abs(gamepad2.left_stick_y)>0.05){
+        } else if (Math.abs(gamepad2.left_stick_y) > 0.05) {
             lastViperPreset = 0;
         }
         move_preset(lastViperPreset);
-
     }
 
     private void move_preset(int viperPreset) {
-        if (viperPreset == 1){
-            double idlePower = 0.1;
+        if (viperPreset == 0){
+            move_viper_slide_manual();
+        }
+        else if (viperPreset == 1){
             double viperSlideEncoderAverage = ((leftViperSlide.getCurrentPosition()+rightViperSlide.getCurrentPosition())/2.0);
-            double viperSlidePower = 1;
 
             if (viperSlideEncoderAverage < viperSlideLimitTop){
-                leftViperSlide.setPower(viperSlidePower);
-                rightViperSlide.setPower(viperSlidePower);
+                leftViperSlide.setPower(viperSlideUpPower);
+                rightViperSlide.setPower(viperSlideUpPower);
             }
             else{
                 leftViperSlide.setPower(idlePower);
                 rightViperSlide.setPower(idlePower);
             }
-
         }
         else if (viperPreset == 2){
-            double idlePower = 0.1;
             double viperSlideEncoderAverage = ((leftViperSlide.getCurrentPosition()+rightViperSlide.getCurrentPosition())/2.0);
-            double viperSlidePower = -1;
 
             if (viperSlideLimitBottom < viperSlideEncoderAverage){
-                leftViperSlide.setPower((viperSlidePower)+idlePower);
-                rightViperSlide.setPower((viperSlidePower)+idlePower);
+                leftViperSlide.setPower((viperSlideDownPower)+idlePower);
+                rightViperSlide.setPower((viperSlideDownPower)+idlePower);
             }
             else{
                 leftViperSlide.setPower(idlePower);
                 rightViperSlide.setPower(idlePower);
             }
         }
-        else if (viperPreset == 0){
-            move_viper_slide_manual();
+        else if (viperPreset == 3) {
+            leftViperSlide.setPower(hangPower);
+            rightViperSlide.setPower(hangPower);
         }
     }
 
     private void move_viper_slide_manual() {
-        double idlePower = 0.1;
         double viperSlideEncoderAverage = ((leftViperSlide.getCurrentPosition()+rightViperSlide.getCurrentPosition())/2.0);
         double viperSlidePower = -gamepad2.left_stick_y;
 
@@ -268,6 +266,8 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
             rightViperSlide.setPower((viperSlidePower)+idlePower);
         }
     }
+
+
 
     private void move_grabber_tilt() {
         if (gamepad2.right_bumper) {
