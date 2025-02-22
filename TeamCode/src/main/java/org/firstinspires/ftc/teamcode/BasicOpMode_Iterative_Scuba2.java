@@ -279,11 +279,11 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
     }
 
     private void move_grabber_rotate() {
-        if (gamepad2.dpad_right) {
+        if (gamepad2.right_stick_x >= 0.1) {
             grabberRotateServo.setPosition(0.75);
 
         }
-        else if (gamepad2.dpad_left) {
+        else if (gamepad2.right_stick_x <= -0.1) {
             grabberRotateServo.setPosition(0.25);
         }
         else {
