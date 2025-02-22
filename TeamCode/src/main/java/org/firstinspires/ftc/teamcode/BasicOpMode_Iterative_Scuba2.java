@@ -66,7 +66,7 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
     private boolean field_centric = true;
     private int lastViperPreset = 0;
     private boolean hangOverride = false;
-    private final double linearActuatorLimitTop = -1940;
+    private final double linearActuatorLimitTop = 1940;
     private final double linearActuatorLimitBottom = 0;
 
 
@@ -309,7 +309,7 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
     }
 
     private void move_linear_actuator(){
-        double linearActuatorEncoder = linearActuatorMotor.getCurrentPosition();
+        double linearActuatorEncoder = -linearActuatorMotor.getCurrentPosition();
         double linearActuatorPower = gamepad2.right_stick_y;
 
         if (viperSlideLimitBottom < linearActuatorEncoder && linearActuatorEncoder < viperSlideLimitTop){

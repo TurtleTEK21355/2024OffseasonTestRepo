@@ -80,7 +80,7 @@ public class PIDAutoTest extends LinearOpMode {
         leftViperSlide = hardwareMap.get(DcMotor.class, "left_viper_slide");
         rightViperSlide = hardwareMap.get(DcMotor.class, "right_viper_slide");
         grabberServo = hardwareMap.get(Servo.class, "grabber_servo");
-        grabberHingeServo = hardwareMap.get(Servo.class, "grabber_hinge_servo");
+        grabberHingeServo = hardwareMap.get(Servo.class, "grabber_tilt_servo");
         linearActuatorMotor = hardwareMap.get(DcMotor.class, "linear_actuator_motor");
         frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
