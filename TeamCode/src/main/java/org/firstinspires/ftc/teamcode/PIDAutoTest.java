@@ -97,6 +97,9 @@ public class PIDAutoTest extends LinearOpMode {
         myOtos.resetTracking();
         pos = myOtos.getPosition();
 
+        positionControlWithTheta(15,0,90,0.7f,0.2f,0.7f);
+
+
     }
     private void positionControl(float targetYPos, float targetXPos, float MaxYSpeed, float MaxXSpeed) {
         double previousErrorY = 0, previousErrorX = 0;
@@ -174,7 +177,7 @@ public class PIDAutoTest extends LinearOpMode {
             telemetry.addData("ThetaPos", myOtos.getPosition().h);
             telemetry.update();
             // Send calculated power to drivetrain
-            drivetrainControl((float) yPower, (float) xPower, (float) thetaPower);
+            fieldCentricDrivetrainControl((float) yPower, (float) xPower, (float) thetaPower);
         }
 
         stopAllMotors(); // Stop the robot once the target is reached
@@ -205,11 +208,11 @@ public class PIDAutoTest extends LinearOpMode {
     }
 
     private void fieldCentricDrivetrainControl(float drive, float strafe, float turn) {
-        double r = Math.sqrt(Math.pow(strafe,2) + Math.pow(drive,2));
+        double R = Math.sqrt(Math.pow(strafe,2) + Math.pow(drive,2));
         double theta = Math.atan2(drive,strafe);
         double correctedTheta = theta - myOtos.getPosition().h;
-        double Y = r * Math.sin(correctedTheta);
-        double X = r * Math.cos(correctedTheta);
+        double Y = R * Math.sin(correctedTheta);
+        double X = R * Math.cos(correctedTheta);
         frontRightStrafe = (float) Range.clip(Y - X - turn, -1, 1);
         frontLeftStrafe = (float) Range.clip(Y - X + turn, -1, 1);
         rearRightStrafe = (float) Range.clip(Y + X - turn, -1, 1);
