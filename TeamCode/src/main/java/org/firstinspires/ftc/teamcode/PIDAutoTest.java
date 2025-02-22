@@ -68,6 +68,8 @@ public class PIDAutoTest extends LinearOpMode {
 
 
 
+
+
     @Override
     public void runOpMode() {
         myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
@@ -94,46 +96,7 @@ public class PIDAutoTest extends LinearOpMode {
         SparkFunOTOS.Pose2D pos;
         myOtos.resetTracking();
         pos = myOtos.getPosition();
-        positionControl(0,15,0.3f,0.5f);
 
-
-//        while (leftViperSlide.getCurrentPosition() < 5600) {
-//            leftViperSlide.setPower(0.9);
-//            rightViperSlide.setPower(-0.9);
-//            telemetry.addData("Viper Position", leftViperSlide.getCurrentPosition());
-//            telemetry.update();
-//        }
-//        leftViperSlide.setPower(0);
-//        rightViperSlide.setPower(0);
-        grabberHingeServo.setPosition(0.75);
-        grabberServo.setPosition(0.2);
-//        while (leftViperSlide.getCurrentPosition() > 0) {
-//            leftViperSlide.setPower(-0.9);
-//            rightViperSlide.setPower(0.9);
-//            telemetry.addData("Viper Position", leftViperSlide.getCurrentPosition());
-//            telemetry.update();
-//        }
-        leftViperSlide.setPower(0);
-        rightViperSlide.setPower(0);
-        myOtos.resetTracking();
-        while (myOtos.getPosition().h >= -115){
-            drivetrainControl(0,0,0.5f);
-            telemetry.addData("hpos",myOtos.getPosition().h);
-            telemetry.update();
-        }
-        stopAllMotors();
-        myOtos.resetTracking();
-        positionControl(3,0,0.5f,0.3f);
-        myOtos.resetTracking();
-        grabberServo.setPosition(0.9);
-        positionControl(-3,0,0.5f,0.3f);
-        myOtos.resetTracking();
-        while (myOtos.getPosition().h <= 120){
-            drivetrainControl(0,0,-0.5f);
-            telemetry.addData("hpos",myOtos.getPosition().h);
-            telemetry.update();
-        }
-        stopAllMotors();
     }
     private void positionControl(float targetYPos, float targetXPos, float MaxYSpeed, float MaxXSpeed) {
         double previousErrorY = 0, previousErrorX = 0;
@@ -241,6 +204,24 @@ public class PIDAutoTest extends LinearOpMode {
         rearRightDrive.setPower(rearRightStrafe);
     }
 
+    private void fieldCentricDrivetrainControl(float drive, float strafe, float turn) {
+        double r = Math.sqrt(Math.pow(strafe,2) + Math.pow(drive,2));
+        double theta = Math.atan2(drive,strafe);
+        double correctedTheta = theta - myOtos.getPosition().h;
+        double Y = r * Math.sin(correctedTheta);
+        double X = r * Math.cos(correctedTheta);
+        frontRightStrafe = (float) Range.clip(Y - X - turn, -1, 1);
+        frontLeftStrafe = (float) Range.clip(Y - X + turn, -1, 1);
+        rearRightStrafe = (float) Range.clip(Y + X - turn, -1, 1);
+        rearLeftStrafe = (float) Range.clip( Y + X + turn, -1, 1);
+
+
+        frontLeftDrive.setPower(frontLeftStrafe);
+        frontRightDrive.setPower(frontRightStrafe);
+        rearLeftDrive.setPower(rearLeftStrafe);
+        rearRightDrive.setPower(rearRightStrafe);
+    }
+
     private void configureOtos() {
         telemetry.addLine("Configuring OTOS...");
         telemetry.update();
@@ -308,7 +289,8 @@ public class PIDAutoTest extends LinearOpMode {
         // the origin. If your robot does not start at the origin, or you have
         // another source of location information (eg. vision odometry), you can set
         // the OTOS location to match and it will continue to track from there.
-        SparkFunOTOS.Pose2D currentPosition = new SparkFunOTOS.Pose2D(0, 0, 0);
+        //TODO: Measure the distance from starting pos to the scoring position
+        SparkFunOTOS.Pose2D currentPosition = new SparkFunOTOS.Pose2D(0, 0, 135);
         myOtos.setPosition(currentPosition);
 
         // Get the hardware and firmware version
