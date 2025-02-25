@@ -39,6 +39,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.opencv.core.Mat;
 
 @Autonomous(name="PIDTestAuto", group="Test OpMode")
 public class PIDAutoTest extends LinearOpMode {
@@ -58,12 +59,12 @@ public class PIDAutoTest extends LinearOpMode {
     private float rearLeftStrafe;
     private float rearRightStrafe;
 
-    private double Kp = 0.05;
-    private double Ki = 0.0002;
-    private double Kd = 0.005;
-    private double KpTheta = 0.05;
-    private double KiTheta = 0.0002;
-    private double KdTheta = 0.005;
+    private double Kp = 0.06;
+    private double Ki = 0;
+    private double Kd = 0;
+    private double KpTheta = 0.1;
+    private double KiTheta = 0;
+    private double KdTheta = 0;
 
 
 
@@ -96,9 +97,8 @@ public class PIDAutoTest extends LinearOpMode {
         SparkFunOTOS.Pose2D pos;
         myOtos.resetTracking();
         pos = myOtos.getPosition();
-
-        positionControlWithTheta(15,0,90,0.7f,0.2f,0.7f);
-
+        positionControlWithTheta(48,12,135,0.7f,0.7f,0.5f);
+        stopAllMotors();
 
     }
     private void positionControl(float targetYPos, float targetXPos, float MaxYSpeed, float MaxXSpeed) {
@@ -143,7 +143,7 @@ public class PIDAutoTest extends LinearOpMode {
         double previousErrorY = 0, previousErrorX = 0, previousErrorTheta = 0;
         double integralY = 0, integralX = 0, integralTheta = 0;
         double speedY = MaxYSpeed, speedX = MaxXSpeed, speedTheta = MaxThetaSpeed;
-
+        double yPower,xPower,thetaPower;
         while (true) {
             double currentY = myOtos.getPosition().y;
             double currentX = myOtos.getPosition().x;
@@ -153,7 +153,10 @@ public class PIDAutoTest extends LinearOpMode {
             double errorX = targetXPos - currentX;
             double errorTheta = targetThetaPos - currentTheta;
 
-            if (Math.abs(errorY) <= 0.1 && Math.abs(errorX) <= 0.1 && Math.abs(errorTheta) <= 2) {
+
+            if ((MaxYSpeed == 0 || Math.abs(errorY) <= 0.75) &&
+                    (MaxXSpeed == 0 || Math.abs(errorX) <= 0.75) &&
+                    (MaxThetaSpeed == 0 || Math.abs(errorTheta) <= 10)) {
                 break;
             }
 
@@ -165,9 +168,25 @@ public class PIDAutoTest extends LinearOpMode {
             double derivativeX = errorX - previousErrorX;
             double derivativeTheta = errorTheta - previousErrorTheta;
 
-            double yPower = Math.min((Kp * errorY) + (Ki * integralY) + (Kd * derivativeY), Math.abs(speedY));
-            double xPower = Math.min((Kp * errorX) + (Ki * integralX) + (Kd * derivativeX), Math.abs(speedX));
-            double thetaPower = Math.min((KpTheta * errorTheta) + (KiTheta * integralTheta) + (KdTheta * derivativeTheta), Math.abs(speedTheta));
+            if (errorY < 0) {
+                yPower = Math.max((Kp * errorY) + (Ki * integralY) + (Kd * derivativeY), -Math.abs(speedY));
+            }
+            else{
+                yPower = Math.min((Kp * errorY) + (Ki * integralY) + (Kd * derivativeY), Math.abs(speedY));
+            }
+
+            if (errorX < 0) {
+                xPower = Math.max((Kp * errorX) + (Ki * integralX) + (Kd * derivativeX), -Math.abs(speedX));
+            }
+            else{
+                xPower = Math.min((Kp * errorX) + (Ki * integralX) + (Kd * derivativeX), Math.abs(speedX));
+            }
+            if (errorTheta < 0) {
+                thetaPower = Math.max((KpTheta * errorTheta) + (KiTheta * integralTheta) + (KdTheta * derivativeTheta), -Math.abs(speedTheta));
+            }
+            else{
+                thetaPower = Math.min((KpTheta * errorTheta) + (KiTheta * integralTheta) + (KdTheta * derivativeTheta), Math.abs(speedTheta));
+            }
 
             previousErrorY = errorY;
             previousErrorX = errorX;
@@ -175,9 +194,10 @@ public class PIDAutoTest extends LinearOpMode {
             telemetry.addData("YPos", myOtos.getPosition().y);
             telemetry.addData("XPos", myOtos.getPosition().x);
             telemetry.addData("ThetaPos", myOtos.getPosition().h);
+            telemetry.addData("ThetaPower", thetaPower);
             telemetry.update();
             // Send calculated power to drivetrain
-            fieldCentricDrivetrainControl((float) yPower, (float) xPower, (float) thetaPower);
+            fieldCentricDrivetrainControl((float) yPower, (float) xPower, (float) -thetaPower);
         }
 
         stopAllMotors(); // Stop the robot once the target is reached
@@ -210,7 +230,7 @@ public class PIDAutoTest extends LinearOpMode {
     private void fieldCentricDrivetrainControl(float drive, float strafe, float turn) {
         double R = Math.sqrt(Math.pow(strafe,2) + Math.pow(drive,2));
         double theta = Math.atan2(drive,strafe);
-        double correctedTheta = theta - myOtos.getPosition().h;
+        double correctedTheta = theta - Math.toRadians(myOtos.getPosition().h);
         double Y = R * Math.sin(correctedTheta);
         double X = R * Math.cos(correctedTheta);
         frontRightStrafe = (float) Range.clip(Y - X - turn, -1, 1);
@@ -225,86 +245,86 @@ public class PIDAutoTest extends LinearOpMode {
         rearRightDrive.setPower(rearRightStrafe);
     }
 
-    private void configureOtos() {
-        telemetry.addLine("Configuring OTOS...");
-        telemetry.update();
+        private void configureOtos() {
+            telemetry.addLine("Configuring OTOS...");
+            telemetry.update();
 
-        // Set the desired units for linear and angular measurements. Can be either
-        // meters or inches for linear, and radians or degrees for angular. If not
-        // set, the default is inches and degrees. Note that this setting is not
-        // persisted in the sensor, so you need to set at the start of all your
-        // OpModes if using the non-default value.
-        // myOtos.setLinearUnit(DistanceUnit.METER);
-        myOtos.setLinearUnit(DistanceUnit.INCH);
-        // myOtos.setAngularUnit(AnguleUnit.RADIANS);
-        myOtos.setAngularUnit(AngleUnit.DEGREES);
+            // Set the desired units for linear and angular measurements. Can be either
+            // meters or inches for linear, and radians or degrees for angular. If not
+            // set, the default is inches and degrees. Note that this setting is not
+            // persisted in the sensor, so you need to set at the start of all your
+            // OpModes if using the non-default value.
+            // myOtos.setLinearUnit(DistanceUnit.METER);
+            myOtos.setLinearUnit(DistanceUnit.INCH);
+            // myOtos.setAngularUnit(AnguleUnit.RADIANS);
+            myOtos.setAngularUnit(AngleUnit.DEGREES);
 
-        // Assuming you've mounted your sensor to a robot and it's not centered,
-        // you can specify the offset for the sensor relative to the center of the
-        // robot. The units default to inches and degrees, but if you want to use
-        // different units, specify them before setting the offset! Note that as of
-        // firmware version 1.0, these values will be lost after a power cycle, so
-        // you will need to set them each time you power up the sensor. For example, if
-        // the sensor is mounted 5 inches to the left (negative X) and 10 inches
-        // forward (positive Y) of the center of the robot, and mounted 90 degrees
-        // clockwise (negative rotation) from the robot's orientation, the offset
-        // would be {-5, 10, -90}. These can be any value, even the angle can be
-        // tweaked slightly to compensate for imperfect mounting (eg. 1.3 degrees).
-        SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(0, 1.89, 0);
-        myOtos.setOffset(offset);
+            // Assuming you've mounted your sensor to a robot and it's not centered,
+            // you can specify the offset for the sensor relative to the center of the
+            // robot. The units default to inches and degrees, but if you want to use
+            // different units, specify them before setting the offset! Note that as of
+            // firmware version 1.0, these values will be lost after a power cycle, so
+            // you will need to set them each time you power up the sensor. For example, if
+            // the sensor is mounted 5 inches to the left (negative X) and 10 inches
+            // forward (positive Y) of the center of the robot, and mounted 90 degrees
+            // clockwise (negative rotation) from the robot's orientation, the offset
+            // would be {-5, 10, -90}. These can be any value, even the angle can be
+            // tweaked slightly to compensate for imperfect mounting (eg. 1.3 degrees).
+            SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(0, 1.89, 0);
+            myOtos.setOffset(offset);
 
-        // Here we can set the linear and angular scalars, which can compensate for
-        // scaling issues with the sensor measurements. Note that as of firmware
-        // version 1.0, these values will be lost after a power cycle, so you will
-        // need to set them each time you power up the sensor. They can be any value
-        // from 0.872 to 1.127 in increments of 0.001 (0.1%). It is recommended to
-        // first set both scalars to 1.0, then calibrate the angular scalar, then
-        // the linear scalar. To calibrate the angular scalar, spin the robot by
-        // multiple rotations (eg. 10) to get a precise error, then set the scalar
-        // to the inverse of the error. Remember that the angle wraps from -180 to
-        // 180 degrees, so for example, if after 10 rotations counterclockwise
-        // (positive rotation), the sensor reports -15 degrees, the required scalar
-        // would be 3600/3585 = 1.004. To calibrate the linear scalar, move the
-        // robot a known distance and measure the error; do this multiple times at
-        // multiple speeds to get an average, then set the linear scalar to the
-        // inverse of the error. For example, if you move the robot 100 inches and
-        // the sensor reports 103 inches, set the linear scalar to 100/103 = 0.971
-        myOtos.setLinearScalar(0.9961);
-        myOtos.setAngularScalar(0.9899);
+            // Here we can set the linear and angular scalars, which can compensate for
+            // scaling issues with the sensor measurements. Note that as of firmware
+            // version 1.0, these values will be lost after a power cycle, so you will
+            // need to set them each time you power up the sensor. They can be any value
+            // from 0.872 to 1.127 in increments of 0.001 (0.1%). It is recommended to
+            // first set both scalars to 1.0, then calibrate the angular scalar, then
+            // the linear scalar. To calibrate the angular scalar, spin the robot by
+            // multiple rotations (eg. 10) to get a precise error, then set the scalar
+            // to the inverse of the error. Remember that the angle wraps from -180 to
+            // 180 degrees, so for example, if after 10 rotations counterclockwise
+            // (positive rotation), the sensor reports -15 degrees, the required scalar
+            // would be 3600/3585 = 1.004. To calibrate the linear scalar, move the
+            // robot a known distance and measure the error; do this multiple times at
+            // multiple speeds to get an average, then set the linear scalar to the
+            // inverse of the error. For example, if you move the robot 100 inches and
+            // the sensor reports 103 inches, set the linear scalar to 100/103 = 0.971
+            myOtos.setLinearScalar(0.9961);
+            myOtos.setAngularScalar(0.9899);
 
-        // The IMU on the OTOS includes a gyroscope and accelerometer, which could
-        // have an offset. Note that as of firmware version 1.0, the calibration
-        // will be lost after a power cycle; the OTOS performs a quick calibration
-        // when it powers up, but it is recommended to perform a more thorough
-        // calibration at the start of all your OpModes. Note that the sensor must
-        // be completely stationary and flat during calibration! When calling
-        // calibrateImu(), you can specify the number of samples to take and whether
-        // to wait until the calibration is complete. If no parameters are provided,
-        // it will take 255 samples and wait until done; each sample takes about
-        // 2.4ms, so about 612ms total
-        myOtos.calibrateImu();
+            // The IMU on the OTOS includes a gyroscope and accelerometer, which could
+            // have an offset. Note that as of firmware version 1.0, the calibration
+            // will be lost after a power cycle; the OTOS performs a quick calibration
+            // when it powers up, but it is recommended to perform a more thorough
+            // calibration at the start of all your OpModes. Note that the sensor must
+            // be completely stationary and flat during calibration! When calling
+            // calibrateImu(), you can specify the number of samples to take and whether
+            // to wait until the calibration is complete. If no parameters are provided,
+            // it will take 255 samples and wait until done; each sample takes about
+            // 2.4ms, so about 612ms total
+            myOtos.calibrateImu();
 
-        // Reset the tracking algorithm - this resets the position to the origin,
-        // but can also be used to recover from some rare tracking errors
-        myOtos.resetTracking();
+            // Reset the tracking algorithm - this resets the position to the origin,
+            // but can also be used to recover from some rare tracking errors
+            myOtos.resetTracking();
 
-        // After resetting the tracking, the OTOS will report that the robot is at
-        // the origin. If your robot does not start at the origin, or you have
-        // another source of location information (eg. vision odometry), you can set
-        // the OTOS location to match and it will continue to track from there.
-        //TODO: Measure the distance from starting pos to the scoring position
-        SparkFunOTOS.Pose2D currentPosition = new SparkFunOTOS.Pose2D(0, 0, 135);
-        myOtos.setPosition(currentPosition);
+            // After resetting the tracking, the OTOS will report that the robot is at
+            // the origin. If your robot does not start at the origin, or you have
+            // another source of location information (eg. vision odometry), you can set
+            // the OTOS location to match and it will continue to track from there.
+            //TODO: Measure the distance from starting pos to the scoring position
+            SparkFunOTOS.Pose2D currentPosition = new SparkFunOTOS.Pose2D(0, 0, 0);
+            myOtos.setPosition(currentPosition);
 
-        // Get the hardware and firmware version
-        SparkFunOTOS.Version hwVersion = new SparkFunOTOS.Version();
-        SparkFunOTOS.Version fwVersion = new SparkFunOTOS.Version();
-        myOtos.getVersionInfo(hwVersion, fwVersion);
+            // Get the hardware and firmware version
+            SparkFunOTOS.Version hwVersion = new SparkFunOTOS.Version();
+            SparkFunOTOS.Version fwVersion = new SparkFunOTOS.Version();
+            myOtos.getVersionInfo(hwVersion, fwVersion);
 
-        telemetry.addLine("OTOS configured! Press start to get position data!");
-        telemetry.addLine();
-        telemetry.addLine(String.format("OTOS Hardware Version: v%d.%d", hwVersion.major, hwVersion.minor));
-        telemetry.addLine(String.format("OTOS Firmware Version: v%d.%d", fwVersion.major, fwVersion.minor));
-        telemetry.update();
-    }
+            telemetry.addLine("OTOS configured! Press start to get position data!");
+            telemetry.addLine();
+            telemetry.addLine(String.format("OTOS Hardware Version: v%d.%d", hwVersion.major, hwVersion.minor));
+            telemetry.addLine(String.format("OTOS Firmware Version: v%d.%d", fwVersion.major, fwVersion.minor));
+            telemetry.update();
+        }
 }
