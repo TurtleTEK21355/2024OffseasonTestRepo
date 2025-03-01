@@ -73,6 +73,7 @@ public class PIDAutoTest extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+
         myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
         frontLeftDrive = hardwareMap.get(DcMotor.class, "front_left_drive");
         frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
@@ -92,6 +93,7 @@ public class PIDAutoTest extends LinearOpMode {
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+
         configureOtos();
         waitForStart();
         SparkFunOTOS.Pose2D pos;
@@ -99,7 +101,7 @@ public class PIDAutoTest extends LinearOpMode {
         pos = myOtos.getPosition();
         positionControlWithTheta(48,12,135,0.7f,0.7f,0.5f);
         stopAllMotors();
-
+        while (opModeIsActive());
     }
     private void positionControl(float targetYPos, float targetXPos, float MaxYSpeed, float MaxXSpeed) {
         double previousErrorY = 0, previousErrorX = 0;
@@ -144,11 +146,10 @@ public class PIDAutoTest extends LinearOpMode {
         double integralY = 0, integralX = 0, integralTheta = 0;
         double speedY = MaxYSpeed, speedX = MaxXSpeed, speedTheta = MaxThetaSpeed;
         double yPower,xPower,thetaPower;
-        while (true) {
+        while (true && opModeIsActive()) {
             double currentY = myOtos.getPosition().y;
             double currentX = myOtos.getPosition().x;
             double currentTheta = myOtos.getPosition().h;
-
             double errorY = targetYPos - currentY;
             double errorX = targetXPos - currentX;
             double errorTheta = targetThetaPos - currentTheta;
@@ -159,6 +160,7 @@ public class PIDAutoTest extends LinearOpMode {
                     (MaxThetaSpeed == 0 || Math.abs(errorTheta) <= 10)) {
                 break;
             }
+
 
             integralY = integralY + errorY;
             integralX = integralX + errorX;
@@ -191,16 +193,16 @@ public class PIDAutoTest extends LinearOpMode {
             previousErrorY = errorY;
             previousErrorX = errorX;
             previousErrorTheta = errorTheta;
+
             telemetry.addData("YPos", myOtos.getPosition().y);
             telemetry.addData("XPos", myOtos.getPosition().x);
             telemetry.addData("ThetaPos", myOtos.getPosition().h);
-            telemetry.addData("ThetaPower", thetaPower);
             telemetry.update();
-            // Send calculated power to drivetrain
+//            Send calculated power to drivetrain
+
             fieldCentricDrivetrainControl((float) yPower, (float) xPower, (float) -thetaPower);
         }
 
-        stopAllMotors(); // Stop the robot once the target is reached
     }
     private void stopAllMotors(){
         drivetrainControl(0,0,0);
@@ -313,6 +315,7 @@ public class PIDAutoTest extends LinearOpMode {
             // another source of location information (eg. vision odometry), you can set
             // the OTOS location to match and it will continue to track from there.
             //TODO: Measure the distance from starting pos to the scoring position
+
             SparkFunOTOS.Pose2D currentPosition = new SparkFunOTOS.Pose2D(0, 0, 0);
             myOtos.setPosition(currentPosition);
 

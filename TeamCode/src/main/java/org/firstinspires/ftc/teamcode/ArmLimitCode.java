@@ -40,8 +40,8 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@TeleOp(name="Basic: Iterative OpMode 2.0", group="Iterative OpMode")
-public class BasicOpMode_Iterative_Scuba2 extends OpMode {
+@TeleOp(name="Arm Control", group="Iterative OpMode")
+public class ArmLimitCode extends OpMode {
 
     SparkFunOTOS myOtos;
     private DcMotor frontLeftDrive = null;
@@ -91,7 +91,7 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
         frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         rearLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         rearRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        linearActuatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        linearActuatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -101,8 +101,8 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
         rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        configureOtos();
         grabberTiltServo.setPosition(0.4);
+        configureOtos();
     }
 
     @Override
@@ -191,6 +191,7 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
         telemetry.addData("leftviperslidelevel",leftViperSlide.getCurrentPosition());
         telemetry.addData("rightviperslidelevel",leftViperSlide.getCurrentPosition());
         telemetry.addData("linearactuatorslidelevel", linearActuatorMotor.getCurrentPosition());
+        telemetry.addData("stickpower", gamepad2.right_stick_y);
     }
 
     private void move_viper_slide_and_presets() {
@@ -308,28 +309,11 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
 
     }
 
-    private void move_linear_actuator(){
-        double linearActuatorEncoderPosition = linearActuatorMotor.getCurrentPosition();
-        double linearActuatorPower = -gamepad2.right_stick_y;
-        telemetry.addData("ARMPOSITION☺ ",linearActuatorEncoderPosition);
-        telemetry.addData("stickpower", linearActuatorPower);
-
-        if (linearActuatorLimitTop < linearActuatorEncoderPosition){//higher than top limit
-            if (linearActuatorPower < -0.1){ //right stick down
-                linearActuatorMotor.setPower(linearActuatorPower);
-            }
-            else {linearActuatorMotor.setPower(0);}
+    private void move_linear_actuator() {
+            linearActuatorMotor.setPower(gamepad2.right_stick_y);
+            telemetry.addData("The Positon for the arm yey",linearActuatorMotor.getCurrentPosition());
+            telemetry.update();
         }
-        else if (linearActuatorEncoderPosition < linearActuatorLimitBottom){//lower than bottom limit
-            if (0.1 < linearActuatorPower){ //right stick up
-                linearActuatorMotor.setPower(linearActuatorPower);
-            }
-            else {linearActuatorMotor.setPower(0);}
-        }
-        else{
-            linearActuatorMotor.setPower(linearActuatorPower);
-        }
-    }
 
     private void configureOtos() {
         telemetry.addLine("Configuring OTOS...");
