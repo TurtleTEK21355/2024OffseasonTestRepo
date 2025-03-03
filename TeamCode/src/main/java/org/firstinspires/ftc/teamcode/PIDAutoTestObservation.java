@@ -39,10 +39,9 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.opencv.core.Mat;
 
-@Autonomous(name="PIDBasketAuto", group="Test OpMode")
-public class PIDAutoTest extends LinearOpMode {
+@Autonomous(name="PIDObservationAuto", group="Test OpMode")
+public class PIDAutoTestObservation extends LinearOpMode {
     // Declare OpMode members.
     SparkFunOTOS myOtos;
     private DcMotor frontLeftDrive = null;
@@ -95,47 +94,13 @@ public class PIDAutoTest extends LinearOpMode {
 
 
         configureOtos();
-        grabberServo.setPosition(0.9);
         waitForStart();
         SparkFunOTOS.Pose2D pos;
         myOtos.resetTracking();
         pos = myOtos.getPosition();
-        while (leftViperSlide.getCurrentPosition() > -100){
-            viperControl(-0.5);
-        }
-        sleep(1000);
         grabberHingeServo.setPosition(0.8);
-        stopAllMotors();
-        positionControlWithTheta(0,15,0,0.1f,0.5f,0.1f);
-        myOtos.resetTracking();
-
-        telemetry.addData("ArmPos",leftViperSlide.getCurrentPosition());
-        telemetry.update();
-        while (leftViperSlide.getCurrentPosition() > -5250) {
-            telemetry.addData("ArmPos",leftViperSlide.getCurrentPosition());
-            telemetry.update();
-            viperControl(-0.8);
-        }
-        stopAllMotors();
-        positionControlWithTheta(5.5f,0,0,0.7f,0.1f,0.1f);
-        stopAllMotors();
-        viperControl(-0.05);
-        sleep(100);
-        grabberServo.setPosition(0.2);
-        sleep(1000);
-        grabberServo.setPosition(0.9);
-        sleep(100);
-        stopAllMotors();
-        myOtos.resetTracking();
-        positionControlWithTheta(-6,0,0,0.7f,0.1f,0.1f);
-        sleep(3000);
-        grabberHingeServo.setPosition(0.4);
-        while (leftViperSlide.getCurrentPosition() < 5) {
-            telemetry.addData("ArmPos",leftViperSlide.getCurrentPosition());
-            telemetry.update();
-            viperControl(1);
-        }
-        stopAllMotors();
+        sleep(200);
+        positionControlWithTheta(2,18,0,0.7f,1,0);
     }
     private void positionControl(float targetYPos, float targetXPos, float MaxYSpeed, float MaxXSpeed) {
         double previousErrorY = 0, previousErrorX = 0;

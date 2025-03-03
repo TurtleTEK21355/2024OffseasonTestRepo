@@ -1,32 +1,3 @@
-/* Copyright (c) 2017 FIRST. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted (subject to the limitations in the disclaimer below) provided that
- * the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice, this list
- * of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice, this
- * list of conditions and the following disclaimer in the documentation and/or
- * other materials provided with the distribution.
- *
- * Neither the name of FIRST nor the names of its contributors may be used to endorse or
- * promote products derived from this software without specific prior written permission.
- *
- * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
- * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
@@ -96,8 +67,8 @@ public class ArmLimitCode extends OpMode {
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftViperSlide.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightViperSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftViperSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightViperSlide.setDirection(DcMotorSimple.Direction.FORWARD);
         rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -151,14 +122,14 @@ public class ArmLimitCode extends OpMode {
         }
         if (field_centric){
             telemetry.addLine("Field Centric Driving ON");
-            double y = -gamepad1.left_stick_y * 0.7;
-            double x = gamepad1.left_stick_x * 0.7;
+            double y = gamepad1.left_stick_y * 0.7;
+            double x = -gamepad1.left_stick_x * 0.7;
             double r = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
             double theta = Math.atan2(y,x);
             double correctedTheta = theta - myOtos.getPosition().h;
             double drive = r * Math.sin(correctedTheta);
             double strafe = r * Math.cos(correctedTheta);
-            double turn = gamepad1.right_stick_x * 0.7;
+            double turn = -gamepad1.right_stick_x * 0.7;
             double frontLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
             double frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
             double rearLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
@@ -171,9 +142,9 @@ public class ArmLimitCode extends OpMode {
         }
         else{
             telemetry.addLine("Field Centric Driving OFF");
-            float drive = gamepad1.left_stick_y * -0.7f;
-            float turn = gamepad1.right_stick_x * 0.7f;
-            float strafe = gamepad1.left_stick_x * 0.7f;
+            float drive = -gamepad1.left_stick_y * -0.7f;
+            float turn = -gamepad1.right_stick_x * 0.7f;
+            float strafe = -gamepad1.left_stick_x * 0.7f;
 
             double frontLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
             double frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
@@ -310,7 +281,7 @@ public class ArmLimitCode extends OpMode {
     }
 
     private void move_linear_actuator() {
-            linearActuatorMotor.setPower(gamepad2.right_stick_y);
+            linearActuatorMotor.setPower(-gamepad2.right_stick_y);
             telemetry.addData("The Positon for the arm yey",linearActuatorMotor.getCurrentPosition());
             telemetry.update();
         }
