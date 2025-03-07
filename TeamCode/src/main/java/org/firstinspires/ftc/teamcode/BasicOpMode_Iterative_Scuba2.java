@@ -33,6 +33,7 @@ import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
@@ -66,8 +67,8 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
     private boolean field_centric = true;
     private int lastViperPreset = 0;
     private boolean hangOverride = false;
-    private final double linearActuatorLimitTop = 1940;
-    private final double linearActuatorLimitBottom = 0;
+    private final double linearActuatorLimitTop = 4200;
+    private final double linearActuatorLimitBottom = 30;
 
 
 
@@ -87,17 +88,23 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
         grabberTiltServo = hardwareMap.get(Servo.class, "grabber_tilt_servo");
         linearActuatorMotor = hardwareMap.get(DcMotor.class, "linear_actuator_motor");
 
+        leftViperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightViperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        linearActuatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftViperSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightViperSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        linearActuatorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         rearLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         rearRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        linearActuatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        linearActuatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftViperSlide.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightViperSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftViperSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightViperSlide.setDirection(DcMotorSimple.Direction.FORWARD);
         rightViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -211,6 +218,7 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
         } else if (Math.abs(gamepad2.left_stick_y) > 0.05) {
             lastViperPreset = 0;
         }
+        telemetry.addData("ViperslidePreset", lastViperPreset);
         move_preset(lastViperPreset);
     }
 
@@ -234,8 +242,8 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
             double viperSlideEncoderAverage = ((leftViperSlide.getCurrentPosition()+rightViperSlide.getCurrentPosition())/2.0);
 
             if (viperSlideLimitBottom < viperSlideEncoderAverage){
-                leftViperSlide.setPower((viperSlideDownPower)+idlePower);
-                rightViperSlide.setPower((viperSlideDownPower)+idlePower);
+                leftViperSlide.setPower(viperSlideDownPower);
+                rightViperSlide.setPower(viperSlideDownPower);
             }
             else{
                 leftViperSlide.setPower(idlePower);
@@ -274,10 +282,10 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
 
     private void move_grabber_tilt() {
         if (gamepad2.right_bumper) {
-            grabberTiltServo.setPosition(0.4);
+            grabberTiltServo.setPosition(0.25);
         }
         else if (gamepad2.left_bumper) {
-            grabberTiltServo.setPosition(0.8);
+            grabberTiltServo.setPosition(1);
         }
     }
 
@@ -312,7 +320,7 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
         double linearActuatorEncoderPosition = linearActuatorMotor.getCurrentPosition();
         double linearActuatorPower = -gamepad2.right_stick_y;
         telemetry.addData("ARMPOSITION☺ ",linearActuatorEncoderPosition);
-        telemetry.addData("stickpower", linearActuatorPower);
+        telemetry.addData("linearActuatorPower", linearActuatorPower);
 
         if (linearActuatorLimitTop < linearActuatorEncoderPosition){//higher than top limit
             if (linearActuatorPower < -0.1){ //right stick down
