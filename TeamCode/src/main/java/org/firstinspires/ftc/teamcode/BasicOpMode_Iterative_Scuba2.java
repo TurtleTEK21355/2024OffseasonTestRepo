@@ -68,7 +68,7 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
     private int lastViperPreset = 0;
     private boolean hangOverride = false;
     private final double linearActuatorLimitTop = 4200;
-    private final double linearActuatorLimitBottom = 30;
+    private final double linearActuatorLimitBottom = 70;
 
 
 
@@ -94,10 +94,10 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
         leftViperSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightViperSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         linearActuatorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        rearLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        rearRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        rearLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        rearRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         linearActuatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -319,20 +319,24 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
     private void move_linear_actuator(){
         double linearActuatorEncoderPosition = linearActuatorMotor.getCurrentPosition();
         double linearActuatorPower = -gamepad2.right_stick_y;
-        telemetry.addData("ARMPOSITION☺ ",linearActuatorEncoderPosition);
         telemetry.addData("linearActuatorPower", linearActuatorPower);
 
         if (linearActuatorLimitTop < linearActuatorEncoderPosition){//higher than top limit
-            if (linearActuatorPower < -0.1){ //right stick down
+            telemetry.addLine("upper limit hit");
+            if (linearActuatorPower < 0){ //right stick down
                 linearActuatorMotor.setPower(linearActuatorPower);
             }
             else {linearActuatorMotor.setPower(0);}
         }
         else if (linearActuatorEncoderPosition < linearActuatorLimitBottom){//lower than bottom limit
-            if (0.1 < linearActuatorPower){ //right stick up
+            telemetry.addLine("lower limit hit");
+            if (0 < linearActuatorPower){ //right stick up
                 linearActuatorMotor.setPower(linearActuatorPower);
             }
             else {linearActuatorMotor.setPower(0);}
+        }
+        else if (100 > linearActuatorEncoderPosition && linearActuatorEncoderPosition > linearActuatorLimitBottom){
+            linearActuatorMotor.setPower((linearActuatorPower)/2);
         }
         else{
             linearActuatorMotor.setPower(linearActuatorPower);

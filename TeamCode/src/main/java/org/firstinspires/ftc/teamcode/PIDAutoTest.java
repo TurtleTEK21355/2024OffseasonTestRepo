@@ -62,7 +62,7 @@ public class PIDAutoTest extends LinearOpMode {
     private double Kp = 0.1;
     private double Ki = 0;
     private double Kd = 0;
-    private double KpTheta = 0.1;
+    private double KpTheta = 0.09;
     private double KiTheta = 0;
     private double KdTheta = 0;
 
@@ -110,7 +110,7 @@ public class PIDAutoTest extends LinearOpMode {
         myOtos.resetTracking();
         telemetry.addData("ArmPos",leftViperSlide.getCurrentPosition());
         telemetry.update();
-        while (leftViperSlide.getCurrentPosition() > -5250) {
+        while (leftViperSlide.getCurrentPosition() > -5050) {
             telemetry.addData("ArmPos",leftViperSlide.getCurrentPosition());
             telemetry.update();
             viperControl(-0.8);
@@ -124,9 +124,9 @@ public class PIDAutoTest extends LinearOpMode {
         sleep(1000);
         stopAllMotors();
         myOtos.resetTracking();
-        positionControlWithTheta(-3,0,0,1f,0.2f,0);
+        positionControlWithTheta(-2.75f,0,0,1f,0.2f,0);
         sleep(200);
-        positionControlWithTheta(0,0,-127.5f,0,0,0.7f);
+        positionControlWithTheta(0,0,-120f,0,0,0.6f);
         stopAllMotors();
         while (leftViperSlide.getCurrentPosition() < -2000) {
             telemetry.addData("ArmPos",leftViperSlide.getCurrentPosition());
@@ -135,19 +135,23 @@ public class PIDAutoTest extends LinearOpMode {
         }
         grabberHingeServo.setPosition(0.3);
         myOtos.resetTracking();
-        positionControlWithTheta(6,0,0,0.5f,0.2f,0);
+        positionControlWithTheta(7,0,0,0.5f,0.2f,0);
         sleep(1000);
         grabberServo.setPosition(0.9);
         sleep(500);
-        positionControlWithTheta(0,0,0,0.5f,0,0);
-        positionControlWithTheta(0,0,127.5f,0,0,0.7f);
+        positionControlWithTheta(4,0,0,0.5f,0,0);
+        positionControlWithTheta(0,0,120.5f,0,0,1f);
         stopAllMotors();
         myOtos.resetTracking();
-        while (leftViperSlide.getCurrentPosition() > -5250) {
+        positionControlWithTheta(-1,0,0,0.7f,0,0);
+        while (leftViperSlide.getCurrentPosition() > -5050) {
             telemetry.addData("ArmPos",leftViperSlide.getCurrentPosition());
             telemetry.update();
             viperControl(-0.8);
         }
+        grabberHingeServo.setPosition(0.8);
+        sleep(300);
+        positionControlWithTheta(2.5f,0,0,0.7f,0,0);
         stopAllMotors();
         viperControl(-0.05);
         sleep(100);

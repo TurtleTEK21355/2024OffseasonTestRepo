@@ -48,6 +48,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 @Autonomous(name="BasketSideAuto", group="Linear OpMode")
+@Disabled
 public class BasketSideRedAuto extends LinearOpMode {
     // Declare OpMode members.
     ElapsedTime elapsedTime;

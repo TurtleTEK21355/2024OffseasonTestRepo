@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@TeleOp(name="Arm Control", group="Iterative OpMode")
+@TeleOp(name="DON'T HIT THIS ONE, KELBO", group="Iterative OpMode")
 public class ArmLimitCode extends OpMode {
 
     SparkFunOTOS myOtos;
