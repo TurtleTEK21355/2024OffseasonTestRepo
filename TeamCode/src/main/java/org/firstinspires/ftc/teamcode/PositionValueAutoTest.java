@@ -39,10 +39,9 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.opencv.core.Mat;
 
-@Autonomous(name="PIDBasketAuto", group="Test OpMode")
-public class PIDAutoTest extends LinearOpMode {
+@Autonomous(name="Position Value Auto Test", group="Test OpMode")
+public class PositionValueAutoTest extends LinearOpMode {
     // Declare OpMode members.
     SparkFunOTOS myOtos;
     private DcMotor frontLeftDrive = null;
@@ -65,10 +64,6 @@ public class PIDAutoTest extends LinearOpMode {
     private double KpTheta = 0.1;
     private double KiTheta = 0;
     private double KdTheta = 0;
-    private double scoringPos = 0; //Filler Values
-    private double spikeMark1 = 0;
-    private double spikeMark2 =  0;
-    private double spikeMark3 = 0;
 
 
 
@@ -99,37 +94,16 @@ public class PIDAutoTest extends LinearOpMode {
         configureOtos();
         grabberServo.setPosition(0.9);
         waitForStart();
+
         SparkFunOTOS.Pose2D pos;
         myOtos.resetTracking();
         pos = myOtos.getPosition();
-        while (leftViperSlide.getCurrentPosition() > -100){
-            viperControl(-0.5);
-        }
-        sleep(1000);
-        grabberHingeServo.setPosition(0.8);
-        stopAllMotors();
-        positionControlWithTheta(0,13,0,0,0.5f,0);
-        myOtos.resetTracking();
-        telemetry.addData("ArmPos",leftViperSlide.getCurrentPosition());
-        telemetry.update();
-        while (leftViperSlide.getCurrentPosition() > -5250) {
-            telemetry.addData("ArmPos",leftViperSlide.getCurrentPosition());
-            telemetry.update();
-            viperControl(-0.8);
-        }
-        stopAllMotors();
-        positionControlWithTheta(5.5f,0,0,0.7f,0,0);
-        stopAllMotors();
-        viperControl(-0.05);
-        sleep(100);
-        grabberServo.setPosition(0.2);
-        sleep(1000);
-        stopAllMotors();
-        myOtos.resetTracking();
-        positionControlWithTheta(-3,0,0,1f,0.2f,0);
-        sleep(200);
-        positionControlWithTheta(0,0,-127.5f,0,0,0.7f);
-        stopAllMotors();
+
+
+        positionDriveBasket();
+        viperRunUpScore();
+        positionDriveSpikeMark1();
+
         while (leftViperSlide.getCurrentPosition() < -2000) {
             telemetry.addData("ArmPos",leftViperSlide.getCurrentPosition());
             telemetry.update();
@@ -273,16 +247,50 @@ public class PIDAutoTest extends LinearOpMode {
     }
     private void stopAllMotors(){
         drivetrainControl(0,0,0);
+        viperControl(0);
     }
     private void viperControl(double viperSpeed){
         leftViperSlide.setPower(viperSpeed);
         rightViperSlide.setPower(-viperSpeed);
     }
-    private void viperRunUp(double viperSpeed){
+    private void viperRunUpScore(){
+        while (leftViperSlide.getCurrentPosition() > -5250) {
+            telemetry.addData("ArmPos",leftViperSlide.getCurrentPosition());
+            telemetry.update();
+            viperControl(-0.8);
+        }
+        stopAllMotors();
+        grabberHingeServo.setPosition(0.8);
+        positionControlWithTheta(5.5f,13,0,0.7f,0,0);
+        //TODO: This will be the the basketScorePos + the y distance to the basket
+        stopAllMotors();
+        viperControl(-0.05);
+        sleep(100);
+        grabberServo.setPosition(0.2);
+        sleep(1000);
+        positionControlWithTheta(2.5f,13,0,1f,0.2f,0);
+        //TODO: This will be the basketScorePos + like 2 or something in the pos.
+        sleep(200);
+        stopAllMotors();
 
     }
-    private void viperRunDown(double viperSpeed){
+    private void viperRunDownIntake(){
 
+    }
+    private void positionDriveSpikeMark1(){
+        positionControlWithTheta(0,0,0,0,0,0);
+        //TODO:Fill these positions with actual numbers
+    }
+    private void positionDriveSpikeMark2(){
+        positionControlWithTheta(0,0,0,0,0,0);
+        //TODO:Fill these positions with actual numbers
+    }
+    private void positionDriveSpikeMark3(){
+        positionControlWithTheta(0,0,0,0,0,0);
+        //TODO:Fill these positions with actual numbers
+    }
+    private void positionDriveBasket(){
+        positionControlWithTheta(0,13,0,0,0.7f,0);
     }
     private void driveStraight(float power, float position){
         float turn = position/100;
