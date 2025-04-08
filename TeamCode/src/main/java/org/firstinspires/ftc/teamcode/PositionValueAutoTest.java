@@ -103,42 +103,18 @@ public class PositionValueAutoTest extends LinearOpMode {
         positionDriveBasket();
         viperRunUpScore();
         positionDriveSpikeMark1();
+        viperRunDownIntake();
+        positionDriveBasket();
+        viperRunUpScore();
+        positionDriveSpikeMark2();
+        viperRunDownIntake();
+        positionDriveBasket();
+        viperRunUpScore();
+        positionDriveSpikeMark3();
+        viperRunDownIntake();
+        positionDriveBasket();
+        viperRunUpScore();
 
-        while (leftViperSlide.getCurrentPosition() < -2000) {
-            telemetry.addData("ArmPos",leftViperSlide.getCurrentPosition());
-            telemetry.update();
-            viperControl(0.7);
-        }
-        grabberHingeServo.setPosition(0.3);
-        myOtos.resetTracking();
-        positionControlWithTheta(6,0,0,0.5f,0.2f,0);
-        sleep(1000);
-        grabberServo.setPosition(0.9);
-        sleep(500);
-        positionControlWithTheta(0,0,0,0.5f,0,0);
-        positionControlWithTheta(0,0,127.5f,0,0,0.7f);
-        stopAllMotors();
-        myOtos.resetTracking();
-        while (leftViperSlide.getCurrentPosition() > -5250) {
-            telemetry.addData("ArmPos",leftViperSlide.getCurrentPosition());
-            telemetry.update();
-            viperControl(-0.8);
-        }
-        stopAllMotors();
-        viperControl(-0.05);
-        sleep(100);
-        grabberServo.setPosition(0.2);
-        sleep(1000);
-        stopAllMotors();
-        myOtos.resetTracking();
-        positionControlWithTheta(-3,0,0,1f,0.2f,0);
-        sleep(200);
-        grabberHingeServo.setPosition(0.3);
-        while (leftViperSlide.getCurrentPosition() < -545) {
-            telemetry.addData("ArmPos",leftViperSlide.getCurrentPosition());
-            telemetry.update();
-            viperControl(1);
-        }
 
 
 
@@ -275,7 +251,13 @@ public class PositionValueAutoTest extends LinearOpMode {
 
     }
     private void viperRunDownIntake(){
-
+        sleep(200);
+        grabberHingeServo.setPosition(0.3);
+        while (leftViperSlide.getCurrentPosition() < -545) {
+            telemetry.addData("ArmPos",leftViperSlide.getCurrentPosition());
+            telemetry.update();
+            viperControl(1);
+        }
     }
     private void positionDriveSpikeMark1(){
         positionControlWithTheta(0,0,0,0,0,0);
