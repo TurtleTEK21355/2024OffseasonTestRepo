@@ -65,8 +65,8 @@ public class PIDAutoTest extends LinearOpMode {
     private double KpTheta = 0.1;
     private double KiTheta = 0;
     private double KdTheta = 0;
-    private int[] scoringPos = new int[]{10,0,-90}; //Filler Values
-    private int[] spikeMark1 = new int[]{5,-3,0}; // Test Value
+    private int[] scoringPos = new int[]{5,14,0}; //Filler Values
+    private int[] spikeMark1 = new int[]{-13,24,-135}; // Test Value
     private int[] spikeMark2 = new int[]{15,0,90}; // Place-holder values`
     private int[] spikeMark3 = new int[]{0,0,0};
     private int[] parkingPos = new int[]{0,0,0};
@@ -103,6 +103,12 @@ public class PIDAutoTest extends LinearOpMode {
         waitForStart();
         SparkFunOTOS.Pose2D pos;
         pos = myOtos.getPosition();
+        while (opModeIsActive()){
+            telemetry.addData("YPos", myOtos.getPosition().y);
+            telemetry.addData("XPos", myOtos.getPosition().x);
+            telemetry.addData("ThetaPos", myOtos.getPosition().h);
+            telemetry.update();
+        }
         /*while (leftViperSlide.getCurrentPosition() > -100){
             viperControl(-0.5);
         }
@@ -118,7 +124,7 @@ public class PIDAutoTest extends LinearOpMode {
         }
         stopAllMotors();
          */
-        positionControlWithTheta(scoringPos[0],scoringPos[1],scoringPos[2],0.5f,0,0.5f);
+        //positionControlWithTheta(scoringPos[0],scoringPos[1],scoringPos[2],0.3f,0,0.3f);
         /*stopAllMotors();
         viperControl(-0.05);
         sleep(100);
@@ -131,10 +137,9 @@ public class PIDAutoTest extends LinearOpMode {
             viperControl(0.7);
         }
         grabberHingeServo.setPosition(0.3);
-         */
-        sleep(9000);
-        positionControlWithTheta(spikeMark1[0], spikeMark1[1],spikeMark1[2],0.5f,0.5f,0.5f);
-        /*
+*/
+//        positionControlWithTheta(spikeMark1[0], spikeMark1[1],spikeMark1[2],0.3f,0,0.3f);
+/*
         sleep(1000);
         grabberServo.setPosition(0.9);
         sleep(500);
@@ -144,16 +149,16 @@ public class PIDAutoTest extends LinearOpMode {
             telemetry.update();
             viperControl(-0.8);
         }
-         */
+
         sleep(9000);
         positionControlWithTheta(scoringPos[0],scoringPos[1],scoringPos[2],0.5f,0.5f,0.5f);
-        /*
+
         viperControl(-0.05);
         sleep(100);
         grabberServo.setPosition(0.2);
         sleep(1000);
         stopAllMotors();
-         */
+
         sleep(9000);
         positionControlWithTheta(spikeMark2[0], spikeMark2[1], spikeMark2[2], 0.5f,0.5f,0.5f);
         /*
