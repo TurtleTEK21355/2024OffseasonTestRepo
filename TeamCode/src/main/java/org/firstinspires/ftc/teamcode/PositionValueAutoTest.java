@@ -98,23 +98,12 @@ public class PositionValueAutoTest extends LinearOpMode {
         SparkFunOTOS.Pose2D pos;
         myOtos.resetTracking();
         pos = myOtos.getPosition();
-
-
-        positionDriveBasket();
-        viperRunUpScore();
-        positionDriveSpikeMark1();
-        viperRunDownIntake();
-        positionDriveBasket();
-        viperRunUpScore();
-        positionDriveSpikeMark2();
-        viperRunDownIntake();
-        positionDriveBasket();
-        viperRunUpScore();
-        positionDriveSpikeMark3();
-        viperRunDownIntake();
-        positionDriveBasket();
-        viperRunUpScore();
-
+        while (opModeIsActive()){
+            telemetry.addData("H",myOtos.getPosition().h);
+            telemetry.addData("X",myOtos.getPosition().x);
+            telemetry.addData("Y",myOtos.getPosition().y);
+            telemetry.update();
+        }
 
 
 

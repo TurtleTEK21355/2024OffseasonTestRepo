@@ -66,7 +66,7 @@ public class PIDAutoTest extends LinearOpMode {
     private double KiTheta = 0;
     private double KdTheta = 0;
     private int[] scoringPos = new int[]{(int) 5.5, (int) 16.4,0}; //Filler Values
-    private int[] spikeMark1 = new int[]{0,0,0}; // Test Value
+    private int[] spikeMark1 = new int[]{(int) -10.74, (int) 27.3, (int) -129.5}; // Test Value
     private int[] spikeMark2 = new int[]{0,0,0}; // Place-holder values`
     private int[] spikeMark3 = new int[]{0,0,0};
     private int[] parkingPos = new int[]{0,0,0};
@@ -97,15 +97,30 @@ public class PIDAutoTest extends LinearOpMode {
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-
+        grabberServo.setPosition(0.9);
+        waitForStart();
         configureOtos();
         positionControlWithTheta(scoringPos[0],scoringPos[1],scoringPos[2],0.5f,0.5f,0);
-        while(opModeIsActive()){
-            telemetry.addData("H",myOtos.getPosition().h);
-            telemetry.addData("Y",myOtos.getPosition().y);
-            telemetry.addData("X",myOtos.getPosition().x);
+        stopAllMotors();
+        while(leftViperSlide.getCurrentPosition() > -6000){
+            viperControl(-0.7);
+            telemetry.addData("ViperPos",leftViperSlide.getCurrentPosition());
             telemetry.update();
         }
+        viperControl(-0.2);
+        grabberHingeServo.setPosition(0.65);
+        sleep(500);
+        positionControlWithTheta(scoringPos[0]+1,scoringPos[1],scoringPos[2],0.5f,0.5f,0);
+        grabberServo.setPosition(0.2);
+        sleep(500);
+        positionControlWithTheta(spikeMark1[0],spikeMark1[1],spikeMark1[2],0.5f,0.5f,0.5f);
+        grabberHingeServo.setPosition(0.25);
+        while(leftViperSlide.getCurrentPosition() < -500){
+            viperControl(0.7);
+            telemetry.addData("ViperPos",leftViperSlide.getCurrentPosition());
+            telemetry.update();
+        }
+        viperControl(0);
     }
     private void positionControl(float targetYPos, float targetXPos, float MaxYSpeed, float MaxXSpeed) {
         double previousErrorY = 0, previousErrorX = 0;
@@ -137,6 +152,7 @@ public class PIDAutoTest extends LinearOpMode {
             telemetry.addData("YPos", myOtos.getPosition().y);
             telemetry.addData("XPos", myOtos.getPosition().x);
             telemetry.addData("ThetaPos", myOtos.getPosition().h);
+            telemetry.addData("ViperPos",leftViperSlide.getCurrentPosition());
             telemetry.update();
             // Send calculated power to drivetrain
             drivetrainControl((float) yPower, (float) xPower, 0);
@@ -201,6 +217,7 @@ public class PIDAutoTest extends LinearOpMode {
             telemetry.addData("YPos", myOtos.getPosition().y);
             telemetry.addData("XPos", myOtos.getPosition().x);
             telemetry.addData("ThetaPos", myOtos.getPosition().h);
+            telemetry.addData("ViperPos",leftViperSlide.getCurrentPosition());
             telemetry.update();
 //            Send calculated power to drivetrain
 
