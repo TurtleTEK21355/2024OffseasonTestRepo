@@ -33,7 +33,6 @@ import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
@@ -58,6 +57,7 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
     private final double MOTOR = 751.8;
     private final double BottomLimit = 0;
     private final double TopLimit = 8.1;
+    private final double HalfLimit =  TopLimit/2;
     private final double viperSlideLimitBottom = MOTOR*BottomLimit;
     private final double viperSlideLimitTop = MOTOR*TopLimit;
     private final double idlePower = 0.1;
@@ -67,6 +67,7 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
     private boolean field_centric = true;
     private int lastViperPreset = 0;
     private boolean hangOverride = false;
+    private double prevViperSlideAverage = 0;
     private final double linearActuatorLimitTop = 4200;
     private final double linearActuatorLimitBottom = 70;
 
@@ -254,6 +255,7 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
             leftViperSlide.setPower(hangPower);
             rightViperSlide.setPower(hangPower);
         }
+
     }
 
     private void move_viper_slide_manual() {
@@ -281,12 +283,25 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
 
 
     private void move_grabber_tilt() {
-        if (gamepad2.right_bumper) {
+        double viperSlideAverage = ((leftViperSlide.getCurrentPosition()+rightViperSlide.getCurrentPosition())/2.0);
+        double middlePoint = HalfLimit*MOTOR;
+        boolean viperSlidePastMiddleUp = (viperSlideAverage > middlePoint && prevViperSlideAverage < middlePoint);
+        boolean viperSlidePastMiddleDown = (viperSlideAverage < middlePoint && prevViperSlideAverage > middlePoint);
+
+        if (gamepad2.right_bumper){
             grabberTiltServo.setPosition(0.25);
         }
-        else if (gamepad2.left_bumper) {
+        else if (viperSlidePastMiddleUp) {
             grabberTiltServo.setPosition(0.65);
         }
+        if (gamepad2.left_bumper){
+            grabberTiltServo.setPosition(0.65);
+        }
+        else if (viperSlidePastMiddleDown) {
+            grabberTiltServo.setPosition(0.25);
+        }
+
+        prevViperSlideAverage = viperSlideAverage;
     }
 
     private void move_grabber_rotate() {
