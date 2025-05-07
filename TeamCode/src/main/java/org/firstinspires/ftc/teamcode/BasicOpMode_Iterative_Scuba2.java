@@ -138,7 +138,6 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
             myOtos.calibrateImu();
         }
 
-
         // Inform user of available controls
         telemetry.addLine("Press Y (triangle) on Gamepad to reset tracking");
         telemetry.addLine("Press X (square) on Gamepad to calibrate the IMU");
@@ -159,14 +158,14 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
         }
         if (field_centric){
             telemetry.addLine("Field Centric Driving ON");
-            double y = gamepad1.left_stick_y * 0.7;
-            double x = gamepad1.left_stick_x * -0.7;
+            double y = gamepad1.left_stick_y * -0.7;
+            double x = gamepad1.left_stick_x * 0.7;
             double r = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
             double theta = Math.atan2(y,x);
             double correctedTheta = theta - myOtos.getPosition().h;
             double drive = r * Math.sin(correctedTheta);
             double strafe = r * Math.cos(correctedTheta);
-            double turn = gamepad1.right_stick_x * -0.7;
+            double turn = gamepad1.right_stick_x * 0.7;
             double frontLeftStrafe = Range.clip(drive - strafe + turn, -1, 1);
             double frontRightStrafe = Range.clip(drive - strafe - turn, -1, 1);
             double rearLeftStrafe = Range.clip(drive + strafe + turn, -1, 1);
