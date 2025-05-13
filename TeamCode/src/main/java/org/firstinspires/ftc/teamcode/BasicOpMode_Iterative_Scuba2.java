@@ -291,10 +291,10 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
             grabberTiltServo.setPosition(0.25);
         }
         else if (viperSlidePastMiddleUp) {
-            grabberTiltServo.setPosition(0.65);
+            grabberTiltServo.setPosition(0.55);
         }
         if (gamepad2.left_bumper){
-            grabberTiltServo.setPosition(0.65);
+            grabberTiltServo.setPosition(0.55);
         }
         else if (viperSlidePastMiddleDown) {
             grabberTiltServo.setPosition(0.25);
@@ -318,12 +318,12 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
 
     private void move_grabber(){
         double open = 0.2;
-        double close = 0.9;
-        if(gamepad2.right_trigger>0.1){
+        double close = 0.93;
+        if(gamepad2.right_trigger > 0.1){
             //close claw
             grabberServo.setPosition(close);
         }
-        else if(gamepad2.left_trigger>0.1){
+        else if(gamepad2.left_trigger > 0.1){
             //open claw
             grabberServo.setPosition(open);
         }

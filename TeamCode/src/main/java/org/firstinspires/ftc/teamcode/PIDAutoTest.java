@@ -66,7 +66,7 @@ public class PIDAutoTest extends LinearOpMode {
     private double KiTheta = 0;
     private double KdTheta = 0;
     private int[] scoringPos = new int[]{(int) 5.5, (int) 16.4,0}; //Filler Values
-    private int[] spikeMark1 = new int[]{(int) -6.1, (int) 34.1, (int) -139.5}; // Test Value
+    private int[] spikeMark1 = new int[]{(int) -14.2, (int) 25.1, (int) -139.5}; // Test Value
     private int[] spikeMark2 = new int[]{0,0,0}; // Place-holder values`
     private int[] spikeMark3 = new int[]{0,0,0};
     private int[] parkingPos = new int[]{0,0,0};
@@ -100,7 +100,7 @@ public class PIDAutoTest extends LinearOpMode {
         grabberServo.setPosition(0.9);
         waitForStart();
         configureOtos();
-        positionControlWithTheta(scoringPos[0],scoringPos[1],scoringPos[2],0.5f,0.5f,0);
+        positionControlWithTheta(scoringPos[0],scoringPos[1],scoringPos[2],0.6f,0.5f,0);
         stopAllMotors();
         while(leftViperSlide.getCurrentPosition() > -6000){
             viperControl(-0.7);
@@ -108,13 +108,13 @@ public class PIDAutoTest extends LinearOpMode {
             telemetry.update();
         }
         viperControl(-0.2);
-        grabberHingeServo.setPosition(0.65);
+        grabberHingeServo.setPosition(0.57);
         sleep(500);
         positionControlWithTheta(scoringPos[0]+2f,scoringPos[1],scoringPos[2],0.5f,0.5f,0);
         grabberServo.setPosition(0.2);
         sleep(500);
-        positionControlWithTheta(scoringPos[0]+2f,scoringPos[1],spikeMark1[2],0.2f,0.3f,0.4f);
-        positionControlWithTheta(spikeMark1[0],spikeMark1[1],spikeMark1[2],0.2f,0.4f,0.4f);
+        positionControlWithTheta(scoringPos[0]+2f,scoringPos[1],spikeMark1[2],0,0,0.3f);
+        positionControlWithTheta(spikeMark1[0],spikeMark1[1],spikeMark1[2],0.3f,0.3f,0);
         stopAllMotors();
         grabberHingeServo.setPosition(0.25);
         while(leftViperSlide.getCurrentPosition() < -100){
