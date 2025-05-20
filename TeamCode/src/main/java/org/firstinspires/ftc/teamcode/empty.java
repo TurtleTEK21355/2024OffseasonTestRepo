@@ -48,6 +48,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 @Autonomous(name="empty", group="Linear OpMode")
+@Disabled
 public class empty extends OpMode {
     private DcMotor frontLeftDrive = null;
 

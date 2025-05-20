@@ -94,11 +94,11 @@ public class PIDAutoTestObservation extends LinearOpMode {
 
 
         configureOtos();
+        grabberServo.setPosition(0.9);
         waitForStart();
         SparkFunOTOS.Pose2D pos;
         myOtos.resetTracking();
         pos = myOtos.getPosition();
-        grabberHingeServo.setPosition(0.8);
         sleep(200);
         positionControlWithTheta(2,18,0,0.7f,1,0);
     }
