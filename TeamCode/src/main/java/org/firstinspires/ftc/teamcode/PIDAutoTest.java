@@ -103,29 +103,20 @@ public class PIDAutoTest extends LinearOpMode {
         waitForStart();
         SparkFunOTOS.Pose2D pos;
         pos = myOtos.getPosition();
-        while (opModeIsActive()){
-            telemetry.addData("YPos", myOtos.getPosition().y);
-            telemetry.addData("XPos", myOtos.getPosition().x);
-            telemetry.addData("ThetaPos", myOtos.getPosition().h);
-            telemetry.update();
-        }
-        /*while (leftViperSlide.getCurrentPosition() > -100){
-            viperControl(-0.5);
-        }
+
+        positionControlWithTheta(scoringPos[0],scoringPos[1],scoringPos[2],0,1,0);
+
         sleep(1000);
         grabberHingeServo.setPosition(0.8);
         stopAllMotors();
-        telemetry.addData("ArmPos",leftViperSlide.getCurrentPosition());
-        telemetry.update();
+
         while (leftViperSlide.getCurrentPosition() > -5250) {
             telemetry.addData("ArmPos",leftViperSlide.getCurrentPosition());
             telemetry.update();
             viperControl(-0.8);
         }
+
         stopAllMotors();
-         */
-        //positionControlWithTheta(scoringPos[0],scoringPos[1],scoringPos[2],0.3f,0,0.3f);
-        /*stopAllMotors();
         viperControl(-0.05);
         sleep(100);
         grabberServo.setPosition(0.2);
@@ -137,22 +128,22 @@ public class PIDAutoTest extends LinearOpMode {
             viperControl(0.7);
         }
         grabberHingeServo.setPosition(0.3);
-*/
-//        positionControlWithTheta(spikeMark1[0], spikeMark1[1],spikeMark1[2],0.3f,0,0.3f);
-/*
+       positionControlWithTheta(spikeMark1[0], spikeMark1[1],spikeMark1[2],0.3f,0,0.3f);
+        stopAllMotors();
         sleep(1000);
         grabberServo.setPosition(0.9);
         sleep(500);
         stopAllMotors();
+        positionControlWithTheta(scoringPos[0],scoringPos[1],scoringPos[2],0.5f,0.5f,0.5f);
         while (leftViperSlide.getCurrentPosition() > -5250) {
             telemetry.addData("ArmPos",leftViperSlide.getCurrentPosition());
             telemetry.update();
             viperControl(-0.8);
         }
+        stopAllMotors();
+        viperControl(-0.05);
 
-        sleep(9000);
-        positionControlWithTheta(scoringPos[0],scoringPos[1],scoringPos[2],0.5f,0.5f,0.5f);
-
+        /*
         viperControl(-0.05);
         sleep(100);
         grabberServo.setPosition(0.2);
