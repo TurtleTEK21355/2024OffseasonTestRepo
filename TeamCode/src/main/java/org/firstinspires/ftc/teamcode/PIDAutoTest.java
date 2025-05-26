@@ -69,7 +69,7 @@ public class PIDAutoTest extends LinearOpMode {
     private int[] spikeMark1 = new int[]{(int) -14.2, (int) 25.1, (int) -139.5}; // Test Value
     private int[] spikeMark2 = new int[]{0,0,0}; // Place-holder values`
     private int[] spikeMark3 = new int[]{0,0,0};
-    private int[] parkingPos = new int[]{(int) -45.88, (int) 5.34, (int) -138.27};
+    private int[] parkingPos = new int[]{(int) -45.88, (int) -18, (int) -138.27};
 
 
 
@@ -122,7 +122,9 @@ public class PIDAutoTest extends LinearOpMode {
             telemetry.update();
         }
         viperControl(0);
-        positionControlWithTheta(parkingPos[0],parkingPos[1],parkingPos[2],0.3f,0.4f,0.3f);
+        positionControlWithTheta(-25,-5,scoringPos[2],0.4f,0.4f,0);
+        sleep(200);
+        positionControlWithTheta(-58,-10,-138,0.3f,0.3f,0.3f);
         stopAllMotors();
         sleep(400);
         while(leftViperSlide.getCurrentPosition() < -2400){
