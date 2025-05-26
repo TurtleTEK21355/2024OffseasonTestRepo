@@ -110,7 +110,6 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
         leftViperSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         configureOtos();
-        grabberTiltServo.setPosition(0.4);
     }
 
     @Override
@@ -318,7 +317,7 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
 
     private void move_grabber(){
         double open = 0.2;
-        double close = 0.93;
+        double close = 0.92;
         if(gamepad2.right_trigger > 0.1){
             //close claw
             grabberServo.setPosition(close);
