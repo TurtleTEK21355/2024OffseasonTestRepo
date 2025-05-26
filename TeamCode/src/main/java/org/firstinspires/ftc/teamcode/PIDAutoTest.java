@@ -100,6 +100,7 @@ public class PIDAutoTest extends LinearOpMode {
 
         waitForStart();
         configureOtos();
+        sleep(10000);
         grabberServo.setPosition(0.2);
         positionControlWithTheta(scoringPos[0],scoringPos[1],scoringPos[2],0.6f,0.5f,0);
         stopAllMotors();
