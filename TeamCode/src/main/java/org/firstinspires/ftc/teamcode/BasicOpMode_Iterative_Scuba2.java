@@ -165,7 +165,6 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
             double drive = r * Math.sin(correctedTheta);
             double strafe = r * Math.cos(correctedTheta);
             double turn = gamepad1.right_stick_x * 0.7;
-            Scuba
         }
         else{
             telemetry.addLine("Field Centric Driving OFF");
