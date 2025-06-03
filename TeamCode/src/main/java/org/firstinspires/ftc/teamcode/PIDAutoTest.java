@@ -138,6 +138,8 @@ public class PIDAutoTest extends LinearOpMode {
             telemetry.addData("ViperPos",leftViperSlide.getCurrentPosition());
             telemetry.update();
         }
+        grabberHingeServo.setPosition(0.3);
+        sleep(300);
     }
     private void positionControl(float targetYPos, float targetXPos, float MaxYSpeed, float MaxXSpeed) {
         double previousErrorY = 0, previousErrorX = 0;
