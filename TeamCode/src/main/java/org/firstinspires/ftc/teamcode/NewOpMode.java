@@ -1,18 +1,31 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.robot.Drivetrain;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.teamcode.robot.MeccanumWheeDrivetrain;
+import org.firstinspires.ftc.teamcode.robot.Scuba2;
 
 @TeleOp(name="NewOpMode", group="Iterative OpModes")
 public class NewOpMode extends OpMode {
-    Drivetrain scuba = new Drivetrain();
+    Scuba2 scuba2;
 
     public void init(){
-        this.scuba = new Drivetrain();
+        scuba2 = new Scuba2(hardwareMap.get(DcMotor.class, "front_left_drive"),
+                hardwareMap.get(DcMotor.class, "front_right_drive"),
+                hardwareMap.get(DcMotor.class, "rear_left_drive"),
+                hardwareMap.get(DcMotor.class, "rear_right_drive"),
+                hardwareMap.get(Servo.class, "grabber_servo"),
+                hardwareMap.get(Servo.class, "grabber_rotate_servo"),
+                hardwareMap.get(Servo.class, "grabber_tilt_servo"),
+                hardwareMap.get(DcMotor.class, "left_viper_slide"),
+                hardwareMap.get(DcMotor.class, "right_viper_slide"),
+                hardwareMap.get(DcMotor.class, "linear_actuator_motor"));
 
     }
 
     public void loop(){
-        scuba.driveTrainControl(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+        scuba2.move(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
     }
 }
