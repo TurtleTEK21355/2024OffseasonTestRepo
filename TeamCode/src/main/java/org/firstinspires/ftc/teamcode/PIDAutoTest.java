@@ -88,6 +88,12 @@ public class PIDAutoTest extends LinearOpMode {
         grabberServo = hardwareMap.get(Servo.class, "grabber_servo");
         grabberHingeServo = hardwareMap.get(Servo.class, "grabber_tilt_servo");
         linearActuatorMotor = hardwareMap.get(DcMotor.class, "linear_actuator_motor");
+        leftViperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightViperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        linearActuatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftViperSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightViperSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        linearActuatorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         rearLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -132,6 +138,8 @@ public class PIDAutoTest extends LinearOpMode {
             telemetry.addData("ViperPos",leftViperSlide.getCurrentPosition());
             telemetry.update();
         }
+        grabberHingeServo.setPosition(0.3);
+        sleep(300);
     }
     private void positionControl(float targetYPos, float targetXPos, float MaxYSpeed, float MaxXSpeed) {
         double previousErrorY = 0, previousErrorX = 0;
