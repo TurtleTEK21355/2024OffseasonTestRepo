@@ -89,11 +89,8 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
         grabberTiltServo = hardwareMap.get(Servo.class, "grabber_tilt_servo");
         linearActuatorMotor = hardwareMap.get(DcMotor.class, "linear_actuator_motor");
 
-        leftViperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightViperSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         linearActuatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftViperSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightViperSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         linearActuatorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);

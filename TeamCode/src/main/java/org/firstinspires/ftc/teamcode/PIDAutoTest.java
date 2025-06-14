@@ -100,7 +100,6 @@ public class PIDAutoTest extends LinearOpMode {
 
         waitForStart();
         configureOtos();
-        sleep(10000);
         grabberServo.setPosition(0.2);
         positionControlWithTheta(scoringPos[0],scoringPos[1],scoringPos[2],0.6f,0.5f,0);
         stopAllMotors();
@@ -116,16 +115,16 @@ public class PIDAutoTest extends LinearOpMode {
         sleep(300);
         grabberServo.setPosition(0.9);
         sleep(500);
-        positionControlWithTheta(scoringPos[0]-7,scoringPos[1]-3,scoringPos[2],0.6f,0.5f,0);
-        while(leftViperSlide.getCurrentPosition() < -3000){
+        positionControlWithTheta(scoringPos[0]-7,scoringPos[1]-3,scoringPos[2],0.4f,0.5f,0);
+        while(leftViperSlide.getCurrentPosition() < -3200){
             viperControl(0.7);
             telemetry.addData("ViperPos",leftViperSlide.getCurrentPosition());
             telemetry.update();
         }
         viperControl(0);
-        positionControlWithTheta(-25,-5,scoringPos[2],0.4f,0.4f,0);
+        positionControlWithTheta(-33,39,scoringPos[2],0.4f,0.4f,0);
         sleep(200);
-        positionControlWithTheta(-58,-10,-138,0.3f,0.3f,0.3f);
+        positionControlWithTheta(-42,23,134,0.2f,0.2f,0.4f);
         stopAllMotors();
         sleep(400);
         while(leftViperSlide.getCurrentPosition() < -2400){
