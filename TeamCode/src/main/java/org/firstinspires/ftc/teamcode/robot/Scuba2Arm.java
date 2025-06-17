@@ -3,10 +3,10 @@ package org.firstinspires.ftc.teamcode.robot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class Scuba2Arm extends Arm{
-    Scuba2HorizontalSlide linearActuator;
-    Scuba2VerticalSlide viperSlides;
-    Scuba2Claw claw;
+public class Scuba2Arm{
+    public Scuba2HorizontalSlide linearActuator;
+    public Scuba2VerticalSlide viperSlides;
+    public Scuba2Claw claw;
 
     public Scuba2Arm(Servo grabberTiltServo,
                      Servo grabberRotateServo,
