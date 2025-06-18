@@ -16,8 +16,10 @@ public class Scuba2VerticalSlide{
         this.leftVerticalSlide = leftVerticalSlide;
         this.rightVerticalSlide = rightVerticalSlide;
     }
+    public void movePosition(double position){
 
-    public void move(double power){
+    }
+    public void movePower(double power){
         if (VIPER_SLIDE_LIMIT_BOTTOM < getPosition() && getPosition() < VIPERSLIDE_LIMIT_TOP){
             leftVerticalSlide.setPower((power)+ IDLE_POWER);
             rightVerticalSlide.setPower((power)+ IDLE_POWER);
@@ -35,7 +37,35 @@ public class Scuba2VerticalSlide{
             rightVerticalSlide.setPower((power)+ IDLE_POWER);
         }
     }
-    
+    private void positionControl(double targetPos, double MaxSpeed) {
+        double previousError = 0;
+        double integral = 0;
+        double speed = MaxSpeed;
+
+        double current = getPosition();
+        double error = targetPos - current;
+
+        while (!(Math.abs(error) <= 0.1)) {
+            current = getPosition();
+
+            error = targetPos - current;
+
+            integral = integral + error;
+
+            double derivative = error - previousError;
+
+            double Power = Math.min((Kp * error) + (Ki * integral) + (Kd * derivative), Math.abs(speed));
+
+            previousError = error;
+
+            leftVerticalSlide.setPower(Power);
+            rightVerticalSlide.setPower(Power);
+        }
+
+        leftVerticalSlide.setPower(0);
+        rightVerticalSlide.setPower(0);
+    }
+
     public double getPosition(){
         return ((leftVerticalSlide.getCurrentPosition()+rightVerticalSlide.getCurrentPosition())/2.0);
     }
