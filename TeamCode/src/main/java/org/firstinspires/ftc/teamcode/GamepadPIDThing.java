@@ -27,8 +27,6 @@ public class GamepadPIDThing extends LinearOpMode {
     private double KiTheta = 0;
     private double KdTheta = 0;
     enum State {UP, DOWN, SCREW_YOU}
-    //enum Mode {KP, KI, KD}
-    //Mode[] mode = new Mode[]{};
 
 
     @Override
@@ -54,100 +52,29 @@ public class GamepadPIDThing extends LinearOpMode {
         rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
     public void configurePID(){
-        ElapsedTime elapsedTime = new ElapsedTime();
-        elapsedTime.startTime();
+        ModeController modeController = new ModeController();
+        modeController.add(
+            new Mode(0, "Kp"),
+            new Mode(0, "Ki"),
+            new Mode(0, "Ki")
+        );
 
-        int mode = 0;
-        State kpState = State.SCREW_YOU;
-        State kiState = State.SCREW_YOU;
-        State kdState = State.SCREW_YOU;
-        boolean dpadLeftPressed = false;
-        boolean dpadRightPressed = false;
+        while(opModeIsActive() && !gamepad1.start) {
+            modeController.modeSelection(gamepad1.dpad_left, gamepad1.dpad_right, gamepad1.dpad_up, gamepad1.dpad_down);
 
-        while (opModeIsActive() && !gamepad1.start) {
-            if (gamepad1.dpad_left && !dpadLeftPressed){
-                mode += 1;
-                dpadLeftPressed = true;
-            } else if (!gamepad1.dpad_left){
-                dpadLeftPressed = false;
-            }
-            if (gamepad1.dpad_right && !dpadRightPressed){
-                mode -= 1;
-                dpadRightPressed = true;
-            } else if (!gamepad1.dpad_right){
-                dpadRightPressed = false;
-            }
-            if (mode > 2){
-                mode = 0;
-            }
-            if (mode < 0){
-                mode = 2;
-            }
-            if (mode == 0) {
-                if (gamepad1.dpad_up) {
-                    kpState = State.UP;
-                } else if (gamepad1.dpad_down) {
-                    kpState = State.DOWN;
-                }
-            }
-            if (mode == 1){
-                if (gamepad1.dpad_up) {
-                    kiState = State.UP;
-                } else if (gamepad1.dpad_down) {
-                    kiState = State.DOWN;
-                }
-            }
-            if (mode == 2){
-                if (gamepad1.dpad_up) {
-                    kdState = State.UP;
-                } else if (gamepad1.dpad_down) {
-                    kdState = State.DOWN;
-                }
-            }
-            if (elapsedTime.milliseconds() > 300){
-                if (kpState == State.UP){
-                    Kp += 0.01;
-                } else if (kpState == State.DOWN){
-                    Kp -= 0.01;
-                }
+            telemetry.addLine("Press start to Start");
 
-                if (kiState == State.UP){
-                    Ki += 0.01;
-                } else if (kiState == State.DOWN){
-                    Ki -= 0.01;
-                }
-
-                if (kdState == State.UP) {
-                    Kd += 0.01;
-                } else if (kdState == State.DOWN){
-                    Kd -= 0.01;
-                }
-
-                kpState = State.SCREW_YOU;
-                kiState = State.SCREW_YOU;
-                kdState = State.SCREW_YOU;
-                elapsedTime.reset();
-            }
-
-            telemetry.addLine("Press A to Start");
-
-            if (gamepad1.dpad_down){
+            if (gamepad1.dpad_down) {
                 telemetry.addLine("Dpad Down");
-            }
-            else if (gamepad1.dpad_up){
+            } else if (gamepad1.dpad_up) {
                 telemetry.addLine("Dpad Up");
-            }
-            else {
+            } else {
                 telemetry.addLine("");
             }
 
-            telemetry.addData("Mode(0=Kp, 1=Ki, 2=Kd)", mode);
-            telemetry.addData("KpState:", kpState.name());
-            telemetry.addData("KiState:", kiState.name());
-            telemetry.addData("KdState:", kdState.name());
-            telemetry.addData("Kp:", Kp);
-            telemetry.addData("Ki:", Ki);
-            telemetry.addData("Kd:", Kd);
+            telemetry.addData("Mode:", modeController.getModeName());
+            telemetry.addLine(modeController.reportModeValue());
+            telemetry.
             telemetry.update();
 
         }
