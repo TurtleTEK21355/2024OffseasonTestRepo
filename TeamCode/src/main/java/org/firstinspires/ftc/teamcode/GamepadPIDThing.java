@@ -27,6 +27,8 @@ public class GamepadPIDThing extends LinearOpMode {
     private double KiTheta = 0;
     private double KdTheta = 0;
     enum State {UP, DOWN, SCREW_YOU}
+    //enum Mode {KP, KI, KD}
+    //Mode[] mode = new Mode[]{};
 
 
     @Override
@@ -54,51 +56,81 @@ public class GamepadPIDThing extends LinearOpMode {
     public void configurePID(){
         ElapsedTime elapsedTime = new ElapsedTime();
         elapsedTime.startTime();
+
+        int mode = 0;
         State kpState = State.SCREW_YOU;
         State kiState = State.SCREW_YOU;
         State kdState = State.SCREW_YOU;
-        while (opModeIsActive() && !gamepad1.a) {
-            if (gamepad1.dpad_up) {
-                kpState = State.UP;
-            } else if (gamepad1.dpad_down) {
-                kpState = State.DOWN;
+        boolean dpadLeftPressed = false;
+        boolean dpadRightPressed = false;
+
+        while (opModeIsActive() && !gamepad1.start) {
+            if (gamepad1.dpad_left && !dpadLeftPressed){
+                mode += 1;
+                dpadLeftPressed = true;
+            } else if (!gamepad1.dpad_left){
+                dpadLeftPressed = false;
             }
-            if (-gamepad1.left_stick_y > 0.01) {
-                kiState = State.UP;
-            } else if (-gamepad1.left_stick_y < -0.01) {
-                kiState = State.DOWN;
+            if (gamepad1.dpad_right && !dpadRightPressed){
+                mode -= 1;
+                dpadRightPressed = true;
+            } else if (!gamepad1.dpad_right){
+                dpadRightPressed = false;
             }
-            if (-gamepad1.right_stick_y > 0.01) {
-                kdState = State.UP;
-            } else if (-gamepad1.right_stick_y < -0.01) {
-                kdState = State.DOWN;
+            if (mode > 2){
+                mode = 0;
             }
-            if (elapsedTime.milliseconds() > 100){
+            if (mode < 0){
+                mode = 2;
+            }
+            if (mode == 0) {
+                if (gamepad1.dpad_up) {
+                    kpState = State.UP;
+                } else if (gamepad1.dpad_down) {
+                    kpState = State.DOWN;
+                }
+            }
+            if (mode == 1){
+                if (gamepad1.dpad_up) {
+                    kiState = State.UP;
+                } else if (gamepad1.dpad_down) {
+                    kiState = State.DOWN;
+                }
+            }
+            if (mode == 2){
+                if (gamepad1.dpad_up) {
+                    kdState = State.UP;
+                } else if (gamepad1.dpad_down) {
+                    kdState = State.DOWN;
+                }
+            }
+            if (elapsedTime.milliseconds() > 300){
                 if (kpState == State.UP){
                     Kp += 0.01;
                 } else if (kpState == State.DOWN){
                     Kp -= 0.01;
                 }
-//                switch(kpState){
-//                    case UP: Kp += 0.01;
-//                    case DOWN: Kp -= 0.01;
-//                    case SCREW_YOU:
-//                }
-                switch(kiState){
-                    case UP: Ki += 0.01;
-                    case DOWN: Ki -= 0.01;
+
+                if (kiState == State.UP){
+                    Ki += 0.01;
+                } else if (kiState == State.DOWN){
+                    Ki -= 0.01;
                 }
-                switch(kdState){
-                    case UP: Kd += 0.01;
-                    case DOWN: Kd -= 0.01;
-                    default:
+
+                if (kdState == State.UP) {
+                    Kd += 0.01;
+                } else if (kdState == State.DOWN){
+                    Kd -= 0.01;
                 }
+
                 kpState = State.SCREW_YOU;
                 kiState = State.SCREW_YOU;
                 kdState = State.SCREW_YOU;
                 elapsedTime.reset();
             }
+
             telemetry.addLine("Press A to Start");
+
             if (gamepad1.dpad_down){
                 telemetry.addLine("Dpad Down");
             }
@@ -108,8 +140,8 @@ public class GamepadPIDThing extends LinearOpMode {
             else {
                 telemetry.addLine("");
             }
-            telemetry.addData("leftStick:", -gamepad1.left_stick_y);
-            telemetry.addData("rightStick", -gamepad1.right_stick_y);
+
+            telemetry.addData("Mode(0=Kp, 1=Ki, 2=Kd)", mode);
             telemetry.addData("KpState:", kpState.name());
             telemetry.addData("KiState:", kiState.name());
             telemetry.addData("KdState:", kdState.name());
@@ -117,6 +149,7 @@ public class GamepadPIDThing extends LinearOpMode {
             telemetry.addData("Ki:", Ki);
             telemetry.addData("Kd:", Kd);
             telemetry.update();
+
         }
     }
 }
