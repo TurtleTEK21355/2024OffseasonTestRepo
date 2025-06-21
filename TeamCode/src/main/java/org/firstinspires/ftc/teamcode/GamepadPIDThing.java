@@ -26,7 +26,6 @@ public class GamepadPIDThing extends LinearOpMode {
     private double KpTheta = 0.09;
     private double KiTheta = 0;
     private double KdTheta = 0;
-    enum State {UP, DOWN, SCREW_YOU}
 
 
     @Override
@@ -54,9 +53,9 @@ public class GamepadPIDThing extends LinearOpMode {
     public void configurePID(){
         ModeController modeController = new ModeController();
         modeController.add(
-            new Mode(0, "Kp"),
-            new Mode(0, "Ki"),
-            new Mode(0, "Ki")
+            new Mode(0.09, "Kp"),
+            new Mode("Ki"),
+            new Mode( "Kd")
         );
 
         while(opModeIsActive() && !gamepad1.start) {
@@ -72,9 +71,7 @@ public class GamepadPIDThing extends LinearOpMode {
                 telemetry.addLine("");
             }
 
-            telemetry.addData("Mode:", modeController.getModeName());
             telemetry.addLine(modeController.reportModeValue());
-            telemetry.
             telemetry.update();
 
         }

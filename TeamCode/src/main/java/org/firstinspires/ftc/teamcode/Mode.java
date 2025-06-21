@@ -1,40 +1,60 @@
 package org.firstinspires.ftc.teamcode;
 
 public class Mode {
+
     public enum State {UP,DOWN,MIDDLE}
     private State state = State.MIDDLE;
     private double value = 0;
-    private String name;
-    public Mode(){//no parameters
-        value = 0;
+    private String name = "unnamed";
+
+    public Mode() {}
+    public Mode(double value){
+        this.value = value;
     }
-    public Mode(double value){//only value
+    public Mode(String name){
+        this.name = name;
     }
-    public Mode(double value, String name){//value and string
+    public Mode(double value, String name){
+        this.value = value;
+        this.name = name;
     }
 
-    public void stateChange(boolean inputUp, boolean inputDown){//changes state to up or down
+    /**
+     * changes state to up or down
+     * @param inputUp boolean that sets it to UP
+     * @param inputDown boolean that sets it to DOWN
+     */
+    public void stateChange(boolean inputUp, boolean inputDown){
         if (inputUp){
-            State state = State.UP;
+            state = State.UP;
         }
         else if (inputDown){
-            State state = State.DOWN;
+            state = State.DOWN;
         }
     }
+
+    /**
+     * gets the current enum state
+     * @return the current state
+     */
     public State getState(){
         return state;
-    }//gets the current enum state
-    public void setState(State assignedState){//sets the state to a enum
+    }
+
+    /**
+     * sets the state to a enum
+     * @param assignedState the new state
+     */
+    public void setState(State assignedState){
         state = assignedState;
     }
 
     public void valueChange(){
         if (state == State.UP){
-            value += 0.01;
+            this.value += 0.01;
         } else if (state == State.DOWN){
-            value -= 0.01;
+            this.value -= 0.01;
         }
-
         state = State.MIDDLE;
     }
     public void setName(String name){
