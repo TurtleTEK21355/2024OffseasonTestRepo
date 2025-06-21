@@ -11,6 +11,9 @@ public class Scuba2VerticalSlide{
     private final double VIPER_SLIDE_LIMIT_BOTTOM = TICKS_PER_REVOLUTION_223RPM * BOTTOM_LIMIT;
     private final double VIPERSLIDE_LIMIT_TOP = TICKS_PER_REVOLUTION_223RPM * TOP_LIMIT;
     private final double IDLE_POWER = 0.1;
+    private double Kp = 0.09;
+    private double Ki = 0;
+    private double Kd = 0;
 
     public Scuba2VerticalSlide(DcMotor leftVerticalSlide, DcMotor rightVerticalSlide) {
         this.leftVerticalSlide = leftVerticalSlide;
