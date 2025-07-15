@@ -11,11 +11,12 @@ public class MeccanumWheeDrivetrain extends Drivetrain {
     private DcMotor rearRightMotor;
     private SparkFunOTOS otosSensor;
 
-    public MeccanumWheeDrivetrain(DcMotor rearRightMotor, DcMotor rearLeftMotor, DcMotor frontRightMotor, DcMotor frontLeftMotor) {
+    public MeccanumWheeDrivetrain(DcMotor rearRightMotor, DcMotor rearLeftMotor, DcMotor frontRightMotor, DcMotor frontLeftMotor, SparkFunOTOS otosSensor) {
         this.rearRightMotor = rearRightMotor;
         this.rearLeftMotor = rearLeftMotor;
         this.frontRightMotor = frontRightMotor;
         this.frontLeftMotor = frontLeftMotor;
+        this.otosSensor = otosSensor;
     }
 
     public void move(double drive, double strafe, double turn) {
@@ -25,5 +26,5 @@ public class MeccanumWheeDrivetrain extends Drivetrain {
         rearRightMotor.setPower(Range.clip(drive + strafe - turn, -1, 1));
 
     }
-    public void getPosition(){}
+
 }

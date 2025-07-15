@@ -44,7 +44,6 @@ public class Scuba2VerticalSlide{
         double previousError = 0;
         double integral = 0;
         double speed = MaxSpeed;
-
         double current = getPosition();
         double error = targetPos - current;
 

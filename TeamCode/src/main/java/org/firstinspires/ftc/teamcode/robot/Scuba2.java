@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -11,21 +12,27 @@ public class Scuba2 {
                   DcMotor rearRightMotor,
                   DcMotor frontLeftMotor,
                   DcMotor frontRightMotor,
+                  SparkFunOTOS otosSensor,
                   Servo grabberServo,
                   Servo grabberRotateServo,
                   Servo grabberTiltServo,
                   DcMotor leftVerticalSlide,
                   DcMotor rightVerticalSlide,
-                  DcMotor horizontalSlide) {
-        this.drivetrain = new MeccanumWheeDrivetrain(rearRightMotor,
+                  DcMotor horizontalSlide
+    ) {
+        this.drivetrain = new MeccanumWheeDrivetrain(
+                rearRightMotor,
                 rearLeftMotor,
                 frontRightMotor,
-                frontLeftMotor);
-        this.arm = new Scuba2Arm(grabberTiltServo,
+                frontLeftMotor,
+                otosSensor);
+        this.arm = new Scuba2Arm(
+                grabberTiltServo,
                 grabberRotateServo,
                 grabberServo,
                 leftVerticalSlide,
                 rightVerticalSlide,
-                horizontalSlide);
+                horizontalSlide
+        );
     }
 }
