@@ -55,6 +55,7 @@ public class Mode {
         } else if (state == State.DOWN){
             this.value -= 0.01;
         }
+        
         state = State.MIDDLE;
     }
     public void setName(String name){
