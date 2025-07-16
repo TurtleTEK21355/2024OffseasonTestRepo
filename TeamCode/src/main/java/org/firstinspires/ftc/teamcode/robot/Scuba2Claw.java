@@ -8,13 +8,35 @@ public class Scuba2Claw {
     private Servo grabberRotateServo;
     private Servo grabberTiltServo;
     public enum Rotation{
-        MIDDLE,
-        LEFT,
-        RIGHT
+        MIDDLE(0.5),
+        LEFT(0.75),
+        RIGHT(0.25);
+
+        final double rotationPosition;
+
+        Rotation(double rotationPosition) {
+            this.rotationPosition = rotationPosition;
+        }
+
+        public double getPosition(){
+            return rotationPosition;
+        }
+
     }
     public enum Tilt{
-        UP,
-        DOWN
+        UP(0.6),
+        DOWN(0.25);
+
+        final double tiltPosition;
+
+        Tilt(double tiltPosition) {
+            this.tiltPosition = tiltPosition;
+        }
+
+        public double getPosition(){
+            return tiltPosition;
+        }
+
     }
 
     public Scuba2Claw(Servo grabberTiltServo, Servo grabberRotateServo, Servo grabberServo) {
@@ -31,20 +53,12 @@ public class Scuba2Claw {
         grabberServo.setPosition(0.92);
     }
 
-    public void rotate(Rotation position){
-        switch (position) {
-            case MIDDLE: grabberRotateServo.setPosition(0.5);
-            case LEFT: grabberRotateServo.setPosition(0.75);
-            case RIGHT: grabberRotateServo.setPosition(0.25);
-        }
-
+    public void rotate(Rotation rotation){
+        grabberRotateServo.setPosition(rotation.getPosition());
     }
 
-    public void tilt(Tilt position){
-        switch (position) {
-            case UP: grabberTiltServo.setPosition(0.6);
-            case DOWN: grabberTiltServo.setPosition(0.25);
-        }
+    public void tilt(Tilt tilt){
+        grabberTiltServo.setPosition(tilt.getPosition());
 
     }
 

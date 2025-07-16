@@ -1,27 +1,28 @@
 package org.firstinspires.ftc.teamcode.robot;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class Scuba2VerticalSlide{
-    private DcMotor leftVerticalSlide;
-    private DcMotor rightVerticalSlide;
+    private final DcMotor leftVerticalSlide;
+    private final DcMotor rightVerticalSlide;
     private final double TICKS_PER_REVOLUTION_223RPM = 751.8;
     private final double BOTTOM_LIMIT = 0;
     private final double TOP_LIMIT = 8.1;
     private final double VIPER_SLIDE_LIMIT_BOTTOM = TICKS_PER_REVOLUTION_223RPM * BOTTOM_LIMIT;
     private final double VIPERSLIDE_LIMIT_TOP = TICKS_PER_REVOLUTION_223RPM * TOP_LIMIT;
     private final double IDLE_POWER = 0.1;
-    private double Kp = 0.09;
-    private double Ki = 0;
-    private double Kd = 0;
+    private final double Kp = 0.09;
+    private final double Ki = 0;
+    private final double Kd = 0;
 
     public Scuba2VerticalSlide(DcMotor leftVerticalSlide, DcMotor rightVerticalSlide) {
         this.leftVerticalSlide = leftVerticalSlide;
         this.rightVerticalSlide = rightVerticalSlide;
+        leftVerticalSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightVerticalSlide.setDirection(DcMotorSimple.Direction.FORWARD);
     }
-    public void movePosition(double position){
 
-    }
     public void movePower(double power){
         if (VIPER_SLIDE_LIMIT_BOTTOM < getPosition() && getPosition() < VIPERSLIDE_LIMIT_TOP){
             leftVerticalSlide.setPower((power)+ IDLE_POWER);
@@ -39,11 +40,12 @@ public class Scuba2VerticalSlide{
             leftVerticalSlide.setPower((power)+ IDLE_POWER);
             rightVerticalSlide.setPower((power)+ IDLE_POWER);
         }
+
     }
-    private void positionControl(double targetPos, double MaxSpeed) {
+
+    private void movePosition(double targetPos, double MaxSpeed) {
         double previousError = 0;
         double integral = 0;
-        double speed = MaxSpeed;
         double current = getPosition();
         double error = targetPos - current;
 
@@ -56,7 +58,7 @@ public class Scuba2VerticalSlide{
 
             double derivative = error - previousError;
 
-            double Power = Math.min((Kp * error) + (Ki * integral) + (Kd * derivative), Math.abs(speed));
+            double Power = Math.min((Kp * error) + (Ki * integral) + (Kd * derivative), Math.abs(MaxSpeed));
 
             previousError = error;
 

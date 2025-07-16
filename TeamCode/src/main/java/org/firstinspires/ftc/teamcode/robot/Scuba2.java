@@ -8,11 +8,7 @@ public class Scuba2 {
     public MeccanumWheeDrivetrain drivetrain;
     public Scuba2Arm arm;
 
-    public Scuba2(DcMotor rearLeftMotor,
-                  DcMotor rearRightMotor,
-                  DcMotor frontLeftMotor,
-                  DcMotor frontRightMotor,
-                  SparkFunOTOS otosSensor,
+    public Scuba2(
                   Servo grabberServo,
                   Servo grabberRotateServo,
                   Servo grabberTiltServo,
@@ -20,12 +16,7 @@ public class Scuba2 {
                   DcMotor rightVerticalSlide,
                   DcMotor horizontalSlide
     ) {
-        this.drivetrain = new MeccanumWheeDrivetrain(
-                rearRightMotor,
-                rearLeftMotor,
-                frontRightMotor,
-                frontLeftMotor,
-                otosSensor);
+        this.drivetrain = new MeccanumWheeDrivetrain();
         this.arm = new Scuba2Arm(
                 grabberTiltServo,
                 grabberRotateServo,
@@ -34,5 +25,18 @@ public class Scuba2 {
                 rightVerticalSlide,
                 horizontalSlide
         );
+    }
+    public void addDrivetrainMotor(DcMotor motor, MeccanumWheeDrivetrain.WheelPosition motorPosition){
+        drivetrain.addMotor(motor, motorPosition);
+
+    }
+    public void addViperslideMotor(DcMotor motor, ){
+
+    }
+    public void addOtos(SparkFunOTOS otosSensor){
+        drivetrain.addOtos(otosSensor);
+    }
+    public void addClawServo(){
+
     }
 }

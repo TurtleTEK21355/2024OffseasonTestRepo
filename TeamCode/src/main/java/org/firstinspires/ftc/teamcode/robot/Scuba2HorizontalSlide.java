@@ -8,10 +8,9 @@ public class Scuba2HorizontalSlide{
 
     public Scuba2HorizontalSlide(DcMotor horizontalSlide) {
         this.horizontalSlide = horizontalSlide;
-        horizontalSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         horizontalSlide.setDirection(DcMotorSimple.Direction.REVERSE);
     }
-    public void move(double position){
-
+    public void move(double power){
+        horizontalSlide.setPower(power);
     }
 }
