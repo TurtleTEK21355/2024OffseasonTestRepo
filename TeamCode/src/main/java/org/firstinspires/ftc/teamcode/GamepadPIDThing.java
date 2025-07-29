@@ -75,5 +75,8 @@ public class GamepadPIDThing extends LinearOpMode {
             telemetry.update();
 
         }
+        Kp = modeController.getModeValue("Kp");
+        Ki = modeController.getModeValue("Ki");
+        Kd = modeController.getModeValue("Kd");
     }
 }

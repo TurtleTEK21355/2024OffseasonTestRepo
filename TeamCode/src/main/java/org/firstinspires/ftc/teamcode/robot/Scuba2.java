@@ -26,11 +26,11 @@ public class Scuba2 {
                 horizontalSlide
         );
     }
-    public void addDrivetrainMotor(DcMotor motor, MeccanumWheeDrivetrain.WheelPosition motorPosition){
-        drivetrain.addMotor(motor, motorPosition);
+    public void addDrivetrainMotor(DcMotor motor, MeccanumWheeDrivetrain.WheelPosition wheelPosition){
+        drivetrain.addMotor(motor, wheelPosition);
 
     }
-    public void addViperslideMotor(DcMotor motor, ){
+    public void addViperslideMotor(DcMotor motor){
 
     }
     public void addOtos(SparkFunOTOS otosSensor){

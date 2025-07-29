@@ -1,11 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
+/**
+ * this is a double holding object that has a name and an enum state of UP DOWN and MIDDLE
+ * if valueChange is called the value will be changed by a set value which probably shouldn't be hardcoded
+ */
 public class Mode {
 
     public enum State {UP,DOWN,MIDDLE}
     private State state = State.MIDDLE;
-    private double value = 0;
     private String name = "unnamed";
+    private double value = 0;
 
     public Mode() {}
     public Mode(double value){
@@ -49,6 +53,9 @@ public class Mode {
         state = assignedState;
     }
 
+    /**
+     * changes the value depending on the state by 0.01
+     */
     public void valueChange(){
         if (state == State.UP){
             this.value += 0.01;
@@ -58,14 +65,29 @@ public class Mode {
         
         state = State.MIDDLE;
     }
+
+    /**
+     * sets the name of the mode to a string
+     * @param name the name to be updated to
+     */
     public void setName(String name){
         this.name = name;
     }
+
+    /**
+     * gets the value of this mode
+     * @return the name
+     */
     public String getName(){
         return this.name;
     }
-    public String getValue(){
-        return Double.toString(this.value);
+
+    /**
+     * gets the value in this mode
+     * @return the value
+     */
+    public double getValue(){
+        return this.value;
     }
 
 }
