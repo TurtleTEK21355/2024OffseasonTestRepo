@@ -7,11 +7,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+
 /**
  * this manages the thingys called modes in an arrayList called "modes"
  *
  */
 public class ModeController {
+    double updateTimeValue = 400;
     private int selectedMode = 0;
     private boolean previousItemLast = false;
     private boolean nextItemLast = false;
@@ -69,7 +71,7 @@ public class ModeController {
         modes.get(selectedMode).stateChange(valueUp, valueDown);
 
 
-        if (elapsedTime.milliseconds() > 500){
+        if (elapsedTime.milliseconds() > updateTimeValue){
             modes.get(selectedMode).valueChange();
 
             elapsedTime.reset();

@@ -30,7 +30,7 @@ public class GamepadPIDThing extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        declareMotors();
+//        declareMotors();
         waitForStart();
         configurePID();
 
@@ -78,5 +78,8 @@ public class GamepadPIDThing extends LinearOpMode {
         Kp = modeController.getModeValue("Kp");
         Ki = modeController.getModeValue("Ki");
         Kd = modeController.getModeValue("Kd");
+        telemetry.addData("values", Kp);
+        telemetry.addData("values", Ki);
+        telemetry.addData("values", Kd);
     }
 }

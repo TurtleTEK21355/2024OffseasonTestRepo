@@ -1,4 +1,6 @@
 package org.firstinspires.ftc.teamcode;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * this is a double holding object that has a name and an enum state of UP DOWN and MIDDLE
@@ -10,6 +12,7 @@ public class Mode {
     private State state = State.MIDDLE;
     private String name = "unnamed";
     private double value = 0;
+    private double valueChangeAmount = 0.01;
 
     public Mode() {}
     public Mode(double value){
@@ -57,12 +60,19 @@ public class Mode {
      * changes the value depending on the state by 0.01
      */
     public void valueChange(){
+        BigDecimal bd = new BigDecimal(this.value).setScale(2, RoundingMode.HALF_UP);
+        int intValue = bd.intValue();
+        int scale = bd.scale();
         if (state == State.UP){
-            this.value += 0.01;
+            intValue += (int) (valueChangeAmount * scale);
         } else if (state == State.DOWN){
-            this.value -= 0.01;
+            intValue -= (int) (valueChangeAmount * scale);
         }
-        
+
+
+
+        this.value = (double) intValue / scale;
+
         state = State.MIDDLE;
     }
 
