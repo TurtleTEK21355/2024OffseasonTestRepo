@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import android.text.method.Touch;
+
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 public class Scuba2 {
     public MeccanumWheeDrivetrain drivetrain;
@@ -14,6 +17,7 @@ public class Scuba2 {
                   Servo grabberTiltServo,
                   DcMotor leftVerticalSlide,
                   DcMotor rightVerticalSlide,
+                  TouchSensor viperSlideSensor,
                   DcMotor horizontalSlide
     ) {
         this.drivetrain = new MeccanumWheeDrivetrain();
@@ -23,6 +27,7 @@ public class Scuba2 {
                 grabberServo,
                 leftVerticalSlide,
                 rightVerticalSlide,
+                viperSlideSensor,
                 horizontalSlide
         );
     }

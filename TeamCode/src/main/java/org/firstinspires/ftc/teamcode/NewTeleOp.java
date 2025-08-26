@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.teamcode.robot.MeccanumWheeDrivetrain;
 import org.firstinspires.ftc.teamcode.robot.Scuba2;
@@ -20,6 +21,7 @@ public class NewTeleOp extends OpMode {
             hardwareMap.get(Servo.class, "grabber_tilt_servo"),
             hardwareMap.get(DcMotor.class, "left_viper_slide"),
             hardwareMap.get(DcMotor.class, "right_viper_slide"),
+            hardwareMap.get(TouchSensor.class, "rev_touch"),
             hardwareMap.get(DcMotor.class, "linear_actuator_motor")
         );
         scuba2.drivetrain.addMotor(hardwareMap.get(DcMotor.class, "front_left_drive"), MeccanumWheeDrivetrain.WheelPosition.FRONT_LEFT);

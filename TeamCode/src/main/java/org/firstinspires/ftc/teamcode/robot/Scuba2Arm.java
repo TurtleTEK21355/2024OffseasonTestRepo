@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.robot;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 public class Scuba2Arm{
     public Scuba2HorizontalSlide linearActuator;
@@ -13,9 +14,10 @@ public class Scuba2Arm{
                      Servo grabberServo,
                      DcMotor leftVerticalSlide,
                      DcMotor rightVerticalSlide,
+                     TouchSensor viperSlideSensor,
                      DcMotor horizontalSlide){
         this.linearActuator = new Scuba2HorizontalSlide(horizontalSlide);
-        this.viperSlides = new Scuba2VerticalSlide(leftVerticalSlide, rightVerticalSlide);
+        this.viperSlides = new Scuba2VerticalSlide(leftVerticalSlide, rightVerticalSlide, viperSlideSensor);
         this.claw = new Scuba2Claw(grabberTiltServo, grabberRotateServo, grabberServo);
     }
 }
