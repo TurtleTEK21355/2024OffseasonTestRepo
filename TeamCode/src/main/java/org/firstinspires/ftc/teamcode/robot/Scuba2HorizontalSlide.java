@@ -8,7 +8,7 @@ public class Scuba2HorizontalSlide{
 
     public Scuba2HorizontalSlide(DcMotor horizontalSlide) {
         this.horizontalSlide = horizontalSlide;
-        horizontalSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        horizontalSlide.setDirection(DcMotorSimple.Direction.FORWARD);
     }
     public void move(double power){
         horizontalSlide.setPower(power);

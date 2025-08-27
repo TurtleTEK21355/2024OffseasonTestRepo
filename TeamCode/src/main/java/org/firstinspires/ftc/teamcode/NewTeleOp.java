@@ -21,7 +21,7 @@ public class NewTeleOp extends OpMode {
             hardwareMap.get(Servo.class, "grabber_tilt_servo"),
             hardwareMap.get(DcMotor.class, "left_viper_slide"),
             hardwareMap.get(DcMotor.class, "right_viper_slide"),
-            hardwareMap.get(TouchSensor.class, "rev_touch"),
+            hardwareMap.get(TouchSensor.class, "viper_slide_touch"),
             hardwareMap.get(DcMotor.class, "linear_actuator_motor")
         );
         scuba2.drivetrain.addMotor(hardwareMap.get(DcMotor.class, "front_left_drive"), MeccanumWheeDrivetrain.WheelPosition.FRONT_LEFT);
@@ -38,6 +38,7 @@ public class NewTeleOp extends OpMode {
 
         //viper slides
         scuba2.arm.viperSlides.movePower(-gamepad2.left_stick_y);
+        telemetry.addLine(scuba2.arm.viperSlides.getStats());
 
         //linear actuator
         scuba2.arm.linearActuator.move(-gamepad2.right_stick_y);

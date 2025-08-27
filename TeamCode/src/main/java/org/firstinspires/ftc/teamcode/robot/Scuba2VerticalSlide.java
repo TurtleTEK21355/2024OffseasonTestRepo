@@ -10,9 +10,9 @@ public class Scuba2VerticalSlide{
     private final TouchSensor viperSlideSensor;
     private final double TICKS_PER_REVOLUTION_223RPM = 751.8;
     private final double BOTTOM_LIMIT = 0;
-    private final double TOP_LIMIT = 8.1;
+    private final double TOP_LIMIT = 2.3;
     private final double VIPER_SLIDE_LIMIT_BOTTOM = TICKS_PER_REVOLUTION_223RPM * BOTTOM_LIMIT;
-    private final double VIPERSLIDE_LIMIT_TOP = TICKS_PER_REVOLUTION_223RPM * TOP_LIMIT;
+    private final double VIPERSLIDE_LIMIT_TOP = 1740;
     private final double IDLE_POWER = 0.1;
     private final double Kp = 0.09;
     private final double Ki = 0;
@@ -25,34 +25,31 @@ public class Scuba2VerticalSlide{
         this.leftVerticalSlide = leftVerticalSlide;
         this.rightVerticalSlide = rightVerticalSlide;
         this.viperSlideSensor = viperSlideSensor;
-        leftVerticalSlide.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightVerticalSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftVerticalSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightVerticalSlide.setDirection(DcMotorSimple.Direction.REVERSE);
         viperSlidePosition = getPosition();
     }
 
     public void movePower(double power){
         viperSlidePosition += getPosition() - lastRawSlidePosition;
-        if (VIPER_SLIDE_LIMIT_BOTTOM < viperSlidePosition && viperSlidePosition < VIPERSLIDE_LIMIT_TOP){
-            leftVerticalSlide.setPower((power)+ IDLE_POWER);
-            rightVerticalSlide.setPower((power)+ IDLE_POWER);
+        if (viperSlideSensor.getValue() > 0.9 && 0.1 > power){
+            viperSlidePosition = 0.0;
+            viperSlideFullyInitialized = true;
+            leftVerticalSlide.setPower(IDLE_POWER);
+            rightVerticalSlide.setPower(IDLE_POWER);
         }
         else if (viperSlidePosition > VIPERSLIDE_LIMIT_TOP && power > -0.1){
             if (viperSlideFullyInitialized){
                 leftVerticalSlide.setPower(IDLE_POWER);
                 rightVerticalSlide.setPower(IDLE_POWER);
             } else {
-                leftVerticalSlide.setPower((power)+ IDLE_POWER);
-                rightVerticalSlide.setPower((power)+ IDLE_POWER);
+                leftVerticalSlide.setPower(((power)+ IDLE_POWER));
+                rightVerticalSlide.setPower(((power)+ IDLE_POWER));
             }
         }
-        else if (viperSlideSensor.getValue() == 1 && 0.1 > power){
-            viperSlidePosition = 0;
-            leftVerticalSlide.setPower(IDLE_POWER);
-            rightVerticalSlide.setPower(IDLE_POWER);
-        }
-        else{
-            leftVerticalSlide.setPower((power)+ IDLE_POWER);
-            rightVerticalSlide.setPower((power)+ IDLE_POWER);
+        else {
+            leftVerticalSlide.setPower(((power)+ IDLE_POWER));
+            rightVerticalSlide.setPower(((power)+ IDLE_POWER));
         }
         lastRawSlidePosition = getPosition();
     }
@@ -86,5 +83,8 @@ public class Scuba2VerticalSlide{
 
     public double getPosition(){
         return ((leftVerticalSlide.getCurrentPosition()+rightVerticalSlide.getCurrentPosition())/2.0);
+    }
+    public String getStats(){
+        return "viperSlidePosition: " + viperSlidePosition + "\nIsFullyInitialized: " + viperSlideFullyInitialized + "\ntouchSensor: " + viperSlideSensor.getValue();
     }
 }
