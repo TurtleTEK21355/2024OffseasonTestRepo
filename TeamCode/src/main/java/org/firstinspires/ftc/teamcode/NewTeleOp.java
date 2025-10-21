@@ -24,11 +24,11 @@ public class NewTeleOp extends OpMode {
             hardwareMap.get(TouchSensor.class, "viper_slide_touch"),
             hardwareMap.get(DcMotor.class, "linear_actuator_motor")
         );
-        scuba2.drivetrain.addMotor(hardwareMap.get(DcMotor.class, "front_left_drive"), MeccanumWheeDrivetrain.WheelPosition.FRONT_LEFT);
-        scuba2.drivetrain.addMotor(hardwareMap.get(DcMotor.class, "front_right_drive"), MeccanumWheeDrivetrain.WheelPosition.FRONT_RIGHT);
-        scuba2.drivetrain.addMotor(hardwareMap.get(DcMotor.class, "rear_left_drive"), MeccanumWheeDrivetrain.WheelPosition.REAR_LEFT);
-        scuba2.drivetrain.addMotor(hardwareMap.get(DcMotor.class, "rear_right_drive"), MeccanumWheeDrivetrain.WheelPosition.REAR_RIGHT);
-        scuba2.drivetrain.addOtos(hardwareMap.get(SparkFunOTOS.class, "sensor_otos"));
+        scuba2.drivetrain.addMotor(hardwareMap.get(DcMotor.class, "fl"), MeccanumWheeDrivetrain.WheelPosition.FRONT_LEFT);
+        scuba2.drivetrain.addMotor(hardwareMap.get(DcMotor.class, "fr"), MeccanumWheeDrivetrain.WheelPosition.FRONT_RIGHT);
+        scuba2.drivetrain.addMotor(hardwareMap.get(DcMotor.class, "bl"), MeccanumWheeDrivetrain.WheelPosition.REAR_LEFT);
+        scuba2.drivetrain.addMotor(hardwareMap.get(DcMotor.class, "br"), MeccanumWheeDrivetrain.WheelPosition.REAR_RIGHT);
+        scuba2.drivetrain.addOtos(hardwareMap.get(SparkFunOTOS.class, "otos"));
 
     }
 
