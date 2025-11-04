@@ -29,7 +29,7 @@ public class NewTeleOp extends OpMode {
         scuba2.drivetrain.addMotor(hardwareMap.get(DcMotor.class, "rear_left_drive"), MeccanumWheeDrivetrain.WheelPosition.REAR_LEFT);
         scuba2.drivetrain.addMotor(hardwareMap.get(DcMotor.class, "rear_right_drive"), MeccanumWheeDrivetrain.WheelPosition.REAR_RIGHT);
         scuba2.drivetrain.addOtos(hardwareMap.get(SparkFunOTOS.class, "sensor_otos"));
-
+        scuba2.drivetrain.configureOtos();
     }
 
     public void loop(){
