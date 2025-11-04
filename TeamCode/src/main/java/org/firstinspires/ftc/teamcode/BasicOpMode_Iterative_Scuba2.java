@@ -77,17 +77,17 @@ public class BasicOpMode_Iterative_Scuba2 extends OpMode {
 
     @Override
     public void init() {
-        myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
-        frontLeftDrive = hardwareMap.get(DcMotor.class, "front_left_drive");
-        frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
-        rearLeftDrive = hardwareMap.get(DcMotor.class, "rear_left_drive");
-        rearRightDrive = hardwareMap.get(DcMotor.class, "rear_right_drive");
-        leftViperSlide = hardwareMap.get(DcMotor.class, "left_viper_slide");
-        rightViperSlide = hardwareMap.get(DcMotor.class, "right_viper_slide");
-        grabberServo = hardwareMap.get(Servo.class, "grabber_servo");
-        grabberRotateServo = hardwareMap.get(Servo.class, "grabber_rotate_servo");
-        grabberTiltServo = hardwareMap.get(Servo.class, "grabber_tilt_servo");
-        linearActuatorMotor = hardwareMap.get(DcMotor.class, "linear_actuator_motor");
+        myOtos = hardwareMap.get(SparkFunOTOS.class, "otos");
+        frontLeftDrive = hardwareMap.get(DcMotor.class, "fl");
+        frontRightDrive = hardwareMap.get(DcMotor.class, "fr");
+        rearLeftDrive = hardwareMap.get(DcMotor.class, "bl");
+        rearRightDrive = hardwareMap.get(DcMotor.class, "br");
+        leftViperSlide = hardwareMap.get(DcMotor.class, "lvs");
+        rightViperSlide = hardwareMap.get(DcMotor.class, "rvs");
+        grabberServo = hardwareMap.get(Servo.class, "grabber");
+        grabberRotateServo = hardwareMap.get(Servo.class, "rotate");
+        grabberTiltServo = hardwareMap.get(Servo.class, "tilt");
+        linearActuatorMotor = hardwareMap.get(DcMotor.class, "la");
 
 
         linearActuatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
